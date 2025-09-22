@@ -1,5 +1,5 @@
 {
-  "name": "4ga Boards",
+  "name": "LRS Boards",
   "icons": [
     {
       "src": "favicon.ico",
@@ -7,12 +7,12 @@
       "type": "image/x-icon"
     },
     {
-      "src": "4gaboards192w.png",
+      "src": "LRS_Logo_192w.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "4gaboards512w.png",
+      "src": "LRS_Logo_512w.png",
       "type": "image/png",
       "sizes": "512x512"
     }

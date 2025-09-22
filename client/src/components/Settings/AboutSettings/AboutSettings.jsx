@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
-import logo from '../../../assets/images/4gaboardsLogo1024w-white.png';
+import logo from '../../../assets/images/LRS_BoardBanner_Large.png';
 import Config from '../../../constants/Config';
 import { Icon, IconType, IconSize, ExternalLink, Button, ButtonStyle } from '../../Utils';
 
@@ -40,7 +40,7 @@ const AboutSettings = React.memo(({ demoMode, onGettingStartedProjectImport }) =
         <h2 className={sShared.headerText}>{t('common.about')}</h2>
       </div>
       <div>
-        <img src={logo} className={s.logo} alt="4ga Boards" />
+        <img src={logo} className={s.logo} alt="LRS Boards" />
         <div className={s.version}>
           {t('common.version')} {Config.VERSION}
         </div>
