@@ -95,7 +95,8 @@ module.exports = {
     const taskMemberships = await sails.helpers.cards.getTaskMemberships(taskIds);
     const attachments = await Attachment.find({ cardId: card.id });
     const actions = await Action.find({ cardId: card.id });
-    const actionsUsers = await User.find({ id: _.map(actions, 'userId') });
+    const actionUserIds = sails.helpers.utils.mapRecords(actions, 'userId');
+    const actionUsers = await User.find({ id: actionUserIds });
     const coverAttachment = attachments.find((attachment) => attachment.id === card.coverAttachmentId);
     const coverAttachmentDirname = coverAttachment != null ? coverAttachment.dirname : undefined;
 
@@ -109,8 +110,8 @@ module.exports = {
             card: copiedCard,
           },
           currentUser,
-          skipActions: true,
           skipMetaUpdate: true,
+          skipActions: true,
           request: this.req,
         });
         newTaskIdMapping[task.id] = newTask.id;
@@ -128,6 +129,7 @@ module.exports = {
             },
             currentUser,
             skipMetaUpdate: true,
+            skipActions: true,
             request: this.req,
           })
           .intercept('labelAlreadyInCard', () => Errors.LABEL_ALREADY_IN_CARD);
@@ -142,6 +144,7 @@ module.exports = {
             currentUser,
             skipMetaUpdate: true,
             duplicate: true,
+            skipActions: true,
             request: this.req,
           })
           .intercept('userAlreadyCardMember', () => Errors.USER_ALREADY_CARD_MEMBER);
@@ -183,7 +186,7 @@ module.exports = {
               ..._.omit(action, ['id']),
               duplicate: true,
               card: copiedCard,
-              user: actionsUsers.find((user) => user.id === action.userId),
+              user: actionUsers.find((user) => user.id === action.userId),
             },
             currentUser,
             skipMetaUpdate: true,

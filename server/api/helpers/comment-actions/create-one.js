@@ -39,22 +39,24 @@ module.exports = {
   },
 
   async fn(inputs) {
-    const { values, currentUser, skipMetaUpdate } = inputs;
+    const { values, currentUser, skipMetaUpdate, skipActions } = inputs;
 
     const action = await sails.helpers.actions.createOne.with({ values, currentUser, skipNotifications: true, request: inputs.request });
 
     if (action) {
       if (!values.duplicate) {
+        const commentActions = await sails.helpers.cards.getActions.with({ idOrIds: values.card.id, onlyComments: true });
+
         await sails.helpers.cards.updateOne.with({
           record: values.card,
           values: {
-            commentCount: values.card.commentCount + 1,
+            commentCount: commentActions.length,
           },
           currentUser,
         });
       }
 
-      if (!inputs.skipActions) {
+      if (!skipActions) {
         await sails.helpers.actions.createOne.with({
           values: {
             card: values.card,
