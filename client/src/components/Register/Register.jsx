@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import isEmail from 'validator/lib/isEmail';
 
-import logo from '../../assets/images/4gaboardsLogo1024w-white.png';
+import logo from '../../assets/images/LRS_BoardBanner_Large.png';
 import { SsoTypes } from '../../constants/Enums';
 import { useForm } from '../../hooks';
 import { useDidUpdate, usePrevious, useToggle } from '../../lib/hooks';
@@ -92,7 +92,7 @@ const Register = React.memo(
     const passwordField = useRef(null);
     const policyCheckbox = useRef(null);
 
-    const mainTitle = '4ga Boards';
+    const mainTitle = 'LRS Boards';
 
     useEffect(() => {
       document.title = `${t('common.register')} | ${mainTitle}`;
@@ -173,7 +173,7 @@ const Register = React.memo(
     return (
       <div className={clsx(s.wrapper, gs.scrollableY)}>
         <div className={s.loginWrapper}>
-          <img src={logo} className={s.logo} alt="4ga Boards" />
+          <img src={logo} className={s.logo} alt="LRS Boards" />
           <h1 className={s.formTitle}>{t('common.createYourAccount')}</h1>
           <div>
             {message && <Message style={message.type === 'error' ? MessageStyle.Error : MessageStyle.Warning} content={t(message.content)} onDismiss={onMessageDismiss} className={s.message} />}

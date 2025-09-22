@@ -14,7 +14,7 @@ export default {
       login: 'Login',
       logInToBoards: 'Log in',
       continueWith: 'Continue with {{provider}}',
-      newToBoards: 'New to 4ga Boards?',
+      newToBoards: 'New to LRS Boards?',
       noInternetConnection: 'No internet connection',
       pageNotFound_title: 'Page Not Found',
       password: 'Password',

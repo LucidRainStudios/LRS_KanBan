@@ -14,7 +14,7 @@ const Core = React.memo(({ isInitializing, isSocketDisconnected, currentProject,
   const [t] = useTranslation();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [showDisconnected, setShowDisconnected] = useState(false);
-  const mainTitle = '4ga Boards';
+  const mainTitle = 'LRS Boards';
 
   useEffect(() => {
     let title = `${mainTitle}`;
