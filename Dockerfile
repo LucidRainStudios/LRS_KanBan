@@ -21,6 +21,8 @@ RUN pnpm import
 RUN pnpm install --prod
 
 COPY client .
+ENV NODE_OPTIONS="--max_old_space_size=2048"
+ENV GENERATE_SOURCEMAP=false
 RUN DISABLE_ESLINT_PLUGIN=true npm run build
 
 FROM node:22-alpine
