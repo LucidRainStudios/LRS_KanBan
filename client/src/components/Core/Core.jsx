@@ -13,7 +13,7 @@ import * as s from './Core.module.scss';
 const Core = React.memo(({ isInitializing, isSocketDisconnected, currentProject, currentBoard, currentCard }) => {
   const [t] = useTranslation();
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const mainTitle = '4ga Boards';
+  const mainTitle = 'LRS Boards';
 
   useEffect(() => {
     let title = `${mainTitle}`;

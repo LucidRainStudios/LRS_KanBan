@@ -15,8 +15,6 @@
   </br>
 </div>
 
-![4gaBoards_gif](https://github.com/user-attachments/assets/4724f221-9b07-4f01-9d7a-3348a11a029e)
-
 ## Features
 
 - **Dark Mode**

@@ -4,7 +4,7 @@ import { Link } from 'react-router';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 
-import logo from '../../assets/images/4gaboardsLogo128w-white.png';
+import logo from '../../assets/images/LRS_BoardBanner_Small.png';
 import Paths from '../../constants/Paths';
 import User from '../User';
 import UserPopup from '../UserPopup';
@@ -47,7 +47,7 @@ const Header = React.memo(({ path, project, user, notifications, isLogouting, ca
     <div className={s.wrapper}>
       <Link to={Paths.ROOT} className={s.logo}>
         <Button style={ButtonStyle.HeaderLogo} title={t('common.dashboard')}>
-          <img src={logo} alt="4ga Boards" className={s.logoIcon} />
+          <img src={logo} alt="LRS Boards" className={s.logoIcon} />
         </Button>
       </Link>
       <div className={s.title} title={getPageHeaderTitle()}>

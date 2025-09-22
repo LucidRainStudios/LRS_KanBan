@@ -21,6 +21,7 @@
     "server:console": "npm run console --prefix server",
     "server:db:init": "npm run db:init --prefix server",
     "server:db:migrate": "npm run db:migrate --prefix server",
+    "server:db:rollback_one": "npm run db:rollback_one --prefix server",
     "server:db:rollback": "npm run db:rollback --prefix server",
     "server:db:migration_make": "npm run db:migration_make --prefix server",
     "server:db:seed": "npm run db:seed --prefix server",
@@ -47,11 +48,11 @@
   "dependencies": {
     "concurrently": "^9.2.1",
     "husky": "^9.1.7",
-    "lint-staged": "^16.1.6"
+    "lint-staged": "^16.2.0"
   },
   "devDependencies": {
     "confusing-browser-globals": "^1.0.11",
-    "eslint": "^9.35.0",
+    "eslint": "^9.36.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-prettier": "^5.5.4",
