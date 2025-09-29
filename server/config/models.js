@@ -33,8 +33,9 @@ module.exports.models = {
    *
    */
 
-  // schema: true,
-
+  datastore: 'default',
+  migrate: 'alter',     // <— dev only
+  schema: true,         // optional but helps keep columns in sync
   /**
    *
    * How and whether Sails will attempt to automatically rebuild the
@@ -50,7 +51,7 @@ module.exports.models = {
    *
    */
 
-  migrate: 'safe',
+  // migrate: 'safe',
 
   /**
    *

@@ -18,8 +18,10 @@
   "dependencies": {
     "@azure/msal-node": "^3.7.4",
     "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
     "dotenv": "^17.2.2",
     "dotenv-cli": "^10.0.0",
+    "express": "^5.1.0",
     "fast-csv": "^5.0.5",
     "filenamify": "^7.0.0",
     "jsonwebtoken": "^9.0.2",
@@ -31,6 +33,7 @@
     "passport-github": "^1.1.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-strategy": "^1.0.0",
+    "pg": "^8.16.3",
     "rimraf": "^6.0.1",
     "sails": "^1.5.15",
     "sails-hook-orm": "^4.0.3",

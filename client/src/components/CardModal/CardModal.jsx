@@ -36,6 +36,8 @@ const CardModal = React.memo(
     id,
     description,
     dueDate,
+    priority,
+    effort,
     timer,
     isSubscribed,
     isActivitiesFetching,
@@ -793,6 +795,8 @@ CardModal.propTypes = {
   id: PropTypes.string.isRequired,
   description: PropTypes.string,
   dueDate: PropTypes.instanceOf(Date),
+  priority: PropTypes.oneOf(['low', 'medium', 'high']),
+  effort: PropTypes.number,
   timer: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   isSubscribed: PropTypes.bool.isRequired,
   isActivitiesFetching: PropTypes.bool.isRequired,
@@ -868,6 +872,8 @@ CardModal.propTypes = {
 CardModal.defaultProps = {
   description: undefined,
   dueDate: undefined,
+  priority: undefined,
+  effort: undefined,
   timer: undefined,
   createdAt: undefined,
   createdBy: undefined,

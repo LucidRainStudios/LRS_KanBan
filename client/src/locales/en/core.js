@@ -1,7 +1,11 @@
+import dateFns from 'date-fns/locale/en-US';
+
 export default {
+  dateFns,
+
   format: {
-    date: 'd.MM.yyyy',
-    time: 'HH:mm',
+    date: 'MM/dd/yyyy',
+    time: 'p',
     dateTime: '$t(format:date) $t(format:time)',
   },
 
@@ -150,7 +154,7 @@ export default {
       docs: 'Documentation',
       done: 'Done',
       dropFileToUpload: 'Drop files to upload',
-      dueDate_title: 'Due Date',
+      dueDate_title: 'Due date',
       dueDateSummary: 'The closest due date for unfinished task:',
       duplicateTask: 'Duplicate Task',
       editAttachment_title: 'Edit Attachment',

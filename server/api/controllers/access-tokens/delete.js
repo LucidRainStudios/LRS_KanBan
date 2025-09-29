@@ -1,13 +1,26 @@
-module.exports = {
-  async fn() {
-    const { accessToken } = this.req;
+const Errors = {
+  NOT_ENOUGH_RIGHTS: {
+    notEnoughRights: 'Not enough rights',
+  },
+};
 
-    await Session.updateOne({
-      accessToken,
-      deletedAt: null,
-    }).set({
-      deletedAt: new Date().toUTCString(),
+module.exports = {
+  exits: {
+    notEnoughRights: {
+      responseType: 'forbidden',
+    },
+  },
+
+  async fn() {
+    const { currentUser } = this.req;
+
+    const accessToken = await AccessToken.destroyOne({
+      userId: currentUser.id,
     });
+
+    if (!accessToken) {
+      throw Errors.NOT_ENOUGH_RIGHTS;
+    }
 
     return {
       item: accessToken,

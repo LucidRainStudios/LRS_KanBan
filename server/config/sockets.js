@@ -66,4 +66,8 @@ module.exports.sockets = {
    *
    */
   // grant3rdPartyCookie: true,
+    onlyAllowOrigins: ['http://localhost:1337'],
+  // Make socket.io mount at /ws so it matches your client:
+    path: '/ws',
+    transports: ['websocket','polling'],
 };

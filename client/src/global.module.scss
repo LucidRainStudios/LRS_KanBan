@@ -1,3 +1,17 @@
+:root {
+  // ...existing CSS variables...
+
+  /* Priority colors */
+  --priorityHigh: #d73a49;
+  --priorityMedium: #fb8500;
+  --priorityLow: #28a745;
+
+  /* Effort color */
+  --effortColor: #ffc107;
+
+  // ...existing CSS variables...
+}
+
 :global(#app) {
   .controls {
     display: flex;

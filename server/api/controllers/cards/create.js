@@ -8,26 +8,8 @@ const Errors = {
     listNotFound: 'List not found',
   },
   POSITION_MUST_BE_PRESENT: {
-    positionMustBePresent: 'Position must be present',
+    positionMustBeInValues: 'Position must be present in values',
   },
-};
-
-const dueDateValidator = (value) => moment(value, moment.ISO_8601, true).isValid();
-
-const timerValidator = (value) => {
-  if (!_.isPlainObject(value) || _.size(value) !== 2) {
-    return false;
-  }
-
-  if (!_.isNull(value.startedAt) && _.isString(value.startedAt) && !moment(value.startedAt, moment.ISO_8601, true).isValid()) {
-    return false;
-  }
-
-  if (!_.isFinite(value.total)) {
-    return false;
-  }
-
-  return true;
 };
 
 module.exports = {
@@ -37,25 +19,22 @@ module.exports = {
       regex: /^[0-9]+$/,
       required: true,
     },
-    position: {
-      type: 'number',
-    },
     name: {
       type: 'string',
       required: true,
     },
-    description: {
+    priority: {
       type: 'string',
-      isNotEmptyString: true,
-      allowNull: true,
+      isIn: ['low', 'medium', 'high'],
     },
-    dueDate: {
-      type: 'string',
-      custom: dueDateValidator,
+    effort: {
+      type: 'number',
+      min: 0,
+      max: 999,
     },
-    timer: {
-      type: 'json',
-      custom: timerValidator,
+    position: {
+      type: 'number',
+      required: true,
     },
   },
 
@@ -66,7 +45,7 @@ module.exports = {
     listNotFound: {
       responseType: 'notFound',
     },
-    positionMustBePresent: {
+    positionMustBeInValues: {
       responseType: 'unprocessableEntity',
     },
   },
@@ -89,14 +68,13 @@ module.exports = {
       throw Errors.NOT_ENOUGH_RIGHTS;
     }
 
-    const values = _.pick(inputs, ['position', 'name', 'description', 'dueDate', 'timer']);
+    const values = _.pick(inputs, ['name', 'priority', 'effort', 'position']);
 
     const card = await sails.helpers.cards.createOne
       .with({
         values: {
           ...values,
           list,
-          commentCount: 0,
         },
         currentUser,
         request: this.req,

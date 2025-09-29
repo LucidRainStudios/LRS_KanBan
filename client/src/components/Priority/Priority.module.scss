@@ -1,0 +1,74 @@
+:global(#app) {
+  .button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+    outline: none;
+    padding: 0;
+  }
+
+  .wrapper {
+    border: none;
+    border-radius: 3px;
+    display: inline-flex;
+    align-items: center;
+    outline: none;
+    text-align: left;
+    vertical-align: top;
+    padding: 2px 4px;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 14px;
+  }
+
+  .icon {
+    margin-right: 2px;
+  }
+
+  .text {
+    margin-left: 2px;
+  }
+
+  .wrapperHoverable {
+    cursor: pointer;
+
+    &:hover {
+      filter: brightness(85%);
+    }
+  }
+
+  /* Priority colors */
+  .priorityHigh {
+    color: var(--priorityHigh, #d73a49);
+    fill: var(--priorityHigh, #d73a49);
+    background-color: rgba(215, 58, 73, 0.1);
+  }
+
+  .priorityMedium {
+    color: var(--priorityMedium, #fb8500);
+    fill: var(--priorityMedium, #fb8500);
+    background-color: rgba(251, 133, 0, 0.1);
+  }
+
+  .priorityLow {
+    color: var(--priorityLow, #28a745);
+    fill: var(--priorityLow, #28a745);
+    background-color: rgba(40, 167, 69, 0.1);
+  }
+
+  /* Variants */
+  .wrapperCard {
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 14px;
+    padding: 1px 3px;
+  }
+
+  .wrapperCardModal {
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 28px;
+    padding: 4px 8px;
+  }
+}

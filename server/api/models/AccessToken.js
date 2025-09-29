@@ -1,5 +1,5 @@
 /**
- * User.js
+ * AccessToken.js
  *
  * @description :: A model definition represents a database table/collection.
  * @docs        :: https://sailsjs.com/docs/concepts/models-and-orm/models
@@ -11,27 +11,6 @@ module.exports = {
     //  ╠═╝╠╦╝║║║║║ ║ ║╚╗╔╝║╣ ╚═╗
     //  ╩  ╩╚═╩╩ ╩╩ ╩ ╩ ╚╝ ╚═╝╚═╝
 
-    email: {
-      type: 'string',
-      required: true,
-      unique: true,
-      isEmail: true,
-    },
-    username: {
-      type: 'string',
-    },
-    name: {
-      type: 'string',
-    },
-    password: {
-      type: 'string',
-    },
-    isAdmin: {
-      type: 'boolean',
-      defaultsTo: false,
-      columnName: 'is_admin',
-    },
-
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗
     //  ║╣ ║║║╠╩╗║╣  ║║╚═╗
     //  ╚═╝╩ ╩╚═╝╚═╝═╩╝╚═╝
@@ -40,11 +19,12 @@ module.exports = {
     //  ╠═╣╚═╗╚═╗║ ║║  ║╠═╣ ║ ║║ ║║║║╚═╗
     //  ╩ ╩╚═╝╚═╝╚═╝╚═╝╩╩ ╩ ╩ ╩╚═╝╝╚╝╚═╝
 
-    accessTokens: {
-      collection: 'AccessToken',
-      via: 'userId',
+    userId: {
+      model: 'User',
+      required: true,
+      columnName: 'user_id',
     },
   },
 
-  tableName: 'user',
+  tableName: 'access_token',
 };

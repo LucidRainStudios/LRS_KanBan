@@ -47,6 +47,6 @@ module.exports.datastores = {
      */
 
     adapter: 'sails-postgresql',
-    url: process.env.DATABASE_URL,
+    url: process.env.DATABASE_URL || 'postgresql://localhost:5432/lrs_kanban',
   },
 };

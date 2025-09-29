@@ -1,0 +1,58 @@
+:global(#app) {
+  .button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+    outline: none;
+    padding: 0;
+  }
+
+  .wrapper {
+    border: none;
+    border-radius: 3px;
+    display: inline-flex;
+    align-items: center;
+    outline: none;
+    text-align: left;
+    vertical-align: top;
+    padding: 2px 4px;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 14px;
+    background-color: rgba(255, 193, 7, 0.1);
+    color: var(--effortColor, #ffc107);
+  }
+
+  .icon {
+    margin-right: 2px;
+    fill: var(--effortColor, #ffc107);
+  }
+
+  .text {
+    margin-left: 2px;
+  }
+
+  .wrapperHoverable {
+    cursor: pointer;
+
+    &:hover {
+      filter: brightness(85%);
+    }
+  }
+
+  /* Variants */
+  .wrapperCard {
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 14px;
+    padding: 1px 3px;
+  }
+
+  .wrapperCardModal {
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 28px;
+    padding: 4px 8px;
+  }
+}

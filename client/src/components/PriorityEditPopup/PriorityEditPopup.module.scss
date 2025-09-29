@@ -1,0 +1,94 @@
+:global(#app) {
+  .menu {
+    background: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 8px;
+    min-width: 180px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .menuHeader {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 8px;
+    padding: 4px 8px;
+  }
+
+  .menuContent {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .priorityButton {
+    background: transparent;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 3px;
+    display: block;
+    width: 100%;
+    text-align: left;
+
+    &:hover {
+      background: var(--background-color-hover);
+    }
+  }
+
+  .priorityItem {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .priorityColor {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .priorityHigh {
+    background-color: rgba(215, 58, 73, 0.2);
+    border: 1px solid #d73a49;
+  }
+
+  .priorityMedium {
+    background-color: rgba(251, 133, 0, 0.2);
+    border: 1px solid #fb8500;
+  }
+
+  .priorityLow {
+    background-color: rgba(40, 167, 69, 0.2);
+    border: 1px solid #28a745;
+  }
+
+  .priorityText {
+    font-size: 14px;
+    color: var(--text-color);
+  }
+
+  .checkmark {
+    margin-left: auto;
+    color: var(--primary-color);
+    font-weight: bold;
+  }
+
+  .removeButton {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 3px;
+    margin-top: 8px;
+    font-size: 14px;
+    color: var(--text-color-secondary);
+
+    &:hover {
+      background: var(--background-color-hover);
+    }
+  }
+}

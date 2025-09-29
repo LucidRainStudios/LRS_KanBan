@@ -14,6 +14,8 @@ export default class extends BaseModel {
     name: attr(),
     description: attr(),
     dueDate: attr(),
+    priority: attr(),
+    effort: attr(),
     timer: attr(),
     commentCount: attr({
       getDefault: () => 0,

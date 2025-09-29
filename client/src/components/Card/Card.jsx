@@ -10,9 +10,13 @@ import { startTimer, stopTimer } from '../../utils/timer';
 import { extractFirstLikelyUrl } from '../../utils/url';
 import DueDate from '../DueDate';
 import DueDateEditPopup from '../DueDateEditPopup';
+import Effort from '../Effort';
+import EffortEditPopup from '../EffortEditPopup';
 import Label from '../Label';
 import LabelsPopup from '../LabelsPopup';
 import MembershipsPopup from '../MembershipsPopup';
+import Priority from '../Priority';
+import PriorityEditPopup from '../PriorityEditPopup';
 import Tasks from '../Tasks';
 import Timer from '../Timer';
 import User from '../User';
@@ -39,6 +43,8 @@ const Card = React.memo(
     users,
     labels,
     tasks,
+    effort,
+    priority,
     description,
     attachmentsCount,
     commentCount,
@@ -172,6 +178,24 @@ const Card = React.memo(
       [onUpdate],
     );
 
+    const handlePriorityUpdate = useCallback(
+      (newPriority) => {
+        onUpdate({
+          priority: newPriority,
+        });
+      },
+      [onUpdate],
+    );
+
+    const handleEffortUpdate = useCallback(
+      (newEffort) => {
+        onUpdate({
+          effort: newEffort,
+        });
+      },
+      [onUpdate],
+    );
+
     const visibleMembersCount = 3;
     const labelIds = labels.map((label) => label.id);
     const link = extractFirstLikelyUrl(name);
@@ -237,8 +261,22 @@ const Card = React.memo(
               onMouseLeaveTasks={handleTasksMouseOut}
             />
           )}
-          {(description || attachmentsCount > 0 || commentCount > 0 || dueDate || timer) && (
+          {(effort || priority || description || attachmentsCount > 0 || commentCount > 0 || dueDate || timer) && (
             <span className={s.attachments}>
+              {effort && (
+                <span className={clsx(s.attachment, s.attachmentLeft)}>
+                  <EffortEditPopup defaultValue={effort} onUpdate={handleEffortUpdate} disabled={!canEdit}>
+                    <Effort value={effort} variant="card" isClickable={canEdit} />
+                  </EffortEditPopup>
+                </span>
+              )}
+              {priority && (
+                <span className={clsx(s.attachment, s.attachmentLeft)}>
+                  <PriorityEditPopup defaultValue={priority} onUpdate={handlePriorityUpdate} disabled={!canEdit}>
+                    <Priority value={priority} variant="card" isClickable={canEdit} />
+                  </PriorityEditPopup>
+                </span>
+              )}
               {description && (
                 <span className={clsx(s.attachment, s.attachmentLeft)}>
                   <Icon type={IconType.BarsStaggered} size={IconSize.Size14} className={s.detailsIcon} title={t('common.detailsDescription')} />
@@ -328,6 +366,8 @@ const Card = React.memo(
                             name,
                             dueDate,
                             timer,
+                            effort,
+                            priority,
                             boardId,
                             listId,
                             projectId,
@@ -401,6 +441,8 @@ Card.propTypes = {
   users: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   labels: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   tasks: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
+  effort: PropTypes.number,
+  priority: PropTypes.oneOf(['low', 'medium', 'high']),
   description: PropTypes.string,
   attachmentsCount: PropTypes.number.isRequired,
   commentCount: PropTypes.number.isRequired,
@@ -445,6 +487,8 @@ Card.defaultProps = {
   dueDate: undefined,
   timer: undefined,
   coverUrl: undefined,
+  effort: undefined,
+  priority: undefined,
   description: undefined,
   createdAt: undefined,
   createdBy: undefined,

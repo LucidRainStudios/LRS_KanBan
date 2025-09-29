@@ -8,50 +8,40 @@
  * https://sailsjs.com/config/custom
  */
 
-const path = require('path');
-const sails = require('sails');
-
 module.exports.custom = {
-  baseUrl: process.env.BASE_URL,
-  clientUrl: process.env.CLIENT_URL || (process.env.NODE_ENV === 'production' ? process.env.BASE_URL : 'http://localhost:3000'),
+  // Base URL for the application
+  baseUrl: process.env.BASE_URL || 'http://localhost:1337',
 
-  tokenExpiresIn: parseInt(process.env.TOKEN_EXPIRES_IN, 10) || 365,
+  // Email settings
+  mailgunDomain: process.env.MAILGUN_DOMAIN || '',
+  mailgunSecret: process.env.MAILGUN_SECRET || '',
 
-  userAvatarsPath: path.join(sails.config.paths.public, 'user-avatars'),
-  fullUserAvatarsPath: path.join(sails.config.appPath, 'public', 'user-avatars'),
-  userAvatarsUrl: `${process.env.BASE_URL}/user-avatars`,
+  // File upload settings
+  maxFileSize: 10 * 1024 * 1024, // 10MB
 
-  projectBackgroundImagesPath: path.join(sails.config.paths.public, 'project-background-images'),
-  fullProjectBackgroundImagesPath: path.join(sails.config.appPath, 'public', 'project-background-images'),
-  projectBackgroundImagesUrl: `${process.env.BASE_URL}/project-background-images`,
+  // Position gap for ordering
+  positionGap: 65536,
 
-  attachmentsPath: path.join(sails.config.appPath, 'private', 'attachments'),
-  attachmentsUrl: `${process.env.BASE_URL}/attachments`,
+  // OAuth settings
+  googleClientId: process.env.GOOGLE_CLIENT_ID || '',
+  googleClientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
 
-  exportsPath: path.join(sails.config.appPath, 'private', 'exports'),
-  exportsUrl: `${process.env.BASE_URL}/exports`,
+  githubClientId: process.env.GITHUB_CLIENT_ID || '',
+  githubClientSecret: process.env.GITHUB_CLIENT_SECRET || '',
 
-  gettingStartedProjectsPath: path.join(sails.config.appPath, 'public', 'getting-started-project'),
+  microsoftClientId: process.env.MICROSOFT_CLIENT_ID || '',
+  microsoftClientSecret: process.env.MICROSOFT_CLIENT_SECRET || '',
 
-  ssoUrls: {
-    google: `${process.env.BASE_URL}/auth/google`,
-    github: `${process.env.BASE_URL}/auth/github`,
-    microsoft: `${process.env.BASE_URL}/auth/microsoft`,
-  },
-  ssoClientIds: {
-    google: process.env.GOOGLE_CLIENT_ID,
-    github: process.env.GITHUB_CLIENT_ID,
-    microsoft: process.env.MICROSOFT_CLIENT_ID,
-  },
-  ssoAvailable: {
-    google: !!process.env.GOOGLE_CLIENT_ID,
-    github: !!process.env.GITHUB_CLIENT_ID,
-    microsoft: !!process.env.MICROSOFT_CLIENT_ID,
-  },
+  // JWT settings
+  jwtSecret: process.env.JWT_SECRET || 'your-jwt-secret-key',
 
-  demoMode: process.env.DEMO_MODE === 'true',
+  // Session settings
+  sessionSecret: process.env.SESSION_SECRET || 'your-session-secret-key',
 
-  positionGap: 65535,
-  requiredPasswordStrength: 2,
-  cacheMaxAge: 900,
+  // Default admin user
+  defaultAdminEmail: process.env.DEFAULT_ADMIN_EMAIL || 'admin@localhost',
+  defaultAdminPassword: process.env.DEFAULT_ADMIN_PASSWORD || 'admin123',
+
+  // Database settings
+  databaseUrl: process.env.DATABASE_URL || 'postgresql://localhost:5432/lrs_kanban',
 };

@@ -104,6 +104,8 @@ module.exports = {
             name: trelloCard.name,
             description: trelloCard.desc || null,
             dueDate: trelloCard.due,
+            priority: null, // Trello doesn't have priority, set to null
+            effort: null, // Trello doesn't have effort, set to null
             commentCount: 0,
           }).fetch();
 

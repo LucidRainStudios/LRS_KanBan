@@ -28,6 +28,15 @@ module.exports = {
       type: 'ref',
       columnName: 'due_date',
     },
+    priority: {
+      type: 'string',
+      isIn: ['low', 'medium', 'high'],
+      allowNull: true,
+    },
+    effort: {
+      type: 'number',
+      allowNull: true,
+    },
     timer: {
       type: 'json',
     },

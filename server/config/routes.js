@@ -9,6 +9,11 @@
  */
 
 module.exports.routes = {
+  'GET /': { action: 'view-homepage' },
+  'GET /db-health': { action: 'db-health' },
+  'POST /auth/login': 'AuthController.login',
+  'POST /auth/logout': 'AuthController.logout',
+
   'GET /auth/google': 'AuthController.google',
   'GET /auth/google/callback': 'AuthController.googleCallback',
   'GET /auth/github': 'AuthController.github',
