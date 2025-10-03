@@ -11,9 +11,6 @@ module.exports = {
       required: true,
       regex: /^[0-9]+(,[0-9]+)*$/,
     },
-    isRead: {
-      type: 'boolean',
-    },
   },
 
   exits: {
@@ -26,17 +23,15 @@ module.exports = {
     const { currentUser } = this.req;
     const ids = inputs.ids.split(',');
 
-    const notificationsToUpdate = await Notification.find({ id: ids });
-    notificationsToUpdate.forEach((notification) => {
+    const notificationsToDelete = await Notification.find({ id: ids });
+    notificationsToDelete.forEach((notification) => {
       if (notification.userId !== currentUser.id) {
         throw Errors.INSUFFICIENT_PERMISSIONS;
       }
     });
 
-    const values = _.pick(inputs, ['isRead']);
-
     const notifications = await sails.helpers.notifications.updateMany.with({
-      values,
+      values: { deletedAt: new Date() },
       recordsOrIds: ids,
       currentUser,
       request: this.req,

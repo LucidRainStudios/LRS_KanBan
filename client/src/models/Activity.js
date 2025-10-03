@@ -9,6 +9,7 @@ export default class extends BaseModel {
   static fields = {
     id: attr(),
     type: attr(),
+    scope: attr(),
     data: attr(),
     isInCard: attr({
       getDefault: () => true,
@@ -16,6 +17,16 @@ export default class extends BaseModel {
     cardId: fk({
       to: 'Card',
       as: 'card',
+      relatedName: 'activities',
+    }),
+    boardId: fk({
+      to: 'Board',
+      as: 'board',
+      relatedName: 'activities',
+    }),
+    projectId: fk({
+      to: 'Project',
+      as: 'project',
       relatedName: 'activities',
     }),
     userId: fk({

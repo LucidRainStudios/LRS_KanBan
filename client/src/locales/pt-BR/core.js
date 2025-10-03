@@ -81,7 +81,6 @@ export default {
       card: 'cartão',
       cardActions_title: 'Ações do Cartão',
       cardNotFound_title: 'Cartão Não Encontrado',
-      cardOrActionAreDeleted: 'Cartão ou ação foram excluídos',
       cards_one: '{{count}} cartão',
       cards_other: '{{count}} cartões',
       cards_title_one: '{{count}} Cartão',
@@ -409,6 +408,10 @@ export default {
       cardDuplicateShort: 'Duplicou este cartão em <1>{{list}}</1>',
       cardMove: 'Moveu <0>{{card}}</0> de <1>{{fromList}}</1> para <2>{{toList}}</2>',
       cardMoveShort: 'Moveu este cartão de <1>{{fromList}}</1> para <2>{{toList}}</2>',
+      cardTransferProject: 'Transferido <0>{{card}}</0> de <1>{{fromList}}</1> em <2>{{fromBoard}}</2> (<5>{{fromProject}}</5>) para <3>{{toList}}</3> em <4>{{toBoard}}</4> (<6>{{toProject}}</6>)',
+      cardTransferProjectShort: 'Este cartão foi transferido de <1>{{fromList}}</1> em <2>{{fromBoard}}</2> (<5>{{fromProject}}</5>) para <3>{{toList}}</3> em <4>{{toBoard}}</4> (<6>{{toProject}}</6>)',
+      cardTransferBoard: 'Transferido <0>{{card}}</0> dentro do projeto de <1>{{fromList}}</1> em <2>{{fromBoard}}</2> (<5>{{fromProject}}</5>) para <3>{{toList}}</3> em <4>{{toBoard}}</4> (<6>{{toProject}}</6>)', // eslint-disable-line prettier/prettier
+      cardTransferBoardShort: 'Este cartão foi transferido dentro do projeto de <1>{{fromList}}</1> em <2>{{fromBoard}}</2> (<5>{{fromProject}}</5>) para <3>{{toList}}</3> em <4>{{toBoard}}</4> (<6>{{toProject}}</6>)', // eslint-disable-line prettier/prettier
       cardDelete: 'Excluído <0>{{card}}</0> de <1>{{list}}</1>',
       cardDeleteShort: 'Este cartão foi excluído de <1>{{list}}</1>',
       cardUpdateName: 'Nome atualizado de <1>{{prevCard}}</1> para <0>{{card}}</0>',
@@ -489,6 +492,12 @@ export default {
       cardLabelAddShort: 'Adicionada etiqueta <1>{{label}}</1>',
       cardLabelRemove: 'Removida etiqueta <1>{{label}}</1> de <0>{{card}}</0>',
       cardLabelRemoveShort: 'Removida etiqueta <1>{{label}}</1>',
+      deletedCard: 'Cartão excluído: {{card}}',
+      noBoardAvailable: 'Nenhuma tabela disponível',
+      noProjectAvailable: 'Nenhum projeto disponível',
+      markAsRead: 'Marcar como lido',
+      markAsUnread: 'Marcar como não lido',
+      delete: 'Excluir',
     },
 
     action: {

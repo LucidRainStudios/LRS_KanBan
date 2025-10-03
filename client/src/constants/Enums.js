@@ -8,6 +8,17 @@ export const BoardMembershipRoles = {
   VIEWER: 'viewer',
 };
 
+export const ActivityScopes = {
+  INSTANCE: 'instance',
+  USER: 'user',
+  PROJECT: 'project',
+  BOARD: 'board',
+  LIST: 'list',
+  CARD: 'card',
+  TASK: 'task',
+  COMMENT: 'comment',
+};
+
 export const ActivityTypes = {
   // TODO Add all activity types
 
@@ -16,7 +27,7 @@ export const ActivityTypes = {
   CARD_DUPLICATE: 'cardDuplicate',
   CARD_UPDATE: 'cardUpdate',
   CARD_MOVE: 'cardMove',
-  // CARD_TRANSFER: 'cardTransfer',
+  CARD_TRANSFER: 'cardTransfer',
   CARD_DELETE: 'cardDelete',
 
   /* CARD User Activities */

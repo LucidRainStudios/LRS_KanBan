@@ -25,6 +25,7 @@ export default class extends BaseModel {
       to: 'Activity',
       as: 'activity',
     }),
+    deletedAt: attr(),
   };
 
   static reducer({ type, payload }, Notification) {
@@ -32,9 +33,14 @@ export default class extends BaseModel {
       case ActionTypes.LOCATION_CHANGE_HANDLE:
       case ActionTypes.PROJECT_MANAGER_CREATE_HANDLE:
       case ActionTypes.BOARD_MEMBERSHIP_CREATE_HANDLE:
-        if (payload.deletedNotifications) {
-          payload.deletedNotifications.forEach((notification) => {
-            Notification.withId(notification.id).deleteWithRelated();
+        if (payload.notifications) {
+          payload.notifications.forEach((notification) => {
+            const n = Notification.withId(notification.id);
+            if (n) {
+              n.update(notification);
+            } else {
+              Notification.upsert(notification);
+            }
           });
         }
 
@@ -54,6 +60,24 @@ export default class extends BaseModel {
 
         break;
       case ActionTypes.NOTIFICATION_CREATE_HANDLE:
+        Notification.upsert(payload.notification);
+
+        break;
+      case ActionTypes.NOTIFICATION_UPDATE: {
+        const notification = Notification.withId(payload.id);
+
+        if (notification) {
+          notification.update(payload.data);
+
+          // TODO hacky way to trigger re-render so the notification is counted as unread
+          Notification.upsert({ id: 'local:notification_reload', cardId: notification.cardId, userId: notification.userId });
+          Notification.withId('local:notification_reload').delete();
+        }
+
+        break;
+      }
+      case ActionTypes.NOTIFICATION_UPDATE__SUCCESS:
+      case ActionTypes.NOTIFICATION_UPDATE_HANDLE:
         Notification.upsert(payload.notification);
 
         break;

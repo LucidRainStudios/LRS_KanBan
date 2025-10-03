@@ -5,6 +5,17 @@
  * @docs        :: https://sailsjs.com/docs/concepts/models-and-orm/models
  */
 
+const Scopes = {
+  INSTANCE: 'instance',
+  USER: 'user',
+  PROJECT: 'project',
+  BOARD: 'board',
+  LIST: 'list',
+  CARD: 'card',
+  TASK: 'task',
+  COMMENT: 'comment',
+};
+
 const Types = {
   // TODO Add all activity types
 
@@ -13,7 +24,7 @@ const Types = {
   CARD_DUPLICATE: 'cardDuplicate',
   CARD_UPDATE: 'cardUpdate',
   CARD_MOVE: 'cardMove',
-  // CARD_TRANSFER: 'cardTransfer',
+  CARD_TRANSFER: 'cardTransfer',
   CARD_DELETE: 'cardDelete',
 
   /* CARD User Activities */
@@ -48,6 +59,7 @@ const Types = {
 };
 
 module.exports = {
+  Scopes,
   Types,
 
   attributes: {
@@ -55,6 +67,11 @@ module.exports = {
     //  ╠═╝╠╦╝║║║║║ ║ ║╚╗╔╝║╣ ╚═╗
     //  ╩  ╩╚═╩╩ ╩╩ ╩ ╩ ╚╝ ╚═╝╚═╝
 
+    scope: {
+      type: 'string',
+      isIn: Object.values(Scopes),
+      required: true,
+    },
     type: {
       type: 'string',
       isIn: Object.values(Types),
@@ -77,6 +94,16 @@ module.exports = {
       model: 'Card',
       required: true,
       columnName: 'card_id',
+    },
+    boardId: {
+      model: 'Board',
+      required: true,
+      columnName: 'board_id',
+    },
+    projectId: {
+      model: 'Project',
+      required: true,
+      columnName: 'project_id',
     },
     userId: {
       model: 'User',

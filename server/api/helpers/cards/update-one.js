@@ -145,10 +145,19 @@ module.exports = {
         });
 
         prevLabels = await sails.helpers.cards.getLabels(inputs.record.id);
+        const prevCardLabels = await sails.helpers.cards.getCardLabels(inputs.record.id);
 
         await CardLabel.destroy({
           cardId: inputs.record.id,
         });
+
+        await Promise.all(
+          prevCardLabels.map(async (cardLabel) =>
+            sails.sockets.broadcast(`board:${prevCard.boardId}`, 'cardLabelDelete', {
+              item: cardLabel,
+            }),
+          ),
+        );
 
         await sails.helpers.lists.updateMeta.with({ id: prevCard.listId, currentUser, skipMetaUpdate });
       }
@@ -190,15 +199,18 @@ module.exports = {
           }),
         );
 
+        const newLabels = await Label.find(labelIds);
         await Promise.all(
-          labelIds.map(async (labelId) =>
-            CardLabel.create({
-              labelId,
-              cardId: card.id,
-              createdById: currentUser.id,
-            })
-              .tolerate('E_UNIQUE')
-              .fetch(),
+          newLabels.map(async (label) =>
+            sails.helpers.cardLabels.createOne.with({
+              values: {
+                card,
+                label,
+              },
+              currentUser,
+              skipActions: true,
+              skipMetaUpdate: true,
+            }),
           ),
         );
 
@@ -230,10 +242,39 @@ module.exports = {
         );
       }
 
-      if (!values.board && values.list) {
+      if (values.board && values.list) {
+        const boardFrom = await Board.findOne(prevCard.boardId);
+        const boardTo = await Board.findOne(card.boardId);
+        const projectFrom = await Project.findOne(boardFrom.projectId);
+        const projectTo = await Project.findOne(boardTo.projectId);
+
         await sails.helpers.actions.createOne.with({
           values: {
             card,
+            scope: Action.Scopes.CARD,
+            type: Action.Types.CARD_TRANSFER,
+            data: {
+              listFromId: inputs.list.id,
+              listFromName: inputs.list.name,
+              listToId: values.list.id,
+              listToName: values.list.name,
+              boardFromId: boardFrom.id,
+              boardFromName: boardFrom.name,
+              boardToId: boardTo.id,
+              boardToName: boardTo.name,
+              projectFromId: projectFrom.id,
+              projectFromName: projectFrom.name,
+              projectToId: projectTo.id,
+              projectToName: projectTo.name,
+            },
+          },
+          currentUser,
+        });
+      } else if (!values.board && values.list) {
+        await sails.helpers.actions.createOne.with({
+          values: {
+            card,
+            scope: Action.Scopes.CARD,
             type: Action.Types.CARD_MOVE,
             data: {
               listFromId: inputs.list.id,
@@ -273,6 +314,7 @@ module.exports = {
           await sails.helpers.actions.createOne.with({
             values: {
               card,
+              scope: Action.Scopes.CARD,
               type: Action.Types.CARD_UPDATE,
               data,
             },

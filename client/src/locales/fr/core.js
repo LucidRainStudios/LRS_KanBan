@@ -85,7 +85,6 @@ export default {
       card: 'carte',
       cardActions_title: 'Actions sur la carte',
       cardNotFound_title: 'Carte non trouvée',
-      cardOrActionAreDeleted: "La carte ou l'action sont supprimées",
       cards_many: '{{count}} cartes',
       cards_one: '{{count}} carte',
       cards_other: '{{count}} cartes',
@@ -425,6 +424,10 @@ export default {
       cardDuplicateShort: 'Dupliqué cette carte dans <1>{{list}}</1>',
       cardMove: 'Déplacé <0>{{card}}</0> de <1>{{fromList}}</1> vers <2>{{toList}}</2>',
       cardMoveShort: 'Déplacé cette carte de <1>{{fromList}}</1> vers <2>{{toList}}</2>',
+      cardTransferProject: 'Carte <0>{{card}}</0> transférée de <1>{{fromList}}</1> dans <2>{{fromBoard}}</2> (<5>{{fromProject}}</5>) vers <3>{{toList}}</3> dans <4>{{toBoard}}</4> (<6>{{toProject}}</6>)',
+      cardTransferProjectShort: 'Cette carte a été transférée de <1>{{fromList}}</1> dans <2>{{fromBoard}}</2> (<5>{{fromProject}}</5>) vers <3>{{toList}}</3> dans <4>{{toBoard}}</4> (<6>{{toProject}}</6>)',
+      cardTransferBoard: 'Carte <0>{{card}}</0> transférée dans le projet de <1>{{fromList}}</1> dans <2>{{fromBoard}}</2> (<5>{{fromProject}}</5>) vers <3>{{toList}}</3> dans <4>{{toBoard}}</4> (<6>{{toProject}}</6>)', // eslint-disable-line prettier/prettier
+      cardTransferBoardShort: 'Cette carte a été transférée dans le projet de <1>{{fromList}}</1> dans <2>{{fromBoard}}</2> (<5>{{fromProject}}</5>) vers <3>{{toList}}</3> dans <4>{{toBoard}}</4> (<6>{{toProject}}</6>)', // eslint-disable-line prettier/prettier
       cardDelete: 'Supprimé <0>{{card}}</0> de <1>{{list}}</1>',
       cardDeleteShort: 'Cette carte a été supprimée de <1>{{list}}</1>',
       cardUpdateName: 'Nom mis à jour de <1>{{prevCard}}</1> à <0>{{card}}</0>',
@@ -505,6 +508,12 @@ export default {
       cardLabelAddShort: "Ajouté l'étiquette <1>{{label}}</1>",
       cardLabelRemove: "Supprimé l'étiquette <1>{{label}}</1> de <0>{{card}}</0>",
       cardLabelRemoveShort: "Supprimé l'étiquette <1>{{label}}</1>",
+      deletedCard: 'Carte supprimée : {{card}}',
+      noBoardAvailable: 'Aucune tablica disponible',
+      noProjectAvailable: 'Aucun projet disponible',
+      markAsRead: 'Marquer comme lu',
+      markAsUnread: 'Marquer comme non lu',
+      delete: 'Supprimer',
     },
 
     action: {
