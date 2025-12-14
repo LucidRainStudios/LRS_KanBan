@@ -17,6 +17,7 @@ export const ActivityScopes = {
   CARD: 'card',
   TASK: 'task',
   COMMENT: 'comment',
+  ATTACHMENT: 'attachment',
 };
 
 export const ActivityTypes = {
@@ -75,9 +76,20 @@ export const SsoTypes = {
   GOOGLE: 'google',
   GITHUB: 'github',
   MICROSOFT: 'microsoft',
+  OIDC: 'oidc',
 };
 
 export const PreferredFonts = {
   DEFAULT: 'default',
   MONOSPACE: 'monospace',
+};
+
+export const Themes = {
+  DEFAULT: 'default',
+  GITHUB_DARK: 'github-dark',
+};
+
+export const ThemeShapes = {
+  DEFAULT: 'default',
+  ROUNDED: 'rounded',
 };

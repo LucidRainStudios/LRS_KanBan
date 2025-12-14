@@ -1,4 +1,4 @@
-FROM node:22-alpine AS server-dependencies
+FROM node:24-alpine AS server-dependencies
 
 WORKDIR /app
 
@@ -9,7 +9,7 @@ RUN npm install pnpm --global
 RUN pnpm import
 RUN pnpm install --prod
 
-FROM node:22-alpine AS client
+FROM node:24-alpine AS client
 
 WORKDIR /app
 
@@ -25,7 +25,7 @@ ENV NODE_OPTIONS="--max_old_space_size=2048"
 ENV GENERATE_SOURCEMAP=false
 RUN DISABLE_ESLINT_PLUGIN=true npm run build
 
-FROM node:22-alpine
+FROM node:24-alpine
 
 RUN apk -U upgrade
 RUN apk add bash --no-cache

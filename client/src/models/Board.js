@@ -32,6 +32,8 @@ export default class extends BaseModel {
         query: '',
         anyMatch: false,
         matchCase: false,
+        dueDate: null,
+        justSelectedDay: false,
       }),
     }),
     createdAt: attr(),
@@ -115,6 +117,8 @@ export default class extends BaseModel {
             query: payload.searchParams.query !== undefined ? payload.searchParams.query : board.searchParams.query,
             anyMatch: payload.searchParams.anyMatch !== undefined ? payload.searchParams.anyMatch : board.searchParams.anyMatch,
             matchCase: payload.searchParams.matchCase !== undefined ? payload.searchParams.matchCase : board.searchParams.matchCase,
+            dueDate: payload.searchParams.dueDate !== undefined ? payload.searchParams.dueDate : board.searchParams.dueDate,
+            justSelectedDay: payload.searchParams.justSelectedDay !== undefined ? payload.searchParams.justSelectedDay : board.searchParams.justSelectedDay,
           },
         });
 
@@ -160,6 +164,10 @@ export default class extends BaseModel {
       case ActionTypes.BOARD_CREATE__SUCCESS:
         Board.withId(payload.localId).delete();
         Board.upsert(payload.board);
+
+        break;
+      case ActionTypes.BOARD_CREATE__FAILURE:
+        Board.withId(payload.localId).delete();
 
         break;
       case ActionTypes.BOARD_FETCH__SUCCESS:

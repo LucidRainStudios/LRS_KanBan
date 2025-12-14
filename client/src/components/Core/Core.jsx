@@ -5,12 +5,13 @@ import PropTypes from 'prop-types';
 
 import HeaderContainer from '../../containers/HeaderContainer';
 import StaticContainer from '../../containers/StaticContainer';
+import { beautifyLink } from '../../utils/url';
 import Background from '../Background';
 import { Loader, LoaderSize, Button, ButtonStyle, Icon, IconType, IconSize } from '../Utils';
 
 import * as s from './Core.module.scss';
 
-const Core = React.memo(({ isInitializing, isSocketDisconnected, currentProject, currentBoard, currentCard }) => {
+const Core = React.memo(({ isInitializing, isSocketDisconnected, currentProject, currentBoard, currentCard, theme, themeShape }) => {
   const [t] = useTranslation();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [showDisconnected, setShowDisconnected] = useState(false);
@@ -24,12 +25,28 @@ const Core = React.memo(({ isInitializing, isSocketDisconnected, currentProject,
       if (currentBoard) {
         title = `${currentBoard.name} · ${currentProject.name} | ${mainTitle}`;
         if (currentCard) {
-          title = `${currentCard.name} - ${currentBoard.name} · ${currentProject.name} | ${mainTitle}`;
+          const parts = currentCard.name.split(/(\s+)/);
+          const cardName = parts.map((part) => beautifyLink(part)).join('');
+          title = `${cardName} - ${currentBoard.name} · ${currentProject.name} | ${mainTitle}`;
         }
       }
     }
     document.title = title;
   }, [currentBoard, currentCard, currentProject]);
+
+  useEffect(() => {
+    const body = document.getElementById('app');
+    if (body) {
+      body.setAttribute('data-theme', theme);
+    }
+  }, [theme]);
+
+  useEffect(() => {
+    const body = document.getElementById('app');
+    if (body) {
+      body.setAttribute('data-theme-shape', themeShape);
+    }
+  }, [themeShape]);
 
   const handleToggleCollapse = useCallback(() => {
     setIsCollapsed(!isCollapsed);
@@ -81,12 +98,16 @@ Core.propTypes = {
   currentProject: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   currentBoard: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   currentCard: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+  theme: PropTypes.string,
+  themeShape: PropTypes.string,
 };
 
 Core.defaultProps = {
   currentProject: undefined,
   currentBoard: undefined,
   currentCard: undefined,
+  theme: 'default',
+  themeShape: 'default',
 };
 
 export default Core;

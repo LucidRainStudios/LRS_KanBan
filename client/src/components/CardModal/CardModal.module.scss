@@ -98,6 +98,10 @@
     padding: 15px 15px 12px 15px;
   }
 
+  &:global([data-theme-shape='rounded']) .header {
+    border-top-left-radius: 12px;
+  }
+
   .headerFirstLine {
     display: flex;
   }
@@ -285,13 +289,8 @@
     cursor: pointer;
   }
 
-  .link {
-    margin-right: 2px;
+  .linkIcon {
     vertical-align: 0%;
-
-    &:hover {
-      fill: var(--textColor3);
-    }
   }
 
   .activity {

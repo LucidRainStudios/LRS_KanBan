@@ -19,7 +19,30 @@ const StepTypes = {
 };
 
 const ActionsStep = React.memo(
-  ({ name, dueDate, allBoardMemberships, boardMemberships, users, createdAt, createdBy, updatedAt, updatedBy, onUpdate, onDuplicate, onNameEdit, onDelete, onUserAdd, onUserRemove, onClose }) => {
+  ({
+    cardId,
+    cardName,
+    name,
+    dueDate,
+    allBoardMemberships,
+    boardMemberships,
+    users,
+    activities,
+    isActivitiesFetching,
+    isAllActivitiesFetched,
+    createdAt,
+    createdBy,
+    updatedAt,
+    updatedBy,
+    onUpdate,
+    onDuplicate,
+    onNameEdit,
+    onDelete,
+    onUserAdd,
+    onUserRemove,
+    onActivitiesFetch,
+    onClose,
+  }) => {
     const [t] = useTranslation();
     const [step, openStep, handleBack] = useSteps();
     const userIds = users.map((user) => user.id);
@@ -82,11 +105,12 @@ const ActionsStep = React.memo(
               updatedBy={updatedBy}
               memberships={boardMemberships}
               isNotMemberTitle={t('common.noLongerBoardMember')}
-              // TODO replace with actual activities
-              activities={[]}
-              isFetching={false}
-              isAllFetched
-              onFetch={() => {}}
+              cardId={cardId}
+              cardName={cardName}
+              activities={activities}
+              isFetching={isActivitiesFetching}
+              isAllFetched={isAllActivitiesFetched}
+              onFetch={onActivitiesFetch}
               onBack={handleBack}
             />
           );
@@ -127,11 +151,16 @@ const ActionsStep = React.memo(
 );
 
 ActionsStep.propTypes = {
+  cardId: PropTypes.string.isRequired,
+  cardName: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   dueDate: PropTypes.instanceOf(Date),
   allBoardMemberships: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   boardMemberships: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   users: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
+  activities: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
+  isActivitiesFetching: PropTypes.bool.isRequired,
+  isAllActivitiesFetched: PropTypes.bool.isRequired,
   createdAt: PropTypes.instanceOf(Date),
   createdBy: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   updatedAt: PropTypes.instanceOf(Date),
@@ -142,6 +171,7 @@ ActionsStep.propTypes = {
   onDelete: PropTypes.func.isRequired,
   onUserAdd: PropTypes.func.isRequired,
   onUserRemove: PropTypes.func.isRequired,
+  onActivitiesFetch: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
 };
 

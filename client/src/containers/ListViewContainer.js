@@ -8,6 +8,7 @@ import selectors from '../selectors';
 
 const makeMapStateToProps = () => {
   const selectFilteredCardIdsByListId = selectors.makeSelectFilteredCardIdsByListId();
+  const selectClosestDueDateByCardId = selectors.makeSelectClosestDueDateByCardId();
 
   return (state) => {
     const listIds = selectors.selectListIdsForCurrentBoard(state);
@@ -23,11 +24,14 @@ const makeMapStateToProps = () => {
       const users = selectors.selectUsersByCardId(state, cardId);
       const labels = selectors.selectLabelsByCardId(state, cardId);
       const attachmentsCount = selectors.selectAttachmentsCountByCardId(state, cardId);
+      const taskActivities = selectors.selectTaskActivitiesByCardId(state, cardId);
       const tasks = selectors.selectTasksByCardId(state, cardId).map((task) => ({
         ...task,
         users: selectors.selectUsersForTaskById(state, task.id),
+        activities: taskActivities[task.id] || [],
       }));
       const notificationsCount = selectors.selectNotificationsTotalByCardId(state, cardId);
+      const closestDueDate = selectClosestDueDateByCardId(state, cardId);
 
       return {
         id: card.id,
@@ -40,6 +44,7 @@ const makeMapStateToProps = () => {
         attachmentsCount,
         commentCount: card.commentCount,
         dueDate: card.dueDate || undefined, // undefined needed for TanStack Table sorting
+        closestDueDate: closestDueDate || undefined, // undefined needed for TanStack Table sorting
         timer: card.timer || undefined, // undefined needed for TanStack Table sorting
         createdAt: card.createdAt,
         createdBy: card.createdBy,

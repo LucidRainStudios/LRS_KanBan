@@ -20,10 +20,13 @@ exports.seed = async (knex) => {
     .returning(['id']);
   await knex('user_account').where({ id: adminUser.id }).update({ createdById: adminUser.id });
 
-  const projectCreationAllEnabled = process.env.DEFAULT_PROJECT_CREATION_ALL !== 'false';
   const registrationEnabled = process.env.DEFAULT_REGISTRATION_ENABLED !== 'false';
   const localRegistrationEnabled = process.env.DEFAULT_LOCAL_REGISTRATION_ENABLED !== 'false';
   const ssoRegistrationEnabled = process.env.DEFAULT_SSO_REGISTRATION_ENABLED !== 'false';
+  const projectCreationAllEnabled = process.env.DEFAULT_PROJECT_CREATION_ALL !== 'false';
+  const syncSsoDataOnAuth = process.env.DEFAULT_SYNC_SSO_DATA_ON_AUTH === 'true';
+  const syncSsoAdminOnAuth = process.env.DEFAULT_SYNC_SSO_ADMIN_ON_AUTH === 'true';
+  const allowedRegisterDomains = process.env.DEFAULT_ALLOWED_REGISTER_DOMAINS ? process.env.DEFAULT_ALLOWED_REGISTER_DOMAINS.split(';').map((d) => d.trim().toLowerCase()) : [];
 
   await knex('core')
     .insert({
@@ -32,6 +35,9 @@ exports.seed = async (knex) => {
       localRegistrationEnabled,
       ssoRegistrationEnabled,
       projectCreationAllEnabled,
+      syncSsoDataOnAuth,
+      syncSsoAdminOnAuth,
+      allowedRegisterDomains: JSON.stringify(allowedRegisterDomains),
       createdAt: date,
       createdById: adminUser.id,
     })
@@ -41,6 +47,9 @@ exports.seed = async (knex) => {
       localRegistrationEnabled,
       ssoRegistrationEnabled,
       projectCreationAllEnabled,
+      syncSsoDataOnAuth,
+      syncSsoAdminOnAuth,
+      allowedRegisterDomains: JSON.stringify(allowedRegisterDomains),
       updatedAt: date,
       updatedById: adminUser.id,
     });

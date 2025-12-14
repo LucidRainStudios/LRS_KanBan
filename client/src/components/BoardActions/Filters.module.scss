@@ -3,9 +3,16 @@
     background: var(--backgroundColorTmpDarkerField2);
     border: solid var(--backgroundPopupSeparator);
     border-width: 1px 1px 1px 0;
+    overflow: hidden;
 
     &:last-child {
       border-radius: 0 3px 3px 0;
+    }
+  }
+
+  &:global([data-theme-shape='rounded']) .filter {
+    &:last-child {
+      border-radius: 0 8px 8px 0;
     }
   }
 
@@ -21,6 +28,10 @@
     }
   }
 
+  .filterButtonDueDateIsFiltered {
+    padding-right: 4px;
+  }
+
   .filterItem {
     background: var(--backgroundColorTmpDarkerField2);
     display: inline-block;
@@ -33,6 +44,10 @@
 
   .lastFilterItem {
     margin-right: 0;
+  }
+
+  .filterItemDueDate {
+    background: none;
   }
 
   .filterTitle {
@@ -59,5 +74,9 @@
         fill: var(--textColor4);
       }
     }
+  }
+
+  .clearButtonDueDate {
+    margin-left: -4px;
   }
 }

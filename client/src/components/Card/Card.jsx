@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
 
 import Paths from '../../constants/Paths';
 import { startTimer, stopTimer } from '../../utils/timer';
-import { extractFirstLikelyUrl } from '../../utils/url';
 import DueDate from '../DueDate';
 import DueDateEditPopup from '../DueDateEditPopup';
 import Label from '../Label';
@@ -16,7 +15,7 @@ import MembershipsPopup from '../MembershipsPopup';
 import Tasks from '../Tasks';
 import Timer from '../Timer';
 import User from '../User';
-import { Button, ButtonStyle, Icon, IconType, IconSize, ExternalLink } from '../Utils';
+import { Button, ButtonStyle, Icon, IconType, IconSize, LinkifiedTextRenderer } from '../Utils';
 import ActionsPopup from './ActionsPopup';
 import NameEdit from './NameEdit';
 
@@ -51,6 +50,7 @@ const Card = React.memo(
     activities,
     isActivitiesFetching,
     isAllActivitiesFetched,
+    closestDueDate,
     canEdit,
     createdAt,
     createdBy,
@@ -174,132 +174,132 @@ const Card = React.memo(
 
     const visibleMembersCount = 3;
     const labelIds = labels.map((label) => label.id);
-    const link = extractFirstLikelyUrl(name);
-    const isLink = !!link;
 
     const contentNode = (
       <>
         <div>
           <div className={s.detailsTitle}>
             <div title={name} className={s.name}>
-              {isLink && (
-                <ExternalLink href={link}>
-                  <Icon type={IconType.Link} size={IconSize.Size13} className={s.link} />
-                </ExternalLink>
-              )}
-              {name}
+              <LinkifiedTextRenderer text={name} />
             </div>
           </div>
           {notificationsTotal > 0 && notificationsTotal <= 9 && <span className={s.notification}>{notificationsTotal}</span>}
           {notificationsTotal > 9 && <span className={clsx(s.notification, s.notificationFull)}>9+</span>}
         </div>
         {coverUrl && <img src={coverUrl} alt="" className={s.cover} />}
-        <div className={s.details}>
-          {labels.length > 0 && (
-            <span className={s.labels}>
-              {labels.map((label) => (
-                <LabelsPopup
-                  key={label.id}
-                  items={allLabels}
-                  currentIds={labelIds}
-                  onSelect={onLabelAdd}
-                  onDeselect={onLabelRemove}
-                  onCreate={onLabelCreate}
-                  onUpdate={onLabelUpdate}
-                  onDelete={onLabelDelete}
-                  canEdit={canEdit}
-                  offset={0}
-                  wrapperClassName={clsx(s.attachment, s.attachmentLeft)}
-                  disabled={!canEdit}
-                >
-                  <Label name={label.name} color={label.color} variant="card" isClickable={canEdit} />
-                </LabelsPopup>
-              ))}
-            </span>
-          )}
-          {tasks.length > 0 && (
-            <Tasks
-              variant="card"
-              isCardActive={isOpen}
-              cardId={id}
-              items={tasks}
-              canEdit={canEdit}
-              allBoardMemberships={boardAndTaskMemberships}
-              boardMemberships={boardMemberships}
-              onCreate={onTaskCreate}
-              onUpdate={onTaskUpdate}
-              onMove={onTaskMove}
-              onDuplicate={onTaskDuplicate}
-              onDelete={onTaskDelete}
-              onUserAdd={onUserToTaskAdd}
-              onUserRemove={onUserFromTaskRemove}
-              onMouseEnterTasks={handleTasksMouseEnter}
-              onMouseLeaveTasks={handleTasksMouseOut}
-            />
-          )}
-          {(description || attachmentsCount > 0 || commentCount > 0 || dueDate || timer) && (
-            <span className={s.attachments}>
-              {description && (
-                <span className={clsx(s.attachment, s.attachmentLeft)}>
-                  <Icon type={IconType.BarsStaggered} size={IconSize.Size14} className={s.detailsIcon} title={t('common.detailsDescription')} />
-                </span>
-              )}
-              {attachmentsCount > 0 && (
-                <span className={clsx(s.attachment, s.attachmentLeft)}>
-                  <Icon type={IconType.Attach} size={IconSize.Size14} className={s.detailsIcon} title={t('common.detailsAttachments', { count: attachmentsCount })} />
-                </span>
-              )}
-              {commentCount > 0 && (
-                <span className={clsx(s.attachment, s.attachmentLeft)}>
-                  <Icon type={IconType.Comment} size={IconSize.Size14} className={s.detailsIcon} title={t('common.detailsComments', { count: commentCount })} />
-                </span>
-              )}
-              {dueDate && (
-                <span className={clsx(s.attachment, s.attachmentLeft)}>
-                  <DueDateEditPopup defaultValue={dueDate} onUpdate={handleDueDateUpdate} disabled={!canEdit}>
-                    <DueDate value={dueDate} variant="card" isClickable={canEdit} />
-                  </DueDateEditPopup>
-                </span>
-              )}
-              {timer && (
-                <span className={clsx(s.attachment, s.attachmentLeft)} data-prevent-card-switch>
-                  <Timer as="span" startedAt={timer.startedAt} total={timer.total} variant="card" onClick={canEdit ? handleToggleTimerClick : undefined} />
-                </span>
-              )}
-            </span>
-          )}
-          {users.length > 0 && (
-            <span className={clsx(s.attachments, s.attachmentsRight, s.users)}>
-              <div className={s.popupWrapper2}>
-                <MembershipsPopup
-                  items={boardAndCardMemberships}
-                  currentUserIds={users.map((user) => user.id)}
-                  memberships={boardMemberships}
-                  onUserSelect={(userId) => onUserAdd(userId, id)}
-                  onUserDeselect={(userId) => onUserRemove(userId, id)}
-                  offset={0}
-                >
-                  {users.slice(0, visibleMembersCount).map((user) => (
-                    <span key={user.id} className={clsx(s.attachment, s.user)}>
-                      <User name={user.name} avatarUrl={user.avatarUrl} size="card" isMember={boardMemberships.some((m) => m.user?.id === user.id)} isNotMemberTitle={t('common.noLongerBoardMember')} />
-                    </span>
-                  ))}
-                  {users.length > visibleMembersCount && (
-                    <span
-                      className={clsx(s.attachment, s.user, s.moreUsers)}
-                      title={users
-                        .slice(visibleMembersCount)
-                        .map((user) => user.name)
-                        .join(',\n')}
-                    >
-                      +{users.length - visibleMembersCount}
-                    </span>
-                  )}
-                </MembershipsPopup>
-              </div>
-            </span>
-          )}
-        </div>
+        {(labels.length > 0 || tasks.length > 0 || description || attachmentsCount > 0 || commentCount > 0 || dueDate || timer || users.length > 0) && (
+          <div className={s.details}>
+            {labels.length > 0 && (
+              <span className={s.labels}>
+                {labels.map((label) => (
+                  <LabelsPopup
+                    key={label.id}
+                    items={allLabels}
+                    currentIds={labelIds}
+                    onSelect={onLabelAdd}
+                    onDeselect={onLabelRemove}
+                    onCreate={onLabelCreate}
+                    onUpdate={onLabelUpdate}
+                    onDelete={onLabelDelete}
+                    canEdit={canEdit}
+                    offset={0}
+                    wrapperClassName={clsx(s.attachment, s.attachmentLeft)}
+                    disabled={!canEdit}
+                  >
+                    <Label name={label.name} color={label.color} variant="card" isClickable={canEdit} />
+                  </LabelsPopup>
+                ))}
+              </span>
+            )}
+            {tasks.length > 0 && (
+              <Tasks
+                variant="card"
+                isCardActive={isOpen}
+                cardId={id}
+                cardName={name}
+                items={tasks}
+                closestDueDate={closestDueDate}
+                canEdit={canEdit}
+                allBoardMemberships={boardAndTaskMemberships}
+                boardMemberships={boardMemberships}
+                isActivitiesFetching={isActivitiesFetching}
+                isAllActivitiesFetched={isAllActivitiesFetched}
+                onCreate={onTaskCreate}
+                onUpdate={onTaskUpdate}
+                onMove={onTaskMove}
+                onDuplicate={onTaskDuplicate}
+                onDelete={onTaskDelete}
+                onUserAdd={onUserToTaskAdd}
+                onUserRemove={onUserFromTaskRemove}
+                onMouseEnterTasks={handleTasksMouseEnter}
+                onMouseLeaveTasks={handleTasksMouseOut}
+                onActivitiesFetch={onActivitiesFetch}
+              />
+            )}
+            {(description || attachmentsCount > 0 || commentCount > 0 || dueDate || timer) && (
+              <span className={s.attachments}>
+                {description && (
+                  <span className={clsx(s.attachment, s.attachmentLeft)}>
+                    <Icon type={IconType.BarsStaggered} size={IconSize.Size14} className={s.detailsIcon} title={t('common.detailsDescription')} />
+                  </span>
+                )}
+                {attachmentsCount > 0 && (
+                  <span className={clsx(s.attachment, s.attachmentLeft)}>
+                    <Icon type={IconType.Attach} size={IconSize.Size14} className={s.detailsIcon} title={t('common.detailsAttachments', { count: attachmentsCount })} />
+                  </span>
+                )}
+                {commentCount > 0 && (
+                  <span className={clsx(s.attachment, s.attachmentLeft)}>
+                    <Icon type={IconType.Comment} size={IconSize.Size14} className={s.detailsIcon} title={t('common.detailsComments', { count: commentCount })} />
+                  </span>
+                )}
+                {dueDate && (
+                  <span className={clsx(s.attachment, s.attachmentLeft)}>
+                    <DueDateEditPopup defaultValue={dueDate} onUpdate={handleDueDateUpdate} disabled={!canEdit}>
+                      <DueDate value={dueDate} variant="card" isClickable={canEdit} />
+                    </DueDateEditPopup>
+                  </span>
+                )}
+                {timer && (
+                  <span className={clsx(s.attachment, s.attachmentLeft)} data-prevent-card-switch>
+                    <Timer as="span" startedAt={timer.startedAt} total={timer.total} variant="card" onClick={canEdit ? handleToggleTimerClick : undefined} />
+                  </span>
+                )}
+              </span>
+            )}
+            {users.length > 0 && (
+              <span className={clsx(s.attachments, s.attachmentsRight, s.users)}>
+                <div className={s.popupWrapper2}>
+                  <MembershipsPopup
+                    items={boardAndCardMemberships}
+                    currentUserIds={users.map((user) => user.id)}
+                    memberships={boardMemberships}
+                    onUserSelect={(userId) => onUserAdd(userId, id)}
+                    onUserDeselect={(userId) => onUserRemove(userId, id)}
+                    offset={0}
+                  >
+                    {users.slice(0, visibleMembersCount).map((user) => (
+                      <span key={user.id} className={clsx(s.attachment, s.user)}>
+                        <User name={user.name} avatarUrl={user.avatarUrl} size="card" isMember={boardMemberships.some((m) => m.user?.id === user.id)} isNotMemberTitle={t('common.noLongerBoardMember')} />
+                      </span>
+                    ))}
+                    {users.length > visibleMembersCount && (
+                      <span
+                        className={clsx(s.attachment, s.user, s.moreUsers)}
+                        title={users
+                          .slice(visibleMembersCount)
+                          .map((user) => user.name)
+                          .join(',\n')}
+                      >
+                        +{users.length - visibleMembersCount}
+                      </span>
+                    )}
+                  </MembershipsPopup>
+                </div>
+              </span>
+            )}
+          </div>
+        )}
       </>
     );
 
@@ -325,6 +325,7 @@ const Card = React.memo(
                       <div className={s.popupWrapper}>
                         <ActionsPopup
                           card={{
+                            id,
                             name,
                             dueDate,
                             timer,
@@ -366,7 +367,7 @@ const Card = React.memo(
                           offset={0}
                           hideCloseButton
                         >
-                          <Button style={ButtonStyle.Icon} title={t('common.editCard')} className={clsx(s.editCardButton, s.target)}>
+                          <Button style={ButtonStyle.Icon} title={t('common.editCard')} className={s.editCardButton}>
                             <Icon type={IconType.EllipsisVertical} size={IconSize.Size13} />
                           </Button>
                         </ActionsPopup>
@@ -413,6 +414,7 @@ Card.propTypes = {
   activities: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   isActivitiesFetching: PropTypes.bool.isRequired,
   isAllActivitiesFetched: PropTypes.bool.isRequired,
+  closestDueDate: PropTypes.instanceOf(Date),
   canEdit: PropTypes.bool.isRequired,
   createdAt: PropTypes.instanceOf(Date),
   createdBy: PropTypes.object, // eslint-disable-line react/forbid-prop-types
@@ -446,6 +448,7 @@ Card.defaultProps = {
   timer: undefined,
   coverUrl: undefined,
   description: undefined,
+  closestDueDate: undefined,
   createdAt: undefined,
   createdBy: undefined,
   updatedAt: undefined,

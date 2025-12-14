@@ -28,6 +28,9 @@ export default class extends BaseModel {
     usersSettingsItemsPerPage: attr(),
     preferredDetailsFont: attr(),
     hideCardModalActivity: attr(),
+    hideClosestDueDate: attr(),
+    theme: attr(),
+    themeShape: attr(),
   };
 
   static reducer({ type, payload }, UserPrefs) {

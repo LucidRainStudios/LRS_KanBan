@@ -21,7 +21,29 @@ const VARIANTS = {
 
 const Tasks = React.forwardRef(
   (
-    { variant, isCardActive, cardId, items, canEdit, allBoardMemberships, boardMemberships, onCreate, onUpdate, onDuplicate, onMove, onDelete, onUserAdd, onUserRemove, onMouseEnterTasks, onMouseLeaveTasks },
+    {
+      cardId,
+      cardName,
+      variant,
+      isCardActive,
+      items,
+      isActivitiesFetching,
+      isAllActivitiesFetched,
+      closestDueDate,
+      canEdit,
+      allBoardMemberships,
+      boardMemberships,
+      onCreate,
+      onUpdate,
+      onDuplicate,
+      onMove,
+      onDelete,
+      onUserAdd,
+      onUserRemove,
+      onMouseEnterTasks,
+      onMouseLeaveTasks,
+      onActivitiesFetch,
+    },
     ref,
   ) => {
     const [t] = useTranslation();
@@ -83,7 +105,6 @@ const Tasks = React.forwardRef(
     );
 
     const completedItems = items.filter((item) => item.isCompleted);
-    const closestNotCompletedTaslDueDate = items.filter((item) => !item.isCompleted && item.dueDate).sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))[0];
 
     const tasksNode = (
       <Droppable droppableId="tasks" type={DroppableTypes.TASK}>
@@ -92,6 +113,8 @@ const Tasks = React.forwardRef(
           <div {...droppableProps} ref={innerRef} onMouseEnter={onMouseEnterTasks} onMouseLeave={onMouseLeaveTasks} data-prevent-card-switch>
             {items.map((item, index) => (
               <Item
+                cardId={cardId}
+                cardName={cardName}
                 variant={variant}
                 key={item.id}
                 id={item.id}
@@ -101,6 +124,9 @@ const Tasks = React.forwardRef(
                 allBoardMemberships={allBoardMemberships}
                 boardMemberships={boardMemberships}
                 users={item.users}
+                activities={item.activities}
+                isActivitiesFetching={isActivitiesFetching}
+                isAllActivitiesFetched={isAllActivitiesFetched}
                 isCompleted={item.isCompleted}
                 isPersisted={item.isPersisted}
                 canEdit={canEdit}
@@ -113,6 +139,7 @@ const Tasks = React.forwardRef(
                 onDelete={() => handleDelete(item.id)}
                 onUserAdd={(userId) => handleUserAdd(item.id, userId)}
                 onUserRemove={(userId) => handleUserRemove(item.id, userId)}
+                onActivitiesFetch={onActivitiesFetch}
               />
             ))}
             {placeholder}
@@ -137,9 +164,7 @@ const Tasks = React.forwardRef(
             <ProgressBar value={completedItems.length} total={items.length} size={ProgressBarSize.Tiny} className={clsx(variant === VARIANTS.CARDMODAL ? s.progress : s.progressCard)} />
             {variant !== VARIANTS.CARDMODAL && (
               <div className={s.progressItems}>
-                {closestNotCompletedTaslDueDate && (
-                  <DueDate variant="tasksCard" value={closestNotCompletedTaslDueDate.dueDate} titlePrefix={t('common.dueDateSummary')} iconSize={IconSize.Size12} className={s.dueDateSummary} />
-                )}
+                {closestDueDate && <DueDate variant="tasksCard" value={closestDueDate} titlePrefix={t('common.dueDateSummary')} iconSize={IconSize.Size12} className={s.dueDateSummary} />}
                 <Button style={ButtonStyle.Icon} title={isOpen ? t('common.hideTasks') : t('common.showTasks')} onClick={handleToggleClick} className={s.toggleTasksButton} data-prevent-card-switch>
                   {completedItems.length}/{items.length}
                   <Icon type={IconType.TriangleDown} size={IconSize.Size8} className={clsx(s.countToggleIcon, isOpen && s.countToggleIconOpened)} />
@@ -157,13 +182,17 @@ const Tasks = React.forwardRef(
 );
 
 Tasks.propTypes = {
+  cardId: PropTypes.string.isRequired,
+  cardName: PropTypes.string.isRequired,
   variant: PropTypes.oneOf(Object.values(VARIANTS)).isRequired,
   isCardActive: PropTypes.bool,
-  cardId: PropTypes.string.isRequired,
   items: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
+  closestDueDate: PropTypes.instanceOf(Date),
   canEdit: PropTypes.bool.isRequired,
   allBoardMemberships: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   boardMemberships: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
+  isActivitiesFetching: PropTypes.bool.isRequired,
+  isAllActivitiesFetched: PropTypes.bool.isRequired,
   onCreate: PropTypes.func.isRequired,
   onUpdate: PropTypes.func.isRequired,
   onDuplicate: PropTypes.func.isRequired,
@@ -173,10 +202,12 @@ Tasks.propTypes = {
   onUserRemove: PropTypes.func.isRequired,
   onMouseEnterTasks: PropTypes.func,
   onMouseLeaveTasks: PropTypes.func,
+  onActivitiesFetch: PropTypes.func.isRequired,
 };
 
 Tasks.defaultProps = {
   isCardActive: false,
+  closestDueDate: undefined,
   onMouseEnterTasks: () => {},
   onMouseLeaveTasks: () => {},
 };

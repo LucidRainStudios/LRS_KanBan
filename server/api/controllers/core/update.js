@@ -21,6 +21,15 @@ module.exports = {
     projectCreationAllEnabled: {
       type: 'boolean',
     },
+    syncSsoDataOnAuth: {
+      type: 'boolean',
+    },
+    syncSsoAdminOnAuth: {
+      type: 'boolean',
+    },
+    allowedRegisterDomains: {
+      type: 'json',
+    },
   },
 
   exits: {
@@ -46,13 +55,17 @@ module.exports = {
     if (!core) {
       throw Errors.CORE_NOT_FOUND;
     }
-    const values = _.pick(inputs, ['registrationEnabled', 'localRegistrationEnabled', 'ssoRegistrationEnabled', 'projectCreationAllEnabled']);
+    const values = _.pick(inputs, ['registrationEnabled', 'localRegistrationEnabled', 'ssoRegistrationEnabled', 'projectCreationAllEnabled', 'syncSsoDataOnAuth', 'syncSsoAdminOnAuth']);
 
-    core = await Core.updateOne({ id: 0 }).set({ updatedById: currentUser.id, ...values });
+    const allowedRegisterDomains = _.uniq(inputs.allowedRegisterDomains?.map((d) => d.trim().toLowerCase()).filter(Boolean));
+
+    core = await Core.updateOne({ id: 0 }).set({ updatedById: currentUser.id, ...values, allowedRegisterDomains });
     const coreItem = {
       ...core,
+      allowedRegisterDomains: core.allowedRegisterDomains.join(';'),
       ssoUrls: sails.config.custom.ssoUrls,
       ssoAvailable: sails.config.custom.ssoAvailable,
+      oidcEnabledMethods: sails.config.custom.oidcEnabledMethods,
       demoMode: sails.config.custom.demoMode,
     };
 

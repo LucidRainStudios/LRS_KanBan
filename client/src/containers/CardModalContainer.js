@@ -41,15 +41,26 @@ const mapStateToProps = (state) => {
 
   const users = selectors.selectUsersForCurrentCard(state);
   const labels = selectors.selectLabelsForCurrentCard(state);
+  const taskActivities = selectors.selectTaskActivitiesByCardId(state, id);
   const tasks = selectors.selectTasksForCurrentCard(state).map((task) => ({
     ...task,
     users: selectors.selectUsersForTaskById(state, task.id),
+    activities: taskActivities[task.id] || [],
   }));
-  const attachments = selectors.selectAttachmentsForCurrentCard(state);
-  const comments = selectors.selectCommentsForCurrentCard(state);
+  const attachmentActivities = selectors.selectAttachmentActivitiesByCardId(state, id);
+  const attachments = selectors.selectAttachmentsForCurrentCard(state).map((attachment) => ({
+    ...attachment,
+    activities: attachmentActivities[attachment.id] || [],
+  }));
+  const commentActivities = selectors.selectCommentActivitiesByCardId(state, id);
+  const comments = selectors.selectCommentsForCurrentCard(state).map((comment) => ({
+    ...comment,
+    activities: commentActivities[comment.id] || [],
+  }));
   const activities = selectors.selectActivitiesByCardId(state, id);
   const user = selectors.selectCurrentUser(state);
-  const { commentMode, descriptionMode, descriptionShown, tasksShown, attachmentsShown, commentsShown, hideCardModalActivity, preferredDetailsFont } = selectors.selectCurrentUserPrefs(state);
+  const { commentMode, descriptionMode, descriptionShown, tasksShown, attachmentsShown, commentsShown, hideCardModalActivity, hideClosestDueDate, preferredDetailsFont } =
+    selectors.selectCurrentUserPrefs(state);
   const userId = user.id;
 
   const { isGithubConnected, githubRepo } = selectors.selectCurrentBoard(state);
@@ -62,6 +73,8 @@ const mapStateToProps = (state) => {
     isCurrentUserEditorOrCanComment = isCurrentUserEditor || currentUserMembership.canComment;
   }
   const url = selectors.selectUrlForCard(state, id);
+  const closestTaskDueDate = selectors.selectClosestTaskDueDateByCardId(state, id);
+  const closestDueDate = selectors.selectClosestDueDateByCardId(state, id);
 
   return {
     name,
@@ -89,6 +102,7 @@ const mapStateToProps = (state) => {
     attachmentsShown,
     commentsShown,
     hideCardModalActivity,
+    hideClosestDueDate,
     preferredDetailsFont,
     userId,
     isGithubConnected,
@@ -104,6 +118,8 @@ const mapStateToProps = (state) => {
     canEditAllCommentActivities: isCurrentUserManager,
     commentMode,
     url,
+    closestTaskDueDate,
+    closestDueDate,
     createdAt,
     createdBy,
     updatedAt,

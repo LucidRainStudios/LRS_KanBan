@@ -6,6 +6,7 @@ const REGISTER = `${Config.BASE_PATH}/register`;
 const GOOGLE_CALLBACK = `${Config.BASE_PATH}/google-callback`;
 const GITHUB_CALLBACK = `${Config.BASE_PATH}/github-callback`;
 const MICROSOFT_CALLBACK = `${Config.BASE_PATH}/microsoft-callback`;
+const OIDC_CALLBACK = `${Config.BASE_PATH}/oidc-callback`;
 const PROJECTS = `${Config.BASE_PATH}/projects/:id`;
 const BOARDS = `${Config.BASE_PATH}/boards/:id`;
 const CARDS = `${Config.BASE_PATH}/cards/:id`;
@@ -18,6 +19,7 @@ const SETTINGS_ABOUT = `${Config.BASE_PATH}/settings/about`;
 const SETTINGS_INSTANCE = `${Config.BASE_PATH}/settings/instance`;
 const SETTINGS_USERS = `${Config.BASE_PATH}/settings/users`;
 const SETTINGS_PROJECT = `${Config.BASE_PATH}/projects/:id/settings`;
+const NOTIFICATIONS = `${Config.BASE_PATH}/notifications`;
 
 export default {
   ROOT,
@@ -26,6 +28,7 @@ export default {
   GOOGLE_CALLBACK,
   GITHUB_CALLBACK,
   MICROSOFT_CALLBACK,
+  OIDC_CALLBACK,
   PROJECTS,
   BOARDS,
   CARDS,
@@ -38,4 +41,5 @@ export default {
   SETTINGS_INSTANCE,
   SETTINGS_USERS,
   SETTINGS_PROJECT,
+  NOTIFICATIONS,
 };

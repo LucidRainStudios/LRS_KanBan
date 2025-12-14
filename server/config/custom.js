@@ -37,21 +37,32 @@ module.exports.custom = {
     google: `${process.env.BASE_URL}/auth/google`,
     github: `${process.env.BASE_URL}/auth/github`,
     microsoft: `${process.env.BASE_URL}/auth/microsoft`,
+    oidc: `${process.env.BASE_URL}/auth/oidc`,
   },
   ssoClientIds: {
     google: process.env.GOOGLE_CLIENT_ID,
     github: process.env.GITHUB_CLIENT_ID,
     microsoft: process.env.MICROSOFT_CLIENT_ID,
+    oidc: process.env.OIDC_CLIENT_ID,
   },
   ssoAvailable: {
-    google: !!process.env.GOOGLE_CLIENT_ID,
-    github: !!process.env.GITHUB_CLIENT_ID,
-    microsoft: !!process.env.MICROSOFT_CLIENT_ID,
+    google: !!process.env.GOOGLE_CLIENT_ID && !!process.env.GOOGLE_CLIENT_SECRET,
+    github: !!process.env.GITHUB_CLIENT_ID && !!process.env.GITHUB_CLIENT_SECRET,
+    microsoft: !!process.env.MICROSOFT_CLIENT_ID && !!process.env.MICROSOFT_CLIENT_SECRET,
+    oidc: !!process.env.OIDC_CLIENT_ID && !!process.env.OIDC_CLIENT_SECRET && !!process.env.OIDC_AUTH_URL && !!process.env.OIDC_TOKEN_URL && !!process.env.OIDC_USERINFO_URL && !!process.env.OIDC_STATE_SECRET,
   },
 
+  oidcEnabledMethods: (process.env.OIDC_ENABLED_METHODS || '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0)
+    .filter((s) => s && process.env[`OIDC_DISABLE_HINT_${s.toUpperCase()}`] !== 'true'),
+
   demoMode: process.env.DEMO_MODE === 'true',
+  metricsEnabled: process.env.METRICS_ENABLED === 'true',
 
   positionGap: 65535,
   requiredPasswordStrength: 2,
   cacheMaxAge: 900,
+  actionsLimit: 50,
 };

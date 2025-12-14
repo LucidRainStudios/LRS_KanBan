@@ -99,6 +99,19 @@ module.exports = {
     hideCardModalActivity: {
       type: 'boolean',
     },
+    hideClosestDueDate: {
+      type: 'boolean',
+    },
+    theme: {
+      type: 'string',
+      isIn: UserPrefs.THEMES,
+      isNotEmptyString: true,
+    },
+    themeShape: {
+      type: 'string',
+      isIn: UserPrefs.THEME_SHAPES,
+      isNotEmptyString: true,
+    },
   },
 
   exits: {
@@ -147,6 +160,9 @@ module.exports = {
         'usersSettingsItemsPerPage',
         'preferredDetailsFont',
         'hideCardModalActivity',
+        'hideClosestDueDate',
+        'theme',
+        'themeShape',
       ]),
     };
 

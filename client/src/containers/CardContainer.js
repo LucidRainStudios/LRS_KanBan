@@ -13,6 +13,7 @@ const makeMapStateToProps = () => {
   const selectTasksByCardId = selectors.makeSelectTasksByCardId();
   const selectNotificationsTotalByCardId = selectors.makeSelectNotificationsTotalByCardId();
   const selectAttachmentsCountByCardId = selectors.makeSelectAttachmentsCountByCardId();
+  const selectClosestDueDateByCardId = selectors.makeSelectClosestTaskDueDateByCardId();
 
   return (state, { id, index }) => {
     const currentCardId = selectors.selectPath(state).cardId;
@@ -33,12 +34,15 @@ const makeMapStateToProps = () => {
 
     const users = selectUsersByCardId(state, id);
     const labels = selectLabelsByCardId(state, id);
+    const taskActivities = selectors.selectTaskActivitiesByCardId(state, id);
     const tasks = selectTasksByCardId(state, id).map((task) => ({
       ...task,
       users: selectors.selectUsersForTaskById(state, task.id),
+      activities: taskActivities[task.id] || [],
     }));
     const notificationsTotal = selectNotificationsTotalByCardId(state, id);
     const attachmentsCount = selectAttachmentsCountByCardId(state, id);
+    const closestDueDate = selectClosestDueDateByCardId(state, id);
 
     const isCurrentUserEditor = !!currentUserMembership && currentUserMembership.role === BoardMembershipRoles.EDITOR;
     const url = selectors.selectUrlForCard(state, id);
@@ -77,6 +81,7 @@ const makeMapStateToProps = () => {
       createdBy,
       updatedAt,
       updatedBy,
+      closestDueDate,
     };
   };
 };

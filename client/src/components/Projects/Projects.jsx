@@ -24,7 +24,7 @@ const Projects = React.memo(({ projects, filteredProjects, isFiltered, canAdd, d
     if (!isFiltered) {
       return `${t('common.showing')} ${t('common.projects', { count: projects.length, context: 'title' })}`;
     }
-    return `${t('common.showing')} ${filteredProjects.length} ${t('common.ofProjects', { count: projects.length, context: 'title' })} `;
+    return `${t('common.showing')} ${t('common.ofProjects', { filteredCount: filteredProjects.length, count: projects.length, context: 'title' })}`;
   };
 
   const getBoardsText = () => {
@@ -58,7 +58,7 @@ const Projects = React.memo(({ projects, filteredProjects, isFiltered, canAdd, d
           )}
         </div>
       </div>
-      <div className={clsx(s.projectsWrapper, gs.scrollableY)}>
+      <div className={clsx(s.projectsWrapper, gs.scrollableY, projects.length === 0 && s.projectsWrapperEmpty)}>
         {filteredProjects.map((item) => (
           <div
             key={item.id}
@@ -77,6 +77,17 @@ const Projects = React.memo(({ projects, filteredProjects, isFiltered, canAdd, d
             </Link>
           </div>
         ))}
+        {projects.length === 0 && !canAdd && <span className={s.info}>{t('common.needInvite')}</span>}
+        {projects.length === 0 && canAdd && (
+          <div className={s.info}>
+            <ProjectAddPopup defaultData={defaultData} isSubmitting={isSubmitting} onCreate={onCreate} offset={16} position="bottom">
+              <Button style={ButtonStyle.NoBackground} title={t('common.addProject')} className={s.addButton}>
+                <Icon type={IconType.Plus} size={IconSize.Size16} className={s.addButtonIcon} />
+                {t('common.addProject')}
+              </Button>
+            </ProjectAddPopup>
+          </div>
+        )}
       </div>
     </div>
   );

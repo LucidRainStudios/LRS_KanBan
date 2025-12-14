@@ -36,6 +36,10 @@
     }
   }
 
+  &:global([data-theme-shape='rounded']) .default {
+    border-radius: 8px;
+  }
+
   .defaultBorder {
     @extend .default;
     border: 1px solid var(--backgroundPopupSeparator);
@@ -72,6 +76,10 @@
     }
   }
 
+  &:global([data-theme-shape='rounded']) .noBackground {
+    border-radius: 8px;
+  }
+
   .iconBase {
     &:hover {
       svg {
@@ -95,6 +103,20 @@
     height: 20px;
   }
 
+  .iconCentered {
+    @extend .icon;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .iconText {
+    @extend .iconBase;
+    padding: 0;
+    width: auto;
+    height: auto;
+  }
+
   .login {
     background: var(--loginBackground);
     color: var(--textColor0);
@@ -114,6 +136,10 @@
     }
   }
 
+  &:global([data-theme-shape='rounded']) .login {
+    border-radius: 8px;
+  }
+
   // TODO think about multiline buttons - word-wrap: break-word and min-height instead of white-space, text-overflow
   .controlButtons {
     color: var(--textColorWhite);
@@ -130,6 +156,10 @@
     &:disabled {
       cursor: not-allowed;
     }
+  }
+
+  &:global([data-theme-shape='rounded']) .controlButtons {
+    border-radius: 8px;
   }
 
   .submit {
@@ -197,6 +227,10 @@
     // }
   }
 
+  &:global([data-theme-shape='rounded']) .popup {
+    border-radius: 8px;
+  }
+
   .popupContext {
     @extend .popup;
     padding: 8px 16px 8px 8px;
@@ -208,7 +242,7 @@
     height: 50px;
 
     &:hover {
-      background: var(--headerButtonHover);
+      background: var(--backgroundHeaderHover);
     }
   }
 

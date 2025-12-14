@@ -26,6 +26,11 @@
     flex-direction: column;
   }
 
+  &:global([data-theme-shape='rounded']) .sidebar {
+    padding-top: 4px;
+    border-radius: 0 12px 0 0;
+  }
+
   .sidebarCompact {
     width: 180px;
   }

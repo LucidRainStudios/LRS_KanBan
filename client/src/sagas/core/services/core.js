@@ -31,7 +31,7 @@ export function* initializeCore() {
     userPrefs,
   } = yield call(requests.fetchCore); // TODO: handle error
 
-  yield call(i18n.changeLanguage, user.language);
+  yield call(i18n.changeLanguage, userPrefs.language);
   yield call(i18n.loadCoreLocale);
 
   yield put(
@@ -87,8 +87,34 @@ export function* logout(invalidateAccessToken = true) {
 }
 
 export function* fetchCoreSettingsPublic() {
-  const { item: ssoUrls, ssoAvailable, ssoRegistrationEnabled, registrationEnabled, localRegistrationEnabled, projectCreationAllEnabled, demoMode } = yield call(api.getCoreSettingsPublic);
-  yield put(actions.fetchCoreSettingsPublic(ssoUrls, ssoAvailable, ssoRegistrationEnabled, registrationEnabled, localRegistrationEnabled, projectCreationAllEnabled, demoMode));
+  const {
+    item: ssoUrls,
+    ssoAvailable,
+    oidcEnabledMethods,
+    ssoRegistrationEnabled,
+    registrationEnabled,
+    localRegistrationEnabled,
+    projectCreationAllEnabled,
+    syncSsoDataOnAuth,
+    syncSsoAdminOnAuth,
+    allowedRegisterDomains,
+    demoMode,
+  } = yield call(api.getCoreSettingsPublic);
+  yield put(
+    actions.fetchCoreSettingsPublic(
+      ssoUrls,
+      ssoAvailable,
+      oidcEnabledMethods,
+      ssoRegistrationEnabled,
+      registrationEnabled,
+      localRegistrationEnabled,
+      projectCreationAllEnabled,
+      syncSsoDataOnAuth,
+      syncSsoAdminOnAuth,
+      allowedRegisterDomains,
+      demoMode,
+    ),
+  );
 }
 
 export function* updateCoreSettings(data) {

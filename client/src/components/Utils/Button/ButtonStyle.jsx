@@ -3,6 +3,8 @@ const ButtonStyle = {
   DefaultBorder: 'defaultBorder',
   IconBase: 'iconBase',
   Icon: 'icon',
+  IconCentered: 'iconCentered',
+  IconText: 'iconText',
   NoBackground: 'noBackground',
   Login: 'login',
   Submit: 'submit',

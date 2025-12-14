@@ -15,6 +15,8 @@ module.exports.routes = {
   'GET /auth/github/callback': 'AuthController.githubCallback',
   'GET /auth/microsoft': 'AuthController.microsoft',
   'GET /auth/microsoft/callback': 'AuthController.microsoftCallback',
+  'GET /auth/oidc': 'AuthController.oidc',
+  'GET /auth/oidc/callback': 'AuthController.oidcCallback',
 
   'POST /api/access-tokens': 'access-tokens/create',
   'DELETE /api/access-tokens/me': 'access-tokens/delete',
@@ -100,7 +102,9 @@ module.exports.routes = {
   'GET /api/notifications': 'notifications/index',
   'GET /api/notifications/:id': 'notifications/show',
   'PATCH /api/notifications/:ids': 'notifications/update',
+  'PATCH /api/notifications': 'notifications/mark-all-as',
   'DELETE /api/notifications/:ids': 'notifications/delete',
+  'DELETE /api/notifications': 'notifications/delete-all',
 
   'GET /attachments/:id/download/:filename': {
     action: 'attachments/download',

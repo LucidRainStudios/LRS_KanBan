@@ -8,6 +8,7 @@ import DroppableTypes from '../../constants/DroppableTypes';
 import { ResizeObserverSizeTypes } from '../../constants/Enums';
 import CardContainer from '../../containers/CardContainer';
 import { useResizeObserverSize } from '../../hooks';
+import CardAddPopup from '../CardAddPopup';
 import { Button, ButtonStyle, Icon, IconType, IconSize } from '../Utils';
 import ActionsPopup from './ActionsPopup';
 import CardAdd from './CardAdd';
@@ -40,12 +41,12 @@ const List = React.memo(
   }) => {
     const [t] = useTranslation();
     const [isAddCardOpen, setIsAddCardOpen] = useState(false);
+    const [addCardAtTop, setAddCardAtTop] = useState(false);
     const [nameEditHeight, setNameEditHeight] = useState(0);
     const [headerNameElement, setHeaderNameElement] = useState();
     const [headerNameHeight] = useResizeObserverSize(headerNameElement, ResizeObserverSizeTypes.CLIENT_HEIGHT);
     const [listOuterWrapperElement, setListOuterWrapperElement] = useState();
     const [listOuterWrapperScrollable] = useResizeObserverSize(listOuterWrapperElement, ResizeObserverSizeTypes.SCROLLABLE);
-
     const nameEdit = useRef(null);
     const listWrapper = useRef(null);
 
@@ -82,11 +83,13 @@ const List = React.memo(
     );
 
     const handleAddCardClick = useCallback(() => {
+      setAddCardAtTop(false);
       setIsAddCardOpen(true);
     }, []);
 
     const handleAddCardClose = useCallback(() => {
       setIsAddCardOpen(false);
+      setAddCardAtTop(false);
     }, []);
 
     const handleNameEdit = useCallback(() => {
@@ -98,8 +101,20 @@ const List = React.memo(
     }, []);
 
     const handleCardAdd = useCallback(() => {
+      setAddCardAtTop(true);
       setIsAddCardOpen(true);
     }, []);
+
+    const handleCardCreate = useCallback(
+      (data, autoOpen) => {
+        if (addCardAtTop) {
+          onCardCreate(data, autoOpen, 0);
+        } else {
+          onCardCreate(data, autoOpen);
+        }
+      },
+      [onCardCreate, addCardAtTop],
+    );
 
     const handleNameEditHeightChange = useCallback((height) => {
       setNameEditHeight(height);
@@ -107,9 +122,13 @@ const List = React.memo(
 
     useEffect(() => {
       if (isAddCardOpen && listWrapper.current) {
-        listWrapper.current.scrollTop = listWrapper.current.scrollHeight;
+        if (addCardAtTop) {
+          listWrapper.current.scrollTop = 0;
+        } else {
+          listWrapper.current.scrollTop = listWrapper.current.scrollHeight;
+        }
       }
-    }, [filteredCardIds, isAddCardOpen]);
+    }, [filteredCardIds, isAddCardOpen, addCardAtTop]);
 
     useEffect(() => {
       if (listWrapper.current) {
@@ -120,7 +139,7 @@ const List = React.memo(
     }, [canEdit, nameEditHeight, headerNameHeight, isAddCardOpen, styleVars, isCollapsed]);
 
     const cardsCountText = () => {
-      return isFiltered ? `${filteredCardIds.length} ${t('common.ofCards', { count: cardIds.length })}` : `${t('common.cards', { count: cardIds.length })}`;
+      return isFiltered ? t('common.ofCards', { filteredCount: filteredCardIds.length, count: cardIds.length }) : t('common.cards', { count: cardIds.length });
     };
 
     const cardsNode = (
@@ -129,11 +148,12 @@ const List = React.memo(
           // eslint-disable-next-line react/jsx-props-no-spreading
           <div {...droppableProps} ref={innerRef}>
             <div className={s.cards}>
+              {canEdit && addCardAtTop && <CardAdd isOpen={isAddCardOpen} onCreate={handleCardCreate} onClose={handleAddCardClose} labelIds={labelIds} memberIds={memberIds} />}
               {filteredCardIds.map((cardId, cardIndex) => (
                 <CardContainer key={cardId} id={cardId} index={cardIndex} />
               ))}
               {placeholder}
-              {canEdit && <CardAdd isOpen={isAddCardOpen} onCreate={onCardCreate} onClose={handleAddCardClose} labelIds={labelIds} memberIds={memberIds} />}
+              {canEdit && !addCardAtTop && <CardAdd isOpen={isAddCardOpen} onCreate={handleCardCreate} onClose={handleAddCardClose} labelIds={labelIds} memberIds={memberIds} />}
             </div>
           </div>
         )}
@@ -170,6 +190,20 @@ const List = React.memo(
               {name}
             </div>
             <div className={s.headerCardsCountCollapsed}>{cardsCountText()}</div>
+            <CardAddPopup
+              lists={[]}
+              labelIds={labelIds}
+              memberIds={memberIds}
+              forcedDefaultListId={id}
+              onCreate={(listId, data, autoOpen) => onCardCreate(data, autoOpen)}
+              offset={5}
+              position="top"
+              wrapperClassName={s.cardAddPopupWrapper}
+            >
+              <Button style={ButtonStyle.Icon} title={t('common.addCard', { context: 'title' })} className={s.collapsedListCardAddButton}>
+                <Icon type={IconType.PlusMath} size={IconSize.Size13} className={s.collapsedListCardAddButtonIcon} />
+              </Button>
+            </CardAddPopup>
           </div>
         )}
       </Droppable>
@@ -238,7 +272,8 @@ const List = React.memo(
                 <div className={s.headerCardsCount}>{cardsCountText()}</div>
               </div>
               {/* eslint-disable-next-line prettier/prettier */}
-            <div ref={(el) => {listWrapper.current = el; setListOuterWrapperElement(el);}} className={clsx(s.cardsInnerWrapper, gs.scrollableY, listOuterWrapperScrollable && s.cardsInnerWrapperScrollable)}>
+              <div ref={(el) => { listWrapper.current = el; setListOuterWrapperElement(el); }} className={clsx(s.cardsInnerWrapper, gs.scrollableY, listOuterWrapperScrollable && s.cardsInnerWrapperScrollable)}
+              >
                 <div className={clsx(s.cardsOuterWrapper, listOuterWrapperScrollable && s.cardsOuterWrapperScrollable)}>{cardsNode}</div>
               </div>
               {addCardNode}

@@ -35,6 +35,7 @@ export function* handleLocationChange() {
     case Paths.SETTINGS_INSTANCE:
     case Paths.SETTINGS_USERS:
     case Paths.SETTINGS_PROJECT:
+    case Paths.NOTIFICATIONS:
       localStorage.setItem('pre_login_path', JSON.stringify(pathsMatch.pathname));
       yield call(goToLogin);
       break;
@@ -48,6 +49,10 @@ export function* handleLocationChange() {
     }
     case Paths.MICROSOFT_CALLBACK: {
       yield call(authenticateSsoCallback, SsoTypes.MICROSOFT);
+      break;
+    }
+    case Paths.OIDC_CALLBACK: {
+      yield call(authenticateSsoCallback, SsoTypes.OIDC);
       break;
     }
     default:

@@ -43,6 +43,10 @@
     }
   }
 
+  &:global([data-theme-shape='rounded']) .addListButton {
+    border-radius: 8px;
+  }
+
   .addListButtonIcon {
     margin-right: 2px;
     vertical-align: -20%;

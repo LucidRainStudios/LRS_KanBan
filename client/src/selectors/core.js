@@ -29,8 +29,12 @@ export const selectCoreSettings = createSelector(orm, ({ Core }) => {
       localRegistrationEnabled: false,
       registrationEnabled: false,
       projectCreationAllEnabled: false,
+      syncSsoDataOnAuth: false,
+      syncSsoAdminOnAuth: false,
+      allowedRegisterDomains: [],
       ssoUrls,
       ssoAvailable,
+      oidcEnabledMethods: [],
       demoMode: false,
     };
     return coreModel;

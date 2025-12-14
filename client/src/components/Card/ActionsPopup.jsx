@@ -57,8 +57,8 @@ const ActionsStep = React.memo(
     onLabelCreate,
     onLabelUpdate,
     onLabelDelete,
-    onClose,
     onActivitiesFetch,
+    onClose,
   }) => {
     const [t] = useTranslation();
     const [step, openStep, handleBack] = useSteps();
@@ -182,7 +182,8 @@ const ActionsStep = React.memo(
               updatedBy={updatedBy}
               memberships={boardMemberships}
               isNotMemberTitle={t('common.noLongerBoardMember')}
-              card={card}
+              cardId={card.id}
+              cardName={card.name}
               activities={activities}
               isFetching={isActivitiesFetching}
               isAllFetched={isAllActivitiesFetched}
@@ -246,8 +247,8 @@ ActionsStep.propTypes = {
   onLabelCreate: PropTypes.func.isRequired,
   onLabelUpdate: PropTypes.func.isRequired,
   onLabelDelete: PropTypes.func.isRequired,
-  onClose: PropTypes.func.isRequired,
   onActivitiesFetch: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
 
 ActionsStep.defaultProps = {

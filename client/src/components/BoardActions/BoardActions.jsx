@@ -61,7 +61,7 @@ const BoardActions = React.memo(
         <div className={s.githubAction}>
           <ConnectionsPopup defaultData={pick(boardData, ['isGithubConnected', 'githubRepo'])} onUpdate={handleConnectionsUpdate} offset={16}>
             <Icon
-              type={IconType.Github}
+              type={IconType.GitHub}
               size={IconSize.Size14}
               className={clsx(boardData.isGithubConnected ? s.githubGreen : s.githubGrey)}
               title={boardData.isGithubConnected ? t('common.connectedToGithub', { repo: boardData.githubRepo }) : t('common.notConnectedToGithub')}
@@ -71,7 +71,7 @@ const BoardActions = React.memo(
         <div title={boardData.name} className={clsx(s.title, s.action)}>
           {boardData.name}
         </div>
-        <div className={clsx(s.cardsCount, s.action)}>{isFiltered ? `${filteredCardCount} ${t('common.ofCards', { count: cardCount })}` : `${t('common.cards', { count: cardCount })}`}</div>
+        <div className={clsx(s.cardsCount, s.action)}>{isFiltered ? t('common.ofCards', { filteredCount: filteredCardCount, count: cardCount }) : t('common.cards', { count: cardCount })}</div>
         <div className={s.action}>
           <Memberships
             items={memberships}
@@ -92,6 +92,8 @@ const BoardActions = React.memo(
             boardMemberships={memberships}
             allLabels={labels}
             canEdit={canEdit}
+            dueDate={boardSearchParams.dueDate}
+            justSelectedDay={boardSearchParams.justSelectedDay}
             onUserAdd={onUserToFilterAdd}
             onUserRemove={onUserFromFilterRemove}
             onLabelAdd={onLabelToFilterAdd}
@@ -99,6 +101,7 @@ const BoardActions = React.memo(
             onLabelCreate={onLabelCreate}
             onLabelUpdate={onLabelUpdate}
             onLabelDelete={onLabelDelete}
+            onBoardSearchParamsUpdate={onBoardSearchParamsUpdate}
           />
         </div>
         <div className={s.action}>

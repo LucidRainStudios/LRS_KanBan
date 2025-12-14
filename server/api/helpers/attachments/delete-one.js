@@ -53,7 +53,7 @@ module.exports = {
         try {
           rimraf.sync(path.join(sails.config.custom.attachmentsPath, attachment.dirname));
         } catch (error) {
-          console.warn(error.stack); // eslint-disable-line no-console
+          sails.log.warn(error.stack);
         }
       }
 
@@ -69,7 +69,7 @@ module.exports = {
       await sails.helpers.actions.createOne.with({
         values: {
           card: inputs.card,
-          scope: Action.Scopes.CARD,
+          scope: Action.Scopes.ATTACHMENT,
           type: Action.Types.CARD_ATTACHMENT_DELETE,
           data: {
             attachmentId: attachment.id,

@@ -93,6 +93,57 @@ export const makeSelectTasksByCardId = () =>
 
 export const selectTasksByCardId = makeSelectTasksByCardId();
 
+export const makeSelectClosestTaskDueDateByCardId = () =>
+  createSelector(
+    orm,
+    (_, id) => id,
+    ({ Card }, id) => {
+      const cardModel = Card.withId(id);
+
+      if (!cardModel) {
+        return cardModel;
+      }
+
+      return (
+        cardModel
+          .getOrderedTasksQuerySet()
+          .toRefArray()
+          .filter((t) => !t.isCompleted && t.dueDate)
+          .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))[0]?.dueDate ?? undefined
+      );
+    },
+  );
+
+export const selectClosestTaskDueDateByCardId = makeSelectClosestTaskDueDateByCardId();
+
+export const makeSelectClosestDueDateByCardId = () =>
+  createSelector(
+    orm,
+    (_, id) => id,
+    ({ Card }, id) => {
+      const cardModel = Card.withId(id);
+
+      if (!cardModel) {
+        return cardModel;
+      }
+
+      const cardDueTime = cardModel.dueDate ? new Date(cardModel.dueDate).getTime() : undefined;
+      const taskDueTimes = cardModel
+        .getOrderedTasksQuerySet()
+        .toRefArray()
+        .filter((t) => !t.isCompleted && t.dueDate)
+        .map((t) => new Date(t.dueDate).getTime());
+
+      const allDueTimes = cardDueTime !== undefined ? [cardDueTime, ...taskDueTimes] : taskDueTimes;
+
+      if (allDueTimes.length === 0) return undefined;
+
+      return new Date(Math.min(...allDueTimes));
+    },
+  );
+
+export const selectClosestDueDateByCardId = makeSelectClosestDueDateByCardId();
+
 export const makeSelectLastCommentActivityIdByCardId = () =>
   createSelector(
     orm,
@@ -215,6 +266,129 @@ export const makeSelectActivitiesByCardId = () =>
 
 export const selectActivitiesByCardId = makeSelectActivitiesByCardId();
 
+export const makeSelectTaskActivitiesByCardId = () =>
+  createSelector(
+    orm,
+    (_, id) => id,
+    ({ Card }, id) => {
+      if (!id) {
+        return id;
+      }
+
+      const cardModel = Card.withId(id);
+
+      if (!cardModel) {
+        return cardModel;
+      }
+
+      const activities = cardModel
+        .getOrderedTaskActivitiesQuerySet()
+        .toModelArray()
+        .map((activityModel) => ({
+          ...activityModel.ref,
+          ...getMeta(activityModel),
+          isPersisted: !isLocalId(activityModel.id),
+          user: {
+            ...activityModel.user.ref,
+          },
+        }));
+
+      const taskActivitiesByTaskId = activities.reduce((acc, act) => {
+        const tid = act.data?.taskId;
+        if (tid == null) return acc;
+        if (!acc[tid]) acc[tid] = [];
+        acc[tid].push(act);
+        return acc;
+      }, {});
+
+      return taskActivitiesByTaskId;
+    },
+  );
+
+export const selectTaskActivitiesByCardId = makeSelectTaskActivitiesByCardId();
+
+export const makeSelectAttachmentActivitiesByCardId = () =>
+  createSelector(
+    orm,
+    (_, id) => id,
+    ({ Card }, id) => {
+      if (!id) {
+        return id;
+      }
+
+      const cardModel = Card.withId(id);
+
+      if (!cardModel) {
+        return cardModel;
+      }
+
+      const activities = cardModel
+        .getOrderedAttachmentActivitiesQuerySet()
+        .toModelArray()
+        .map((activityModel) => ({
+          ...activityModel.ref,
+          ...getMeta(activityModel),
+          isPersisted: !isLocalId(activityModel.id),
+          user: {
+            ...activityModel.user.ref,
+          },
+        }));
+
+      const attachmentActivitiesByAttachmentId = activities.reduce((acc, act) => {
+        const tid = act.data?.attachmentId;
+        if (tid == null) return acc;
+        if (!acc[tid]) acc[tid] = [];
+        acc[tid].push(act);
+        return acc;
+      }, {});
+
+      return attachmentActivitiesByAttachmentId;
+    },
+  );
+
+export const selectAttachmentActivitiesByCardId = makeSelectAttachmentActivitiesByCardId();
+
+export const makeSelectCommentActivitiesByCardId = () =>
+  createSelector(
+    orm,
+    (_, id) => id,
+    ({ Card }, id) => {
+      if (!id) {
+        return id;
+      }
+
+      const cardModel = Card.withId(id);
+
+      if (!cardModel) {
+        return cardModel;
+      }
+
+      const activities = cardModel
+        .getOrderedCommentActivitiesQuerySet()
+        .toModelArray()
+        .map((activityModel) => ({
+          ...activityModel.ref,
+          ...getMeta(activityModel),
+          isPersisted: !isLocalId(activityModel.id),
+          user: {
+            ...activityModel.user.ref,
+          },
+        }));
+
+      const commentActivitiesByCommentId = activities.reduce((acc, act) => {
+        const tid = act.data?.commentActionId;
+        if (tid == null) return acc;
+        if (!acc[tid]) acc[tid] = [];
+        acc[tid].push(act);
+        return acc;
+      }, {});
+
+      return commentActivitiesByCommentId;
+    },
+  );
+
+export const selectCommentActivitiesByCardId = makeSelectCommentActivitiesByCardId();
+
 export const selectCurrentCard = createSelector(
   orm,
   (state) => selectPath(state).cardId,
@@ -318,11 +492,12 @@ export const selectAttachmentsForCurrentCard = createSelector(
 
     return cardModel
       .getOrderedAttachmentsQuerySet()
-      .toRefArray()
-      .map((attachment) => ({
-        ...attachment,
-        isCover: attachment.id === cardModel.coverAttachmentId,
-        isPersisted: !isLocalId(attachment.id),
+      .toModelArray()
+      .map((attachmentModel) => ({
+        ...attachmentModel.ref,
+        ...getMeta(attachmentModel),
+        isCover: attachmentModel.id === cardModel.coverAttachmentId,
+        isPersisted: !isLocalId(attachmentModel.id),
       }));
   },
 );
@@ -496,6 +671,10 @@ export default {
   selectLabelsByCardId,
   makeSelectTasksByCardId,
   selectTasksByCardId,
+  makeSelectClosestTaskDueDateByCardId,
+  selectClosestTaskDueDateByCardId,
+  makeSelectClosestDueDateByCardId,
+  selectClosestDueDateByCardId,
   makeSelectLastCommentActivityIdByCardId,
   selectLastCommentActivityIdByCardId,
   makeSelectLastActivityIdByCardId,
@@ -508,6 +687,12 @@ export default {
   selectAttachmentsCountByCardId,
   makeSelectActivitiesByCardId,
   selectActivitiesByCardId,
+  makeSelectTaskActivitiesByCardId,
+  selectTaskActivitiesByCardId,
+  makeSelectAttachmentActivitiesByCardId,
+  selectAttachmentActivitiesByCardId,
+  makeSelectCommentActivitiesByCardId,
+  selectCommentActivitiesByCardId,
   selectCurrentCard,
   selectUsersForCurrentCard,
   selectLabelsForCurrentCard,

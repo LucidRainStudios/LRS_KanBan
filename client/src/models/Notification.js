@@ -81,6 +81,28 @@ export default class extends BaseModel {
         Notification.upsert(payload.notification);
 
         break;
+      case ActionTypes.NOTIFICATION_MARK_ALL_AS:
+        Notification.all()
+          .toModelArray()
+          .forEach((notification) => {
+            notification.update({ isRead: true });
+          });
+
+        break;
+      case ActionTypes.NOTIFICATION_MARK_ALL_AS__SUCCESS:
+      case ActionTypes.NOTIFICATION_MARK_ALL_AS_HANDLE:
+        if (payload.notifications) {
+          payload.notifications.forEach((notification) => {
+            const n = Notification.withId(notification.id);
+            if (n) {
+              n.update(notification);
+            } else {
+              Notification.upsert(notification);
+            }
+          });
+        }
+
+        break;
       case ActionTypes.NOTIFICATION_DELETE:
         Notification.withId(payload.id).deleteWithRelated();
 
@@ -95,6 +117,36 @@ export default class extends BaseModel {
 
         break;
       }
+      case ActionTypes.NOTIFICATION_DELETE_ALL:
+        if (payload.data && payload.data.deleteIsReadOnly) {
+          Notification.all()
+            .toModelArray()
+            .forEach((notification) => {
+              if (notification.isRead) {
+                notification.deleteWithRelated();
+              }
+            });
+        } else {
+          Notification.all()
+            .toModelArray()
+            .forEach((notification) => {
+              notification.deleteWithRelated();
+            });
+        }
+        break;
+      case ActionTypes.NOTIFICATION_DELETE_ALL__SUCCESS:
+      case ActionTypes.NOTIFICATION_DELETE_ALL_HANDLE:
+        if (payload.notifications) {
+          payload.notifications.forEach((notification) => {
+            const notificationModel = Notification.withId(notification.id);
+
+            if (notificationModel) {
+              notificationModel.deleteWithRelated();
+            }
+          });
+        }
+
+        break;
       default:
     }
   }

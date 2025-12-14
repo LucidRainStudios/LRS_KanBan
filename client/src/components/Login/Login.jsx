@@ -9,7 +9,7 @@ import { SsoTypes } from '../../constants/Enums';
 import { useForm } from '../../hooks';
 import { useDidUpdate, usePrevious, useToggle } from '../../lib/hooks';
 import { isUsername } from '../../utils/validator';
-import { Button, ButtonStyle, Icon, IconType, IconSize, Input, InputStyle, Form, Message, MessageStyle } from '../Utils';
+import { Button, ButtonStyle, Icon, IconType, IconSize, Input, InputStyle, Form, Message, MessageStyle, Loader, LoaderSize } from '../Utils';
 
 import * as gs from '../../global.module.scss';
 import * as s from './Login.module.scss';
@@ -50,6 +50,16 @@ const createMessage = (error) => {
         type: 'warning',
         content: 'common.serverConnectionFailed',
       };
+    case 'noOidcProfileFound':
+      return {
+        type: 'error',
+        content: 'errors.noOidcProfileFound',
+      };
+    case 'domainNotAllowed':
+      return {
+        type: 'error',
+        content: 'errors.domainNotAllowed',
+      };
     default:
       return {
         type: 'warning',
@@ -58,11 +68,32 @@ const createMessage = (error) => {
   }
 };
 
+const SSO_PROVIDERS = [
+  { type: SsoTypes.GOOGLE, label: 'Google', icon: IconType.Google },
+  { type: SsoTypes.MICROSOFT, label: 'Microsoft', icon: IconType.Microsoft },
+  { type: SsoTypes.GITHUB, label: 'GitHub', icon: IconType.GitHub },
+  { type: SsoTypes.OIDC, label: 'OIDC', icon: IconType.Key },
+];
+
 const Login = React.memo(
-  ({ defaultData, isSubmitting, error, ssoAvailable, registrationEnabled, localRegistrationEnabled, ssoRegistrationEnabled, onAuthenticate, onAuthenticateSso, onMessageDismiss, onRegisterOpen }) => {
+  ({
+    defaultData,
+    isSubmitting,
+    error,
+    ssoAvailable,
+    oidcEnabledMethods,
+    registrationEnabled,
+    localRegistrationEnabled,
+    ssoRegistrationEnabled,
+    onAuthenticate,
+    onAuthenticateSso,
+    onMessageDismiss,
+    onRegisterOpen,
+  }) => {
     const [t] = useTranslation();
     const [isUsernameError, setIsUsernameError] = useState(false);
     const [isPasswordError, setIsPasswordError] = useState(false);
+    const [loadingProvider, setLoadingProvider] = useState(null);
     const wasSubmitting = usePrevious(isSubmitting);
     const [data, handleFieldChange, setData] = useForm(() => ({
       emailOrUsername: '',
@@ -100,8 +131,24 @@ const Login = React.memo(
         return;
       }
 
+      setLoadingProvider('local');
       onAuthenticate(cleanData);
     }, [onAuthenticate, data]);
+
+    useEffect(() => {
+      if (error) {
+        setLoadingProvider(null);
+      }
+    }, [error]);
+
+    const handleSsoClick = useCallback(
+      async (provider, method = null) => {
+        const id = method ? `${provider}:${method}` : provider;
+        setLoadingProvider(id);
+        onAuthenticateSso(provider, method);
+      },
+      [onAuthenticateSso],
+    );
 
     useEffect(() => {
       emailOrUsernameField.current?.focus();
@@ -169,8 +216,14 @@ const Login = React.memo(
                 isError={isPasswordError}
               />
               <Button style={ButtonStyle.Login} type="submit" title={t('action.logIn')} disabled={isSubmitting} className={clsx(s.submitButton, s.button)} onClick={handleSubmit}>
-                {t('action.logIn')}
-                <Icon type={IconType.ArrowDown} size={IconSize.Size20} className={s.submitButtonIcon} />
+                {loadingProvider === 'local' ? (
+                  <Loader size={LoaderSize.Small} />
+                ) : (
+                  <>
+                    {t('action.logIn')}
+                    <Icon type={IconType.ArrowDown} size={IconSize.Size20} className={s.submitButtonIcon} />
+                  </>
+                )}
               </Button>
             </Form>
             {Object.values(ssoAvailable).some(Boolean) && (
@@ -181,24 +234,35 @@ const Login = React.memo(
                   <div className={s.otherOptionsLine} />
                 </div>
                 <div className={s.otherOptions}>
-                  {ssoAvailable[SsoTypes.GOOGLE] && (
-                    <Button style={ButtonStyle.Login} title={t('common.continueWith', { provider: 'Google' })} onClick={() => onAuthenticateSso(SsoTypes.GOOGLE)} className={s.button}>
-                      <Icon type={IconType.Google} size={IconSize.Size20} className={s.ssoIcon} />
-                      {t('common.continueWith', { provider: 'Google' })}
+                  {SSO_PROVIDERS.filter((p) => ssoAvailable[p.type] && (p.type !== SsoTypes.OIDC || oidcEnabledMethods.length === 0)).map((p) => (
+                    <Button key={p.type} style={ButtonStyle.Login} title={t('common.continueWith', { provider: p.label })} onClick={() => handleSsoClick(p.type)} className={s.button}>
+                      {loadingProvider === p.type ? (
+                        <Loader size={LoaderSize.Small} />
+                      ) : (
+                        <>
+                          <Icon type={p.icon} size={IconSize.Size20} className={s.ssoIcon} />
+                          {t('common.continueWith', { provider: p.label })}
+                        </>
+                      )}
                     </Button>
-                  )}
-                  {ssoAvailable[SsoTypes.GITHUB] && (
-                    <Button style={ButtonStyle.Login} title={t('common.continueWith', { provider: 'GitHub' })} onClick={() => onAuthenticateSso(SsoTypes.GITHUB)} className={s.button}>
-                      <Icon type={IconType.Github} size={IconSize.Size20} className={s.ssoIcon} />
-                      {t('common.continueWith', { provider: 'GitHub' })}
-                    </Button>
-                  )}
-                  {ssoAvailable[SsoTypes.MICROSOFT] && (
-                    <Button style={ButtonStyle.Login} title={t('common.continueWith', { provider: 'Microsoft' })} onClick={() => onAuthenticateSso(SsoTypes.MICROSOFT)} className={s.button}>
-                      <Icon type={IconType.Microsoft} size={IconSize.Size20} className={s.ssoIcon} />
-                      {t('common.continueWith', { provider: 'Microsoft' })}
-                    </Button>
-                  )}
+                  ))}
+                  {ssoAvailable[SsoTypes.OIDC] &&
+                    oidcEnabledMethods.length > 0 &&
+                    oidcEnabledMethods.map((method) => {
+                      const id = `${SsoTypes.OIDC}:${method}`;
+                      return (
+                        <Button key={id} style={ButtonStyle.Login} title={t('common.continueWith', { provider: method })} onClick={() => handleSsoClick(SsoTypes.OIDC, method)} className={s.button}>
+                          {loadingProvider === id ? (
+                            <Loader size={LoaderSize.Small} />
+                          ) : (
+                            <>
+                              <Icon type={IconType[method] || IconType.Key} size={IconSize.Size20} className={s.ssoIcon} />
+                              {t('common.continueWith', { provider: method })}
+                            </>
+                          )}
+                        </Button>
+                      );
+                    })}
                 </div>
               </>
             )}
@@ -222,6 +286,7 @@ Login.propTypes = {
   isSubmitting: PropTypes.bool.isRequired,
   error: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   ssoAvailable: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+  oidcEnabledMethods: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   registrationEnabled: PropTypes.bool.isRequired,
   localRegistrationEnabled: PropTypes.bool.isRequired,
   ssoRegistrationEnabled: PropTypes.bool.isRequired,

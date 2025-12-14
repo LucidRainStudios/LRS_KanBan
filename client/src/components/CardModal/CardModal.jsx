@@ -7,7 +7,6 @@ import { useLocalStorage } from '../../hooks';
 import { useToggle } from '../../lib/hooks';
 import { registerDescriptionOpenHandler } from '../../sagas/core/services/cards';
 import { createTimer, startTimer, stopTimer } from '../../utils/timer';
-import { extractFirstLikelyUrl } from '../../utils/url';
 import ActionsPopup from '../Card/ActionsPopup';
 import DeletePopup from '../DeletePopup';
 import DueDate from '../DueDate';
@@ -19,7 +18,7 @@ import Tasks from '../Tasks';
 import Timer from '../Timer';
 import TimerEditPopup from '../TimerEditPopup';
 import User from '../User';
-import { Button, ButtonStyle, Icon, IconType, IconSize, Dropdown, DropdownStyle, ExternalLink, MDPreview } from '../Utils';
+import { Button, ButtonStyle, Icon, IconType, IconSize, Dropdown, DropdownStyle, MDPreview, LinkifiedTextRenderer } from '../Utils';
 import AttachmentAdd from './AttachmentAdd';
 import AttachmentAddZone from './AttachmentAddZone';
 import Attachments from './Attachments';
@@ -57,6 +56,7 @@ const CardModal = React.memo(
     attachmentsShown,
     commentsShown,
     hideCardModalActivity,
+    hideClosestDueDate,
     preferredDetailsFont,
     userId,
     isGithubConnected,
@@ -72,6 +72,8 @@ const CardModal = React.memo(
     commentMode,
     commentCount,
     url,
+    closestTaskDueDate,
+    closestDueDate,
     createdAt,
     createdBy,
     updatedAt,
@@ -312,8 +314,6 @@ const CardModal = React.memo(
 
     const userIds = users.map((user) => user.id);
     const labelIds = labels.map((label) => label.id);
-    const link = extractFirstLikelyUrl(name);
-    const isLink = !!link;
 
     const headerNode = (
       <div className={s.header}>
@@ -325,12 +325,7 @@ const CardModal = React.memo(
             <NameField defaultValue={name} onUpdate={handleNameUpdate} ref={nameEdit}>
               {/*  eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
               <div className={clsx(s.headerTitle, canEdit && gs.cursorPointer)} onClick={handleNameEdit} title={name}>
-                {isLink && (
-                  <ExternalLink href={link}>
-                    <Icon type={IconType.Link} size={IconSize.Size13} className={s.link} />
-                  </ExternalLink>
-                )}
-                {name}
+                <LinkifiedTextRenderer text={name} iconClassName={s.linkIcon} />
               </div>
             </NameField>
           </div>
@@ -351,6 +346,7 @@ const CardModal = React.memo(
           {canEdit && (
             <ActionsPopup
               card={{
+                id,
                 name,
                 dueDate,
                 timer,
@@ -531,6 +527,15 @@ const CardModal = React.memo(
       </div>
     );
 
+    const closestDueDateNode = closestDueDate && (
+      <div className={s.headerItems}>
+        <div className={s.text}>{t('common.closestDueDate', { context: 'title' })}</div>
+        <span className={s.headerItem}>
+          <DueDate value={closestDueDate} titlePrefix={t('common.cardDueDateSummary', { context: 'title' })} />
+        </span>
+      </div>
+    );
+
     const timerNode = (
       <div className={s.headerItems}>
         <div className={s.text}>
@@ -646,16 +651,15 @@ const CardModal = React.memo(
     );
 
     const completedTasks = tasks.filter((task) => task.isCompleted);
-    const closestNotCompletedTaslDueDate = tasks.filter((task) => !task.isCompleted && task.dueDate).sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))[0];
 
     const tasksNode = (
       <div>
         <div className={s.moduleHeader}>
           <Icon type={IconType.Check} size={IconSize.Size20} className={s.moduleIcon} />
           {t('common.tasks')}
-          {tasks.length > 0 && closestNotCompletedTaslDueDate && (
+          {tasks.length > 0 && closestTaskDueDate && (
             <div className={s.taskDueDateSummaryWrapper}>
-              <DueDate variant="tasksCard" value={closestNotCompletedTaslDueDate.dueDate} titlePrefix={t('common.dueDateSummary')} iconSize={IconSize.Size12} />
+              <DueDate variant="tasksCard" value={closestTaskDueDate} titlePrefix={t('common.dueDateSummary')} iconSize={IconSize.Size12} />
             </div>
           )}
           {tasks.length > 0 && (
@@ -678,10 +682,13 @@ const CardModal = React.memo(
               ref={tasksRef}
               variant="cardModal"
               cardId={id}
+              cardName={name}
               items={tasks}
               canEdit={canEdit}
               allBoardMemberships={boardAndTaskMemberships}
               boardMemberships={boardMemberships}
+              isActivitiesFetching={isActivitiesFetching}
+              isAllActivitiesFetched={isAllActivitiesFetched}
               onCreate={onTaskCreate}
               onUpdate={onTaskUpdate}
               onMove={onTaskMove}
@@ -689,6 +696,7 @@ const CardModal = React.memo(
               onDelete={onTaskDelete}
               onUserAdd={onUserToTaskAdd}
               onUserRemove={onUserFromTaskRemove}
+              onActivitiesFetch={onActivitiesFetch}
             />
           )}
         </div>
@@ -716,13 +724,19 @@ const CardModal = React.memo(
           {attacShown && (
             <>
               <Attachments
+                cardId={id}
+                cardName={name}
                 items={attachments}
                 canEdit={canEdit}
+                isActivitiesFetching={isActivitiesFetching}
+                isAllActivitiesFetched={isAllActivitiesFetched}
+                boardMemberships={boardMemberships}
                 onUpdate={onAttachmentUpdate}
                 onDelete={onAttachmentDelete}
                 onCoverUpdate={handleCoverUpdate}
                 onGalleryOpen={handleGalleryOpen}
                 onGalleryClose={handleGalleryClose}
+                onActivitiesFetch={onActivitiesFetch}
               />
               {canEdit && (
                 <AttachmentAdd onCreate={onAttachmentCreate}>
@@ -739,9 +753,13 @@ const CardModal = React.memo(
 
     const commentsNode = (
       <Comments
+        cardId={id}
+        cardName={name}
         items={comments}
-        isFetching={isCommentsFetching}
-        isAllFetched={isAllCommentsFetched}
+        isCommentsFetching={isCommentsFetching}
+        isAllCommentsFetched={isAllCommentsFetched}
+        isActivitiesFetching={isActivitiesFetching}
+        isAllActivitiesFetched={isAllActivitiesFetched}
         canEdit={canEditCommentActivities}
         canEditAllComments={canEditAllCommentActivities}
         commentMode={commentMode}
@@ -750,7 +768,8 @@ const CardModal = React.memo(
         commentCount={commentCount}
         preferredDetailsFont={preferredDetailsFont}
         boardMemberships={boardMemberships}
-        onFetch={onCommentsFetch}
+        onCommentsFetch={onCommentsFetch}
+        onActivitiesFetch={onActivitiesFetch}
         onCommentCreate={onCommentActivityCreate}
         onCommentUpdate={onCommentActivityUpdate}
         onCommentDelete={onCommentActivityDelete}
@@ -769,6 +788,7 @@ const CardModal = React.memo(
             {labelsNode}
             {dueDateNode}
             {timerNode}
+            {!hideClosestDueDate && closestDueDateNode}
             {!hideCardModalActivity && createdNode}
             {!hideCardModalActivity && (updatedAt || updatedBy) && updatedNode}
             <hr className={s.hr} />
@@ -823,6 +843,7 @@ CardModal.propTypes = {
   attachmentsShown: PropTypes.bool.isRequired,
   commentsShown: PropTypes.bool.isRequired,
   hideCardModalActivity: PropTypes.bool.isRequired,
+  hideClosestDueDate: PropTypes.bool.isRequired,
   preferredDetailsFont: PropTypes.string.isRequired,
   userId: PropTypes.string.isRequired,
   isGithubConnected: PropTypes.bool.isRequired,
@@ -838,6 +859,8 @@ CardModal.propTypes = {
   commentMode: PropTypes.string.isRequired,
   commentCount: PropTypes.number.isRequired,
   url: PropTypes.string.isRequired,
+  closestTaskDueDate: PropTypes.instanceOf(Date),
+  closestDueDate: PropTypes.instanceOf(Date),
   createdAt: PropTypes.instanceOf(Date),
   createdBy: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   updatedAt: PropTypes.instanceOf(Date),
@@ -878,6 +901,8 @@ CardModal.defaultProps = {
   description: undefined,
   dueDate: undefined,
   timer: undefined,
+  closestTaskDueDate: undefined,
+  closestDueDate: undefined,
   createdAt: undefined,
   createdBy: undefined,
   updatedAt: undefined,

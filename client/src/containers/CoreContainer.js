@@ -10,6 +10,7 @@ const mapStateToProps = (state) => {
   const currentProject = selectors.selectCurrentProject(state);
   const currentBoard = selectors.selectCurrentBoard(state);
   const currentCard = selectors.selectCurrentCard(state);
+  const userPrefs = selectors.selectCurrentUserPrefs(state);
 
   return {
     isSocketDisconnected,
@@ -18,6 +19,8 @@ const mapStateToProps = (state) => {
     currentBoard,
     currentCard,
     isInitializing: isCoreInitializing,
+    theme: userPrefs?.theme,
+    themeShape: userPrefs?.themeShape,
   };
 };
 

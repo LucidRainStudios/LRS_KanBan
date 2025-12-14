@@ -24,6 +24,8 @@ const VARIANTS = {
 
 const Item = React.memo(
   ({
+    cardId,
+    cardName,
     variant,
     id,
     index,
@@ -32,6 +34,9 @@ const Item = React.memo(
     allBoardMemberships,
     boardMemberships,
     users,
+    activities,
+    isActivitiesFetching,
+    isAllActivitiesFetched,
     isCompleted,
     isPersisted,
     canEdit,
@@ -44,6 +49,7 @@ const Item = React.memo(
     onDelete,
     onUserAdd,
     onUserRemove,
+    onActivitiesFetch,
   }) => {
     const [t] = useTranslation();
     const nameEdit = useRef(null);
@@ -176,11 +182,16 @@ const Item = React.memo(
                 )}
                 {isPersisted && canEdit && (
                   <ActionsPopup
+                    cardId={cardId}
+                    cardName={cardName}
                     name={name}
                     dueDate={dueDate}
                     allBoardMemberships={allBoardMemberships}
                     boardMemberships={boardMemberships}
                     users={users}
+                    activities={activities}
+                    isActivitiesFetching={isActivitiesFetching}
+                    isAllActivitiesFetched={isAllActivitiesFetched}
                     createdAt={createdAt}
                     createdBy={createdBy}
                     updatedAt={updatedAt}
@@ -191,6 +202,7 @@ const Item = React.memo(
                     onDelete={onDelete}
                     onUserAdd={onUserAdd}
                     onUserRemove={onUserRemove}
+                    onActivitiesFetch={onActivitiesFetch}
                     hideCloseButton
                     position="left-start"
                     offset={0}
@@ -212,6 +224,8 @@ const Item = React.memo(
 );
 
 Item.propTypes = {
+  cardId: PropTypes.string.isRequired,
+  cardName: PropTypes.string.isRequired,
   variant: PropTypes.oneOf(Object.values(VARIANTS)).isRequired,
   id: PropTypes.string.isRequired,
   index: PropTypes.number.isRequired,
@@ -220,6 +234,9 @@ Item.propTypes = {
   allBoardMemberships: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   boardMemberships: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   users: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
+  activities: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
+  isActivitiesFetching: PropTypes.bool.isRequired,
+  isAllActivitiesFetched: PropTypes.bool.isRequired,
   isCompleted: PropTypes.bool.isRequired,
   isPersisted: PropTypes.bool.isRequired,
   canEdit: PropTypes.bool.isRequired,
@@ -232,6 +249,7 @@ Item.propTypes = {
   onDelete: PropTypes.func.isRequired,
   onUserAdd: PropTypes.func.isRequired,
   onUserRemove: PropTypes.func.isRequired,
+  onActivitiesFetch: PropTypes.func.isRequired,
 };
 
 Item.defaultProps = {

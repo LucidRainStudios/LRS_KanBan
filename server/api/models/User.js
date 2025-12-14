@@ -75,6 +75,12 @@ module.exports = {
       columnName: 'sso_github_username',
       allowNull: true,
     },
+    ssoGithubEmail: {
+      type: 'string',
+      isEmail: true,
+      columnName: 'sso_github_email',
+      allowNull: true,
+    },
     ssoMicrosoftId: {
       type: 'string',
       columnName: 'sso_microsoft_id',
@@ -84,6 +90,17 @@ module.exports = {
       type: 'string',
       isEmail: true,
       columnName: 'sso_microsoft_email',
+      allowNull: true,
+    },
+    ssoOidcId: {
+      type: 'string',
+      columnName: 'sso_oidc_id',
+      allowNull: true,
+    },
+    ssoOidcEmail: {
+      type: 'string',
+      isEmail: true,
+      columnName: 'sso_oidc_email',
       allowNull: true,
     },
     lastLogin: {
@@ -147,7 +164,7 @@ module.exports = {
 
   customToJSON() {
     return {
-      ..._.omit(this, ['password', 'avatar', 'passwordChangedAt', 'ssoGoogleId', 'ssoGithubId', 'ssoMicrosoftId']),
+      ..._.omit(this, ['password', 'avatar', 'passwordChangedAt', 'ssoGoogleId', 'ssoGithubId', 'ssoMicrosoftId', 'ssoOidcId']),
       isPasswordAuthenticated: !!this.password,
       avatarUrl: this.avatar && `${sails.config.custom.userAvatarsUrl}/${this.avatar.dirname}/square-100.${this.avatar.extension}`,
     };
