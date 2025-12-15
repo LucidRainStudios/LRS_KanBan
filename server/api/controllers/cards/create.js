@@ -103,20 +103,21 @@ module.exports = {
       })
       .intercept('positionMustBeInValues', () => Errors.POSITION_MUST_BE_PRESENT);
 
-    const { webhookUrl, notifyBoardIds } = await sails.helpers.integrations.discord.getConfig();
-    if (webhookUrl && notifyBoardIds.has(String(card.boardId))) {
-      const payload = await sails.helpers.integrations.discord.buildCardPayload.with({
-        card,
-        currentUser,
-        actionLabel: 'Card created',
-        color: 0x57f287,
-      });
+    // Used for creating a card (Removing this due to Creating card not having details - will be sent via Updated method instead)
+    // const { webhookUrl, notifyBoardIds } = await sails.helpers.integrations.discord.getConfig();
+    // if (webhookUrl && notifyBoardIds.has(String(card.boardId))) {
+    //   const payload = await sails.helpers.integrations.discord.buildCardPayload.with({
+    //     card,
+    //     currentUser,
+    //     actionLabel: 'Card created',
+    //     color: 0x57f287,
+    //   });
 
-      await sails.helpers.integrations.discord.sendWebhook.with({
-        url: webhookUrl,
-        payload,
-      });
-    }
+    //   await sails.helpers.integrations.discord.sendWebhook.with({
+    //     url: webhookUrl,
+    //     payload,
+    //   });
+    // }
 
     return {
       item: card,
