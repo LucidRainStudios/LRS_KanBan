@@ -197,7 +197,7 @@ module.exports = {
       throw Errors.CARD_NOT_FOUND;
     }
 
-    const { webhookUrl, notifyBoardIds } = await sails.helpers.integrations.discord.getConfig();
+    const { webhookUrl, notifyBoardIds, boardLinks } = await sails.helpers.integrations.discord.getConfig();
     if (webhookUrl && notifyBoardIds.has(String(card.boardId))) {
       const afterAssignedUsers = await formatAssignedUsers();
       const columnChanged = String(beforeListId) !== String(card.listId);
@@ -206,18 +206,52 @@ module.exports = {
       const descriptionChanged = beforeDescription !== (card.description || '');
 
       if (columnChanged || assignedChanged || nameChanged || descriptionChanged) {
-        const payload = await sails.helpers.integrations.discord.buildCardPayload.with({
-          card,
-          currentUser,
-          actionLabel: 'Card updated',
-          color: 0xfaa61a,
-          previousListName: list?.name,
-        });
+        const currentList = await List.findOne({ id: card.listId });
+        const currentState = currentList?.name || 'Unknown';
+        const stateFieldValue = columnChanged && list?.name ? `${list.name} → ${currentState}` : currentState;
 
-        await sails.helpers.integrations.discord.sendWebhook.with({
-          url: webhookUrl,
-          payload,
-        });
+        const onlyStateChanged = columnChanged && !assignedChanged && !nameChanged && !descriptionChanged;
+
+        if (onlyStateChanged) {
+          const boardLink = boardLinks[String(card.boardId)] || `https://kanban.lucidrainstudios.com/boards/${card.boardId}`;
+          const cardLink = boardLink.includes('/boards/')
+            ? boardLink.replace(/\/boards\/[^/]+/, `/cards/${card.id}`)
+            : `https://kanban.lucidrainstudios.com/cards/${card.id}`;
+
+          const payload = {
+            username: 'LRS Kanban',
+            embeds: [
+              {
+                title: card.name || 'Card updated',
+                url: cardLink,
+                color: 0xfaa61a,
+                fields: [
+                  { name: 'Assigned User(s)', value: afterAssignedUsers, inline: true },
+                  { name: 'Current State', value: stateFieldValue, inline: true },
+                ],
+                timestamp: new Date().toISOString(),
+              },
+            ],
+          };
+
+          await sails.helpers.integrations.discord.sendWebhook.with({
+            url: webhookUrl,
+            payload,
+          });
+        } else {
+          const payload = await sails.helpers.integrations.discord.buildCardPayload.with({
+            card,
+            currentUser,
+            actionLabel: 'Card updated',
+            color: 0xfaa61a,
+            previousListName: list?.name,
+          });
+
+          await sails.helpers.integrations.discord.sendWebhook.with({
+            url: webhookUrl,
+            payload,
+          });
+        }
       }
     }
 
