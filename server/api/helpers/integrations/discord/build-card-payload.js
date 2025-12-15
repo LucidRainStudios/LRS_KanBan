@@ -77,7 +77,7 @@ module.exports = {
 
     const dueDate = card.dueDate ? moment(card.dueDate) : null;
     const isOverdue = dueDate ? dueDate.isBefore(moment()) : false;
-    const dueDateValue = dueDate ? `${dueDate.format('YYYY-MM-DD HH:mm')} (${dueDate.fromNow()})${isOverdue ? ' ⚠️ Overdue' : ''}` : 'None';
+    const dueDateValue = dueDate ? `${dueDate.format('YYYY-MM-DD HH:mm')} (${dueDate.fromNow()})${isOverdue ? ' ⚠️Overdue' : ''}` : 'None';
 
     const currentState = list?.name || 'Unknown';
     const stateFieldValue =
@@ -97,12 +97,12 @@ module.exports = {
           color,
           fields: [
             {
-              name:  `Board: [${boardName}](${boardLink})`,
+              name:  `📋Board: ${boardName}`,
               value: details,
             },
-            { name: 'Assigned User(s)', value: assignedUsers, inline: true },
-            { name: 'Current State', value: stateFieldValue, inline: true },
-            { name: 'Due Date', value: dueDateValue, inline: true },
+            { name: '👤Assigned User(s)', value: `__**${assignedUsers}**__`, inline: true },
+            { name: '🚦Current State', value: stateFieldValue, inline: true },
+            { name: '⏱️Due Date', value: dueDateValue, inline: true },
           ],
           timestamp: new Date().toISOString(),
         },
