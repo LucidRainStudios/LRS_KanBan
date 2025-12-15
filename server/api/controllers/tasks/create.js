@@ -73,31 +73,6 @@ module.exports = {
       request: this.req,
     });
 
-    const { webhookUrl, notifyBoardIds } = await sails.helpers.integrations.discord.getConfig();
-    if (webhookUrl && notifyBoardIds.has(String(card.boardId))) {
-      const payload = {
-        username: '4ga Boards',
-        embeds: [
-          {
-            title: `New task: ${task.name}`,
-            description: `Card: ${card.name}`,
-            color: 0x5865f2,
-            fields: [
-              { name: 'Task ID', value: `${task.id}`, inline: true },
-              { name: 'Board ID', value: `${card.boardId}`, inline: true },
-              { name: 'Created by', value: currentUser.name || currentUser.username || `${currentUser.id}`, inline: true },
-            ],
-            timestamp: new Date().toISOString(),
-          },
-        ],
-      };
-
-      await sails.helpers.integrations.discord.sendWebhook.with({
-        url: webhookUrl,
-        payload,
-      });
-    }
-
     return {
       item: task,
     };

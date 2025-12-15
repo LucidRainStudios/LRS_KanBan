@@ -163,6 +163,18 @@ module.exports = {
 
     const values = _.pick(inputs, ['coverAttachmentId', 'position', 'name', 'description', 'dueDate', 'timer', 'isSubscribed']);
 
+    const formatAssignedUsers = async () => {
+      const memberships = await sails.helpers.cardMemberships.getMany({ cardId: card.id });
+      const memberUserIds = memberships.map((membership) => membership.userId);
+      const memberUsers = memberUserIds.length ? await User.find({ id: memberUserIds }) : [];
+      return memberUsers.length > 0
+        ? memberUsers.map((user) => user.name || user.username || user.email || `${user.id}`).join(', ')
+        : 'Unassigned';
+    };
+
+    const beforeAssignedUsers = await formatAssignedUsers();
+    const beforeListId = list.id;
+
     card = await sails.helpers.cards.updateOne
       .with({
         board,
@@ -185,26 +197,24 @@ module.exports = {
 
     const { webhookUrl, notifyBoardIds } = await sails.helpers.integrations.discord.getConfig();
     if (webhookUrl && notifyBoardIds.has(String(card.boardId))) {
-      const payload = {
-        username: '4ga Boards',
-        embeds: [
-          {
-            title: `Card updated: ${card.name}`,
-            color: 0xfaa61a,
-            fields: [
-              { name: 'Card ID', value: `${card.id}`, inline: true },
-              { name: 'Board ID', value: `${card.boardId}`, inline: true },
-              { name: 'Updated by', value: currentUser.name || currentUser.username || `${currentUser.id}`, inline: true },
-            ],
-            timestamp: new Date().toISOString(),
-          },
-        ],
-      };
+      const afterAssignedUsers = await formatAssignedUsers();
+      const columnChanged = String(beforeListId) !== String(card.listId);
+      const assignedChanged = beforeAssignedUsers !== afterAssignedUsers;
 
-      await sails.helpers.integrations.discord.sendWebhook.with({
-        url: webhookUrl,
-        payload,
-      });
+      if (columnChanged || assignedChanged) {
+        const payload = await sails.helpers.integrations.discord.buildCardPayload.with({
+          card,
+          currentUser,
+          actionLabel: 'Card updated',
+          color: 0xfaa61a,
+          previousListName: list?.name,
+        });
+
+        await sails.helpers.integrations.discord.sendWebhook.with({
+          url: webhookUrl,
+          payload,
+        });
+      }
     }
 
     return {
