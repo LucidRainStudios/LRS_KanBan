@@ -91,7 +91,9 @@ module.exports = {
       username: 'LRS Kanban',
       embeds: [
         {
-          title: `[${actionLabel}](${cardLink}) on [${boardName}](${boardLink})`,
+          title: actionLabel,
+          url: cardLink,
+          description: `Board: [${boardName}](${boardLink})`,
           color,
           fields: [
             {

@@ -173,6 +173,8 @@ module.exports = {
     };
 
     const beforeAssignedUsers = await formatAssignedUsers();
+    const beforeName = card.name || '';
+    const beforeDescription = card.description || '';
     const beforeListId = list.id;
 
     card = await sails.helpers.cards.updateOne
@@ -200,8 +202,10 @@ module.exports = {
       const afterAssignedUsers = await formatAssignedUsers();
       const columnChanged = String(beforeListId) !== String(card.listId);
       const assignedChanged = beforeAssignedUsers !== afterAssignedUsers;
+      const nameChanged = beforeName !== (card.name || '');
+      const descriptionChanged = beforeDescription !== (card.description || '');
 
-      if (columnChanged || assignedChanged) {
+      if (columnChanged || assignedChanged || nameChanged || descriptionChanged) {
         const payload = await sails.helpers.integrations.discord.buildCardPayload.with({
           card,
           currentUser,
