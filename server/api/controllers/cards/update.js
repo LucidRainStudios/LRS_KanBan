@@ -183,6 +183,30 @@ module.exports = {
       throw Errors.CARD_NOT_FOUND;
     }
 
+    const { webhookUrl, notifyBoardIds } = await sails.helpers.integrations.discord.getConfig();
+    if (webhookUrl && notifyBoardIds.has(String(card.boardId))) {
+      const payload = {
+        username: '4ga Boards',
+        embeds: [
+          {
+            title: `Card updated: ${card.name}`,
+            color: 0xfaa61a,
+            fields: [
+              { name: 'Card ID', value: `${card.id}`, inline: true },
+              { name: 'Board ID', value: `${card.boardId}`, inline: true },
+              { name: 'Updated by', value: currentUser.name || currentUser.username || `${currentUser.id}`, inline: true },
+            ],
+            timestamp: new Date().toISOString(),
+          },
+        ],
+      };
+
+      await sails.helpers.integrations.discord.sendWebhook.with({
+        url: webhookUrl,
+        payload,
+      });
+    }
+
     return {
       item: card,
     };
