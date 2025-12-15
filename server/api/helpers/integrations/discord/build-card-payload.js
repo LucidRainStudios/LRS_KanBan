@@ -85,20 +85,20 @@ module.exports = {
 
     const labelsLine = `Labels: ${labelNames.length ? labelNames.join(', ') : 'None'}`;
     const progressLine = `Progress: ${openTasks} open / ${totalTasks} total`;
-    const descriptionValue = truncate([labelsLine, card.description || '-', progressLine].join('\n'));
+    const details = truncate([labelsLine, progressLine].join('\n'));
 
     return {
       username: 'LRS Kanban',
       embeds: [
         {
-          title: actionLabel,
+          title: `[${actionLabel}] ${card.name}`,
           url: cardLink,
-          description: `Board: [${boardName}](${boardLink})`,
+          description: card.description || '-',
           color,
           fields: [
             {
-              name: `__**${truncate(card.name || '-', 248)}**__`,
-              value: descriptionValue,
+              name:  `Board: [${boardName}](${boardLink})`,
+              value: details,
             },
             { name: 'Assigned User(s)', value: assignedUsers, inline: true },
             { name: 'Current State', value: stateFieldValue, inline: true },
