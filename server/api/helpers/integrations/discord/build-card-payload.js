@@ -68,6 +68,8 @@ module.exports = {
         ? memberUsers.map((user) => user.name || user.username || user.email || `${user.id}`).join(', ')
         : 'Unassigned';
 
+    const board = await Board.findOne({ id: card.boardId });
+    const boardName = board?.name || 'Board';
     const boardLink = boardLinks[String(card.boardId)] || `https://kanban.lucidrainstudios.com/boards/${card.boardId}`;
     const cardLink = boardLink.includes('/boards/')
       ? boardLink.replace(/\/boards\/[^/]+/, `/cards/${card.id}`)
@@ -81,30 +83,24 @@ module.exports = {
     const stateFieldValue =
       previousListName && previousListName !== currentState ? `${previousListName} → ${currentState}` : currentState;
 
+    const labelsLine = `Labels: ${labelNames.length ? labelNames.join(', ') : 'None'}`;
+    const progressLine = `Progress: ${openTasks} open / ${totalTasks} total`;
+    const descriptionValue = truncate([labelsLine, card.description || '-', progressLine].join('\n'));
+
     return {
       username: 'LRS Kanban',
       embeds: [
         {
-          title: `${actionLabel}: ${card.name}`,
+          title: `[${actionLabel}](${cardLink}) on [${boardName}](${boardLink})`,
           color,
           fields: [
-            { name: 'Title', value: card.name || '-' },
-            { name: 'Description', value: truncate(card.description || '-') },
             {
-              name: 'Tasks',
-              value: taskLines.length ? truncate(taskLines.join('\n')) : 'None',
+              name: `__**${truncate(card.name || '-', 248)}**__`,
+              value: descriptionValue,
             },
-            { name: 'Progress', value: `${openTasks} open / ${totalTasks} total` },
-            { name: 'Assigned User(s)', value: assignedUsers },
-            { name: 'Labels', value: labelNames.length ? labelNames.join(', ') : 'None' },
-            { name: 'Due Date', value: dueDateValue },
-            { name: 'Card', value: `[Open Card](${cardLink})` },
-            { name: 'Board', value: `[Open Board](${boardLink})` },
-            {
-              name: `${actionLabel} By`,
-              value: currentUser.name || currentUser.username || currentUser.email || `${currentUser.id}`,
-            },
-            { name: 'Current State', value: stateFieldValue },
+            { name: 'Assigned User(s)', value: assignedUsers, inline: true },
+            { name: 'Current State', value: stateFieldValue, inline: true },
+            { name: 'Due Date', value: dueDateValue, inline: true },
           ],
           timestamp: new Date().toISOString(),
         },
