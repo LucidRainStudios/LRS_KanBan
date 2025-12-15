@@ -97,12 +97,12 @@ module.exports = {
           color,
           fields: [
             {
-              name:  `📋Board: ${boardName}`,
+              name:  `Board: ${boardName} 📋`,
               value: details,
             },
-            { name: '👤Assigned User(s)', value: `__**${assignedUsers}**__`, inline: true },
-            { name: '🚦Current State', value: stateFieldValue, inline: true },
-            { name: '⏱️Due Date', value: dueDateValue, inline: true },
+            { name: 'Assigned User(s)', value: `👤__**${assignedUsers}**__`, inline: true },
+            { name: 'Current State', value: `🚦${stateFieldValue}`, inline: true },
+            { name: 'Due Date', value: `⏱️${dueDateValue}`, inline: true },
           ],
           timestamp: new Date().toISOString(),
         },
