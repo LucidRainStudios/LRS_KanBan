@@ -19,7 +19,8 @@ services:
       retries: 50
 
   4gaBoards:
-    image: ghcr.io/rargames/4gaboards:latest
+    build: .
+    image: lrs-4gaboards:local
     restart: always
     networks:
       - boards-network
@@ -28,12 +29,14 @@ services:
       - project-background-images:/app/public/project-background-images
       - attachments:/app/private/attachments
     ports:
-      - 3000:1337
+      - 127.0.0.1:3000:1337
     environment:
-      BASE_URL: http://localhost:3000
+      BASE_URL: https://kanban.lucidrainstudios.com
       SECRET_KEY: notsecretkey
-      DATABASE_URL: postgresql://postgres:notpassword@db/4gaBoards
+      DATABASE_URL: "postgresql://planka:Lrs5772025!@lrs_kanban-postgres-1:5432/planka"
       NODE_ENV: production
+      TRUST_PROXY: "1"
+      DISCORD_TASK_WEBHOOK_URL: ${DISCORD_TASK_WEBHOOK_URL}
       ## Add optional 4ga Boards instance variables here
     depends_on:
       db:

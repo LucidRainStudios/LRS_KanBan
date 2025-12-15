@@ -1,0 +1,100 @@
+Compose can now delegate builds to bake for better performance.
+ To do so, set COMPOSE_BAKE=true.
+#0 building with "default" instance using docker driver
+
+#1 [4gaBoards internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.27kB 0.0s done
+#1 DONE 0.1s
+
+#2 [4gaBoards internal] load metadata for docker.io/library/node:24-alpine
+#2 DONE 1.4s
+
+#3 [4gaBoards internal] load .dockerignore
+#3 transferring context: 539B done
+#3 DONE 0.0s
+
+#4 [4gaBoards client 1/9] FROM docker.io/library/node:24-alpine@sha256:7e0bd0460b26eb3854ea5b99b887a6a14d665d14cae694b78ae2936d14b2befb
+#4 CACHED
+
+#5 [4gaBoards client 2/9] WORKDIR /app
+#5 CACHED
+
+#6 [4gaBoards internal] load build context
+#6 transferring context: 45.49kB 4.9s
+#6 transferring context: 86.39kB 9.9s
+#6 ...
+
+#7 [4gaBoards stage-2  2/10] RUN apk -U upgrade
+#7 ...
+
+#6 [4gaBoards internal] load build context
+#6 transferring context: 97.18kB 11.8s done
+#6 DONE 13.3s
+
+#7 [4gaBoards stage-2  2/10] RUN apk -U upgrade
+#7 ...
+
+#8 [4gaBoards client 3/9] COPY client/package.json client/package-lock.json ./
+#8 ...
+
+#9 [4gaBoards server-dependencies 3/7] COPY server/package.json server/package-lock.json ./
+#9 DONE 2.8s
+
+#7 [4gaBoards stage-2  2/10] RUN apk -U upgrade
+#7 15.91 Preupgrading:
+#7 15.99 (1/3) Installing zstd-libs (1.5.7-r2)
+#7 16.39 (2/3) Upgrading libapk (3.0.1-r1 -> 3.0.2-r0)
+#7 16.39 (3/3) Upgrading apk-tools (3.0.1-r1 -> 3.0.2-r0)
+#7 16.39 Executing busybox-1.37.0-r29.trigger
+#7 17.09 Continuing with the main upgrade transaction:
+#7 ...
+
+#8 [4gaBoards client 3/9] COPY client/package.json client/package-lock.json ./
+#8 DONE 3.9s
+
+#10 [4gaBoards client 4/9] RUN npm install npm@latest --global
+#10 ...
+
+#7 [4gaBoards stage-2  2/10] RUN apk -U upgrade
+#7 20.99 OK: 11.6 MiB in 19 packages
+#7 DONE 22.3s
+
+#11 [4gaBoards stage-2  3/10] RUN apk add bash --no-cache
+#11 ...
+
+#12 [4gaBoards server-dependencies 4/7] RUN npm install npm@latest --global
+#12 ...
+
+#11 [4gaBoards stage-2  3/10] RUN apk add bash --no-cache
+#11 15.70 (1/4) Installing ncurses-terminfo-base (6.5_p20251123-r0)
+#11 16.09 (2/4) Installing libncursesw (6.5_p20251123-r0)
+#11 16.50 (3/4) Installing readline (8.3.1-r0)
+#11 16.70 (4/4) Installing bash (5.3.3-r1)
+#11 16.79   Executing bash-5.3.3-r1.post-install
+#11 16.81 Executing busybox-1.37.0-r29.trigger
+#11 17.09 OK: 13.6 MiB in 23 packages
+#11 DONE 18.4s
+
+#13 [4gaBoards stage-2  4/10] WORKDIR /app
+#13 DONE 2.4s
+
+#10 [4gaBoards client 4/9] RUN npm install npm@latest --global
+#10 ...
+
+#14 [4gaBoards stage-2  5/10] COPY --chown=node:node --chmod=775 start.sh .
+#14 DONE 1.2s
+
+#12 [4gaBoards server-dependencies 4/7] RUN npm install npm@latest --global
+#12 ...
+
+#15 [4gaBoards stage-2  6/10] COPY --chown=node:node server .
+#15 DONE 32.5s
+
+#12 [4gaBoards server-dependencies 4/7] RUN npm install npm@latest --global
+#12 ...
+
+#16 [4gaBoards stage-2  7/10] RUN mv .env.sample .env
+#16 DONE 15.8s
+
+#12 [4gaBoards server-dependencies 4/7] RUN npm install npm@latest --global
+
