@@ -207,6 +207,7 @@ module.exports = {
           currentUser,
           actionLabel: 'Card updated',
           color: 0xfaa61a,
+          previousListName: list?.name,
         });
 
         await sails.helpers.integrations.discord.sendWebhook.with({
