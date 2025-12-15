@@ -55,21 +55,12 @@ module.exports = {
 
     const { webhookUrl, notifyBoardIds } = await sails.helpers.integrations.discord.getConfig();
     if (webhookUrl && notifyBoardIds.has(String(card.boardId))) {
-      const payload = {
-        username: '4ga Boards',
-        embeds: [
-          {
-            title: `Card deleted: ${card.name}`,
-            color: 0xed4245,
-            fields: [
-              { name: 'Card ID', value: `${card.id}`, inline: true },
-              { name: 'Board ID', value: `${card.boardId}`, inline: true },
-              { name: 'Deleted by', value: currentUser.name || currentUser.username || `${currentUser.id}`, inline: true },
-            ],
-            timestamp: new Date().toISOString(),
-          },
-        ],
-      };
+      const payload = await sails.helpers.integrations.discord.buildCardPayload.with({
+        card,
+        currentUser,
+        actionLabel: 'Card deleted',
+        color: 0xed4245,
+      });
 
       await sails.helpers.integrations.discord.sendWebhook.with({
         url: webhookUrl,
