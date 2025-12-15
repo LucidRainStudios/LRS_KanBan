@@ -222,12 +222,12 @@ module.exports = {
             username: 'LRS Kanban',
             embeds: [
               {
-                title: card.name || 'Card updated',
+                title: `[Card moved] ${card.name}`,
                 url: cardLink,
                 color: 0xfaa61a,
                 fields: [
-                  { name: 'Assigned User(s)', value: afterAssignedUsers, inline: true },
-                  { name: 'Current State', value: stateFieldValue, inline: true },
+                  { name: 'Assigned User(s)', value: `👤__**${afterAssignedUsers}**__`, inline: true },
+                  { name: 'Current State', value: `🚦${stateFieldValue}`, inline: true },
                 ],
                 timestamp: new Date().toISOString(),
               },
@@ -243,7 +243,7 @@ module.exports = {
             card,
             currentUser,
             actionLabel: 'Card updated',
-            color: 0xfaa61a,
+            color: 0x57f287,
             previousListName: list?.name,
           });
 
