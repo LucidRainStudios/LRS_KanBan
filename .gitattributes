@@ -1,0 +1,17 @@
+# Normalize line endings: store as LF in the repo and check out as LF in every
+# working tree, regardless of each machine's core.autocrlf setting.
+* text=auto eol=lf
+
+# Binary files — never apply line-ending conversion or text diffing.
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.webp  binary
+*.svg   binary
+*.pdf   binary
+*.woff  binary
+*.woff2 binary
+*.ttf   binary
+*.eot   binary

@@ -87,6 +87,7 @@ const CardModal = React.memo(
     onUserAdd,
     onUserRemove,
     onBoardFetch,
+    onCardFetch,
     onLabelAdd,
     onLabelRemove,
     onLabelCreate,
@@ -138,6 +139,11 @@ const CardModal = React.memo(
       }
       onBoardFetch(boardId);
     }, [boardId, onBoardFetch]);
+
+    // Attachments are excluded from the board payload, so fetch the full set when a card is opened
+    useEffect(() => {
+      onCardFetch(id);
+    }, [id, onCardFetch]);
 
     const handleToggleDescShown = useCallback(() => {
       toggleDescShown();
@@ -874,6 +880,7 @@ CardModal.propTypes = {
   onUserAdd: PropTypes.func.isRequired,
   onUserRemove: PropTypes.func.isRequired,
   onBoardFetch: PropTypes.func.isRequired,
+  onCardFetch: PropTypes.func.isRequired,
   onLabelAdd: PropTypes.func.isRequired,
   onLabelRemove: PropTypes.func.isRequired,
   onLabelCreate: PropTypes.func.isRequired,

@@ -58,7 +58,10 @@ module.exports = {
     const tasks = await sails.helpers.cards.getTasks(cardIds);
     const taskIds = sails.helpers.utils.mapRecords(tasks);
     const taskMemberships = await sails.helpers.cards.getTaskMemberships(taskIds);
-    const attachments = await sails.helpers.cards.getAttachments(cardIds);
+
+    // Only cover attachments are sent with the board; the rest are fetched per-card when its modal opens
+    const coverAttachmentIds = cards.flatMap((card) => (card.coverAttachmentId ? [card.coverAttachmentId] : []));
+    const attachments = await sails.helpers.attachments.getMany({ id: coverAttachmentIds });
 
     const isSubscribedByCardId = cardSubscriptions.reduce(
       (result, cardSubscription) => ({

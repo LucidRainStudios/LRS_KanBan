@@ -18,6 +18,9 @@ export default class extends BaseModel {
     commentCount: attr({
       getDefault: () => 0,
     }),
+    attachmentCount: attr({
+      getDefault: () => 0,
+    }),
     isSubscribed: attr({
       getDefault: () => false,
     }),
@@ -186,6 +189,7 @@ export default class extends BaseModel {
         break;
       case ActionTypes.CARD_CREATE:
       case ActionTypes.CARD_CREATE_HANDLE:
+      case ActionTypes.CARD_FETCH__SUCCESS:
       case ActionTypes.CARD_UPDATE__SUCCESS:
       case ActionTypes.CARD_UPDATE_HANDLE:
       case ActionTypes.CARD_DUPLICATE:
@@ -270,7 +274,7 @@ export default class extends BaseModel {
   }
 
   getAttachmentsCount() {
-    return this.attachments.count();
+    return this.attachmentCount;
   }
 
   getOrderedCardCommentsQuerySet() {

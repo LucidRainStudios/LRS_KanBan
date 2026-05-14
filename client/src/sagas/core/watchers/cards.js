@@ -7,6 +7,7 @@ export default function* cardsWatchers() {
   yield all([
     takeEvery(EntryActionTypes.CARD_CREATE, ({ payload: { listId, data, autoOpen, index } }) => services.createCard(listId, data, autoOpen, index)),
     takeEvery(EntryActionTypes.CARD_CREATE_HANDLE, ({ payload: { card } }) => services.handleCardCreate(card)),
+    takeEvery(EntryActionTypes.CARD_FETCH, ({ payload: { id } }) => services.fetchCard(id)),
     takeEvery(EntryActionTypes.CARD_UPDATE, ({ payload: { id, data } }) => services.updateCard(id, data)),
     takeEvery(EntryActionTypes.CURRENT_CARD_UPDATE, ({ payload: { data } }) => services.updateCurrentCard(data)),
     takeEvery(EntryActionTypes.CARD_UPDATE_HANDLE, ({ payload: { card } }) => services.handleCardUpdate(card)),

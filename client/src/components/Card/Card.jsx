@@ -21,6 +21,9 @@ import NameEdit from './NameEdit';
 
 import * as s from './Card.module.scss';
 
+// .wrapper margin-bottom (8px); baked into the virtual row height since react-window positions rows absolutely
+const CARD_GAP = 8;
+
 const Card = React.memo(
   ({
     id,
@@ -77,6 +80,11 @@ const Card = React.memo(
     onTaskCreate,
     onTaskMove,
     onActivitiesFetch,
+    style,
+    provided,
+    snapshot,
+    isClone,
+    onSizeChange,
   }) => {
     const [t] = useTranslation();
     const nameEdit = useRef(null);
@@ -126,6 +134,19 @@ const Card = React.memo(
       }
     }, [isOpen, scrollCardIntoView]);
 
+    // Report natural height to the virtualized list so it can size the row (cards have variable height)
+    useEffect(() => {
+      const cardElement = cardRef.current;
+      if (isClone || !onSizeChange || !cardElement) {
+        return undefined;
+      }
+      const measure = () => onSizeChange(id, cardElement.offsetHeight + CARD_GAP);
+      measure();
+      const observer = new window.ResizeObserver(measure);
+      observer.observe(cardElement);
+      return () => observer.disconnect();
+    }, [id, isClone, onSizeChange]);
+
     const handleToggleTimerClick = useCallback(() => {
       onUpdate({
         timer: timer.startedAt ? stopTimer(timer) : startTimer(timer),
@@ -145,12 +166,12 @@ const Card = React.memo(
       nameEdit.current?.open();
     }, []);
 
-    const getStyle = (style, snapshot) => {
-      if (!snapshot.isDropAnimating) {
-        return style;
+    const getStyle = (draggableStyle, dragSnapshot) => {
+      if (!dragSnapshot.isDropAnimating) {
+        return draggableStyle;
       }
       return {
-        ...style,
+        ...draggableStyle,
         transitionDuration: `0.05s`,
       };
     };
@@ -303,84 +324,90 @@ const Card = React.memo(
       </>
     );
 
+    const renderCard = (dragProvided, dragSnapshot) => (
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      <div {...dragProvided.draggableProps} {...dragProvided.dragHandleProps} ref={dragProvided.innerRef} className={s.wrapper} style={{ ...getStyle(dragProvided.draggableProps.style, dragSnapshot), ...style }}>
+        <NameEdit ref={nameEdit} defaultValue={name} onUpdate={handleNameUpdate}>
+          <div ref={cardRef} className={clsx(s.card, isOpen && s.cardOpen)}>
+            {isPersisted ? (
+              <>
+                {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
+                <div
+                  className={s.content}
+                  onClick={(e) => {
+                    handleClick(e);
+                  }}
+                >
+                  {contentNode}
+                </div>
+                {canEdit && (
+                  <div className={s.popupWrapper}>
+                    <ActionsPopup
+                      card={{
+                        id,
+                        name,
+                        dueDate,
+                        timer,
+                        boardId,
+                        listId,
+                        projectId,
+                      }}
+                      projectsToLists={allProjectsToLists}
+                      allBoardMemberships={boardAndCardMemberships}
+                      boardMemberships={boardMemberships}
+                      currentUserIds={users.map((user) => user.id)}
+                      labels={allLabels}
+                      currentLabelIds={labels.map((label) => label.id)}
+                      url={url}
+                      canEdit={canEdit}
+                      createdAt={createdAt}
+                      createdBy={createdBy}
+                      updatedAt={updatedAt}
+                      updatedBy={updatedBy}
+                      activities={activities}
+                      isActivitiesFetching={isActivitiesFetching}
+                      isAllActivitiesFetched={isAllActivitiesFetched}
+                      onActivitiesFetch={onActivitiesFetch}
+                      onNameEdit={handleNameEdit}
+                      onUpdate={onUpdate}
+                      onMove={onMove}
+                      onTransfer={onTransfer}
+                      onDuplicate={onDuplicate}
+                      onDelete={onDelete}
+                      onUserAdd={onUserAdd}
+                      onUserRemove={onUserRemove}
+                      onBoardFetch={onBoardFetch}
+                      onLabelAdd={onLabelAdd}
+                      onLabelRemove={onLabelRemove}
+                      onLabelCreate={onLabelCreate}
+                      onLabelUpdate={onLabelUpdate}
+                      onLabelDelete={onLabelDelete}
+                      position="left-start"
+                      offset={0}
+                      hideCloseButton
+                    >
+                      <Button style={ButtonStyle.Icon} title={t('common.editCard')} className={s.editCardButton}>
+                        <Icon type={IconType.EllipsisVertical} size={IconSize.Size13} />
+                      </Button>
+                    </ActionsPopup>
+                  </div>
+                )}
+              </>
+            ) : (
+              <span className={s.content}>{contentNode}</span>
+            )}
+          </div>
+        </NameEdit>
+      </div>
+    );
+
+    if (isClone) {
+      return renderCard(provided, snapshot);
+    }
+
     return (
       <Draggable draggableId={`card:${id}`} index={index} isDragDisabled={isDragOverTask || !isPersisted || !canEdit}>
-        {(provided, snapshot) => (
-          // eslint-disable-next-line react/jsx-props-no-spreading
-          <div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} className={s.wrapper} style={getStyle(provided.draggableProps.style, snapshot)}>
-            <NameEdit ref={nameEdit} defaultValue={name} onUpdate={handleNameUpdate}>
-              <div ref={cardRef} className={clsx(s.card, isOpen && s.cardOpen)}>
-                {isPersisted ? (
-                  <>
-                    {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
-                    <div
-                      className={s.content}
-                      onClick={(e) => {
-                        handleClick(e);
-                      }}
-                    >
-                      {contentNode}
-                    </div>
-                    {canEdit && (
-                      <div className={s.popupWrapper}>
-                        <ActionsPopup
-                          card={{
-                            id,
-                            name,
-                            dueDate,
-                            timer,
-                            boardId,
-                            listId,
-                            projectId,
-                          }}
-                          projectsToLists={allProjectsToLists}
-                          allBoardMemberships={boardAndCardMemberships}
-                          boardMemberships={boardMemberships}
-                          currentUserIds={users.map((user) => user.id)}
-                          labels={allLabels}
-                          currentLabelIds={labels.map((label) => label.id)}
-                          url={url}
-                          canEdit={canEdit}
-                          createdAt={createdAt}
-                          createdBy={createdBy}
-                          updatedAt={updatedAt}
-                          updatedBy={updatedBy}
-                          activities={activities}
-                          isActivitiesFetching={isActivitiesFetching}
-                          isAllActivitiesFetched={isAllActivitiesFetched}
-                          onActivitiesFetch={onActivitiesFetch}
-                          onNameEdit={handleNameEdit}
-                          onUpdate={onUpdate}
-                          onMove={onMove}
-                          onTransfer={onTransfer}
-                          onDuplicate={onDuplicate}
-                          onDelete={onDelete}
-                          onUserAdd={onUserAdd}
-                          onUserRemove={onUserRemove}
-                          onBoardFetch={onBoardFetch}
-                          onLabelAdd={onLabelAdd}
-                          onLabelRemove={onLabelRemove}
-                          onLabelCreate={onLabelCreate}
-                          onLabelUpdate={onLabelUpdate}
-                          onLabelDelete={onLabelDelete}
-                          position="left-start"
-                          offset={0}
-                          hideCloseButton
-                        >
-                          <Button style={ButtonStyle.Icon} title={t('common.editCard')} className={s.editCardButton}>
-                            <Icon type={IconType.EllipsisVertical} size={IconSize.Size13} />
-                          </Button>
-                        </ActionsPopup>
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <span className={s.content}>{contentNode}</span>
-                )}
-              </div>
-            </NameEdit>
-          </div>
-        )}
+        {(dragProvided, dragSnapshot) => renderCard(dragProvided, dragSnapshot)}
       </Draggable>
     );
   },
@@ -441,6 +468,11 @@ Card.propTypes = {
   onTaskCreate: PropTypes.func.isRequired,
   onTaskMove: PropTypes.func.isRequired,
   onActivitiesFetch: PropTypes.func.isRequired,
+  style: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+  provided: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+  snapshot: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+  isClone: PropTypes.bool,
+  onSizeChange: PropTypes.func,
 };
 
 Card.defaultProps = {
@@ -453,6 +485,11 @@ Card.defaultProps = {
   createdBy: undefined,
   updatedAt: undefined,
   updatedBy: undefined,
+  style: undefined,
+  provided: undefined,
+  snapshot: undefined,
+  isClone: false,
+  onSizeChange: undefined,
 };
 
 export default Card;

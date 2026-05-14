@@ -49,23 +49,25 @@ module.exports = {
 
       values.position = position;
 
-      repositions.forEach(async ({ id, position: nextPosition }) => {
-        await Board.update({
-          id,
-          projectId: inputs.record.projectId,
-        }).set({
-          position: nextPosition,
-        });
-
-        boardRelatedUserIds.forEach((userId) => {
-          sails.sockets.broadcast(`user:${userId}`, 'boardUpdate', {
-            item: {
-              id,
-              position: nextPosition,
-            },
+      await Promise.all(
+        repositions.map(async ({ id, position: nextPosition }) => {
+          await Board.update({
+            id,
+            projectId: inputs.record.projectId,
+          }).set({
+            position: nextPosition,
           });
-        });
-      });
+
+          boardRelatedUserIds.forEach((userId) => {
+            sails.sockets.broadcast(`user:${userId}`, 'boardUpdate', {
+              item: {
+                id,
+                position: nextPosition,
+              },
+            });
+          });
+        }),
+      );
     }
 
     const board = await Board.updateOne(inputs.record.id).set({ updatedById: currentUser.id, ...values });

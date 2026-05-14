@@ -36,6 +36,11 @@ module.exports = {
       required: true,
       columnName: 'comment_count',
     },
+    attachmentCount: {
+      type: 'number',
+      defaultsTo: 0,
+      columnName: 'attachment_count',
+    },
 
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗
     //  ║╣ ║║║╠╩╗║╣  ║║╚═╗

@@ -30,6 +30,29 @@ const handleCardCreate = (card) => ({
   },
 });
 
+const fetchCard = (id) => ({
+  type: ActionTypes.CARD_FETCH,
+  payload: {
+    id,
+  },
+});
+
+fetchCard.success = (card, attachments) => ({
+  type: ActionTypes.CARD_FETCH__SUCCESS,
+  payload: {
+    card,
+    attachments,
+  },
+});
+
+fetchCard.failure = (id, error) => ({
+  type: ActionTypes.CARD_FETCH__FAILURE,
+  payload: {
+    id,
+    error,
+  },
+});
+
 const updateCard = (id, data) => ({
   type: ActionTypes.CARD_UPDATE,
   payload: {
@@ -127,6 +150,7 @@ const handleCardDuplicate = (card) => ({
 export default {
   createCard,
   handleCardCreate,
+  fetchCard,
   updateCard,
   handleCardUpdate,
   deleteCard,

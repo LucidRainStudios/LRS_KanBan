@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState, useMemo } from 'react';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
 import { useTranslation } from 'react-i18next';
+import { VariableSizeList } from 'react-window';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 
@@ -16,6 +17,23 @@ import NameEdit from './NameEdit';
 
 import * as gs from '../../global.module.scss';
 import * as s from './List.module.scss';
+
+const ESTIMATED_CARD_HEIGHT = 96;
+
+function CardRow({ data, index, style }) {
+  const cardId = data.cardIds[index];
+  if (!cardId) {
+    return null;
+  }
+
+  return <CardContainer id={cardId} index={index} style={style} onSizeChange={data.onSizeChange} />;
+}
+
+CardRow.propTypes = {
+  data: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+  index: PropTypes.number.isRequired,
+  style: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+};
 
 const List = React.memo(
   ({
@@ -45,10 +63,11 @@ const List = React.memo(
     const [nameEditHeight, setNameEditHeight] = useState(0);
     const [headerNameElement, setHeaderNameElement] = useState();
     const [headerNameHeight] = useResizeObserverSize(headerNameElement, ResizeObserverSizeTypes.CLIENT_HEIGHT);
-    const [listOuterWrapperElement, setListOuterWrapperElement] = useState();
-    const [listOuterWrapperScrollable] = useResizeObserverSize(listOuterWrapperElement, ResizeObserverSizeTypes.SCROLLABLE);
+    const [windowHeight, setWindowHeight] = useState(window.innerHeight);
+    const [sizeVersion, setSizeVersion] = useState(0);
     const nameEdit = useRef(null);
-    const listWrapper = useRef(null);
+    const listRef = useRef(null);
+    const sizeMap = useRef({});
 
     const styleVars = useMemo(() => {
       const computedStyle = getComputedStyle(document.body);
@@ -121,41 +140,79 @@ const List = React.memo(
     }, []);
 
     useEffect(() => {
-      if (isAddCardOpen && listWrapper.current) {
+      if (isAddCardOpen && listRef.current) {
         if (addCardAtTop) {
-          listWrapper.current.scrollTop = 0;
-        } else {
-          listWrapper.current.scrollTop = listWrapper.current.scrollHeight;
+          listRef.current.scrollToItem(0);
+        } else if (filteredCardIds.length > 0) {
+          listRef.current.scrollToItem(filteredCardIds.length - 1);
         }
       }
     }, [filteredCardIds, isAddCardOpen, addCardAtTop]);
 
     useEffect(() => {
-      if (listWrapper.current) {
-        const wrapperOffset = isAddCardOpen || !canEdit ? styleVars.cardsInnerWrapperFullOffset : styleVars.cardsInnerWrapperOffset;
-        const headerOffset = nameEditHeight || headerNameHeight;
-        listWrapper.current.style.maxHeight = `calc(100vh - ${wrapperOffset}px - (${headerOffset}px - ${styleVars.headerNameDefaultHeight}px)`;
-      }
-    }, [canEdit, nameEditHeight, headerNameHeight, isAddCardOpen, styleVars, isCollapsed]);
+      const handleResize = () => setWindowHeight(window.innerHeight);
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    const setCardSize = useCallback(
+      (cardId, size) => {
+        if (sizeMap.current[cardId] === size) {
+          return;
+        }
+        sizeMap.current[cardId] = size;
+        const cardIndex = filteredCardIds.indexOf(cardId);
+        if (listRef.current && cardIndex >= 0) {
+          listRef.current.resetAfterIndex(cardIndex);
+        }
+        setSizeVersion((version) => version + 1);
+      },
+      [filteredCardIds],
+    );
+
+    const getCardSize = useCallback((cardIndex) => sizeMap.current[filteredCardIds[cardIndex]] || ESTIMATED_CARD_HEIGHT, [filteredCardIds]);
+
+    const getCardKey = useCallback((cardIndex) => filteredCardIds[cardIndex], [filteredCardIds]);
+
+    const cardsItemData = useMemo(() => ({ cardIds: filteredCardIds, onSizeChange: setCardSize }), [filteredCardIds, setCardSize]);
+
+    const wrapperOffset = isAddCardOpen || !canEdit ? styleVars.cardsInnerWrapperFullOffset : styleVars.cardsInnerWrapperOffset;
+    const headerOffset = nameEditHeight || headerNameHeight;
+    const availableHeight = Math.max(windowHeight - wrapperOffset - (headerOffset - styleVars.headerNameDefaultHeight), ESTIMATED_CARD_HEIGHT);
+    const totalCardsHeight = useMemo(
+      () => filteredCardIds.reduce((acc, cardId) => acc + (sizeMap.current[cardId] || ESTIMATED_CARD_HEIGHT), 0),
+      [filteredCardIds, sizeVersion], // eslint-disable-line react-hooks/exhaustive-deps
+    );
+    const listHeight = Math.min(totalCardsHeight, availableHeight) || 1;
 
     const cardsCountText = () => {
       return isFiltered ? t('common.ofCards', { filteredCount: filteredCardIds.length, count: cardIds.length }) : t('common.cards', { count: cardIds.length });
     };
 
     const cardsNode = (
-      <Droppable droppableId={`list:${id}`} type={DroppableTypes.CARD} isDropDisabled={!isPersisted}>
-        {({ innerRef, droppableProps, placeholder }) => (
-          // eslint-disable-next-line react/jsx-props-no-spreading
-          <div {...droppableProps} ref={innerRef}>
-            <div className={s.cards}>
-              {canEdit && addCardAtTop && <CardAdd isOpen={isAddCardOpen} onCreate={handleCardCreate} onClose={handleAddCardClose} labelIds={labelIds} memberIds={memberIds} />}
-              {filteredCardIds.map((cardId, cardIndex) => (
-                <CardContainer key={cardId} id={cardId} index={cardIndex} />
-              ))}
-              {placeholder}
-              {canEdit && !addCardAtTop && <CardAdd isOpen={isAddCardOpen} onCreate={handleCardCreate} onClose={handleAddCardClose} labelIds={labelIds} memberIds={memberIds} />}
-            </div>
-          </div>
+      <Droppable
+        droppableId={`list:${id}`}
+        type={DroppableTypes.CARD}
+        isDropDisabled={!isPersisted}
+        mode="virtual"
+        renderClone={(dragProvided, dragSnapshot, rubric) => <CardContainer id={filteredCardIds[rubric.source.index]} index={rubric.source.index} isClone provided={dragProvided} snapshot={dragSnapshot} />}
+      >
+        {(droppableProvided) => (
+          <VariableSizeList
+            ref={listRef}
+            outerRef={droppableProvided.innerRef}
+            className={s.cards}
+            width="100%"
+            height={listHeight}
+            itemCount={filteredCardIds.length}
+            itemSize={getCardSize}
+            itemKey={getCardKey}
+            itemData={cardsItemData}
+            estimatedItemSize={ESTIMATED_CARD_HEIGHT}
+            overscanCount={3}
+          >
+            {CardRow}
+          </VariableSizeList>
         )}
       </Droppable>
     );
@@ -271,10 +328,12 @@ const List = React.memo(
                 )}
                 <div className={s.headerCardsCount}>{cardsCountText()}</div>
               </div>
-              {/* eslint-disable-next-line prettier/prettier */}
-              <div ref={(el) => { listWrapper.current = el; setListOuterWrapperElement(el); }} className={clsx(s.cardsInnerWrapper, gs.scrollableY, listOuterWrapperScrollable && s.cardsInnerWrapperScrollable)}
-              >
-                <div className={clsx(s.cardsOuterWrapper, listOuterWrapperScrollable && s.cardsOuterWrapperScrollable)}>{cardsNode}</div>
+              <div className={s.cardsInnerWrapper}>
+                <div className={s.cardsOuterWrapper}>
+                  {canEdit && addCardAtTop && <CardAdd isOpen={isAddCardOpen} onCreate={handleCardCreate} onClose={handleAddCardClose} labelIds={labelIds} memberIds={memberIds} />}
+                  {cardsNode}
+                  {canEdit && !addCardAtTop && <CardAdd isOpen={isAddCardOpen} onCreate={handleCardCreate} onClose={handleAddCardClose} labelIds={labelIds} memberIds={memberIds} />}
+                </div>
               </div>
               {addCardNode}
             </div>

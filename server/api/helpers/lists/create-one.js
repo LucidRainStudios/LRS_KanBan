@@ -41,21 +41,23 @@ module.exports = {
 
     const { position, repositions } = sails.helpers.utils.insertToPositionables(values.position, lists);
 
-    repositions.forEach(async ({ id, position: nextPosition }) => {
-      await List.update({
-        id,
-        boardId: values.board.id,
-      }).set({
-        position: nextPosition,
-      });
-
-      sails.sockets.broadcast(`board:${values.board.id}`, 'listUpdate', {
-        item: {
+    await Promise.all(
+      repositions.map(async ({ id, position: nextPosition }) => {
+        await List.update({
           id,
+          boardId: values.board.id,
+        }).set({
           position: nextPosition,
-        },
-      });
-    });
+        });
+
+        sails.sockets.broadcast(`board:${values.board.id}`, 'listUpdate', {
+          item: {
+            id,
+            position: nextPosition,
+          },
+        });
+      }),
+    );
 
     const list = await List.create({
       ...values,

@@ -3,6 +3,7 @@ import { call, select } from 'redux-saga/effects';
 import api from '../../../api';
 import Paths from '../../../constants/Paths';
 import selectors from '../../../selectors';
+import mergeRecords from '../../../utils/merge-records';
 import request from '../request';
 
 export function* fetchBoardByCurrentPath() {
@@ -10,6 +11,7 @@ export function* fetchBoardByCurrentPath() {
 
   let board;
   let card;
+  let cardAttachments;
   let users;
   let projects;
   let boardMemberships;
@@ -30,6 +32,7 @@ export function* fetchBoardByCurrentPath() {
       ({
         item: card,
         item: { boardId },
+        included: { attachments: cardAttachments },
       } = yield call(request, api.getCard, pathsMatch.params.id));
     }
 
@@ -53,7 +56,7 @@ export function* fetchBoardByCurrentPath() {
     cardLabels,
     tasks,
     taskMemberships,
-    attachments,
+    attachments: mergeRecords(attachments, cardAttachments),
     project: projects[0],
   };
 }

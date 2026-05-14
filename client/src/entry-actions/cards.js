@@ -17,6 +17,13 @@ const handleCardCreate = (card) => ({
   },
 });
 
+const fetchCard = (id) => ({
+  type: EntryActionTypes.CARD_FETCH,
+  payload: {
+    id,
+  },
+});
+
 const updateCard = (id, data) => ({
   type: EntryActionTypes.CARD_UPDATE,
   payload: {
@@ -116,6 +123,7 @@ const handleCardDelete = (card) => ({
 export default {
   createCard,
   handleCardCreate,
+  fetchCard,
   updateCard,
   updateCurrentCard,
   handleCardUpdate,

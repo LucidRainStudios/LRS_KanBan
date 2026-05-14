@@ -58,6 +58,16 @@ module.exports = {
         inputs.request,
       );
 
+      const attachmentCount = await Attachment.count({ cardId: values.card.id });
+
+      await sails.helpers.cards.updateOne.with({
+        record: values.card,
+        values: {
+          attachmentCount,
+        },
+        currentUser,
+      });
+
       if (!skipActions) {
         await sails.helpers.actions.createOne.with({
           values: {

@@ -48,21 +48,23 @@ module.exports = {
 
       values.position = position;
 
-      repositions.forEach(async ({ id, position: nextPosition }) => {
-        await Task.update({
-          id,
-          cardId: inputs.record.cardId,
-        }).set({
-          position: nextPosition,
-        });
-
-        sails.sockets.broadcast(`board:${inputs.board.id}`, 'taskUpdate', {
-          item: {
+      await Promise.all(
+        repositions.map(async ({ id, position: nextPosition }) => {
+          await Task.update({
             id,
+            cardId: inputs.record.cardId,
+          }).set({
             position: nextPosition,
-          },
-        });
-      });
+          });
+
+          sails.sockets.broadcast(`board:${inputs.board.id}`, 'taskUpdate', {
+            item: {
+              id,
+              position: nextPosition,
+            },
+          });
+        }),
+      );
     }
 
     const task = await Task.updateOne(inputs.record.id).set({ updatedById: currentUser.id, ...values });

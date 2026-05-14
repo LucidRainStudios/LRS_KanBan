@@ -30,6 +30,15 @@ module.exports.http = {
 
     /**
      *
+     * Gzip/deflate response compression. The `compress` name is referenced in `order`
+     * above, but Sails 1.x has no built-in `compress` middleware, so it must be defined
+     * here or responses go out uncompressed.
+     *
+     */
+    compress: require('compression')(),
+
+    /**
+     *
      * The body parser that will handle incoming multipart HTTP requests.
      *
      * https://sailsjs.com/config/http#?customizing-the-body-parser

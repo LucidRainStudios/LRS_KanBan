@@ -72,6 +72,24 @@ export function* handleCardCreate(card) {
   yield put(actions.handleCardCreate(card));
 }
 
+export function* fetchCard(id) {
+  yield put(actions.fetchCard(id));
+
+  let card;
+  let attachments;
+  try {
+    ({
+      item: card,
+      included: { attachments },
+    } = yield call(request, api.getCard, id));
+  } catch (error) {
+    yield put(actions.fetchCard.failure(id, error));
+    return;
+  }
+
+  yield put(actions.fetchCard.success(card, attachments));
+}
+
 export function* updateCard(id, data) {
   yield put(actions.updateCard(id, data));
 
@@ -207,6 +225,7 @@ export default {
   registerDescriptionOpenHandler,
   createCard,
   handleCardCreate,
+  fetchCard,
   updateCard,
   updateCurrentCard,
   moveCard,

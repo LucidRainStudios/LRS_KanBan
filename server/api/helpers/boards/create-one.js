@@ -66,27 +66,29 @@ module.exports = {
 
     const { position, repositions } = sails.helpers.utils.insertToPositionables(values.position, boards);
 
-    repositions.forEach(async ({ id, position: nextPosition }) => {
-      await Board.update({
-        id,
-        projectId: values.project.id,
-      }).set({
-        position: nextPosition,
-      });
-
-      // TODO: move out of loop
-      const boardMemberUserIds = await sails.helpers.boards.getMemberUserIds(id);
-      const boardRelatedUserIds = _.union(projectManagerUserIds, boardMemberUserIds);
-
-      boardRelatedUserIds.forEach((userId) => {
-        sails.sockets.broadcast(`user:${userId}`, 'boardUpdate', {
-          item: {
-            id,
-            position: nextPosition,
-          },
+    await Promise.all(
+      repositions.map(async ({ id, position: nextPosition }) => {
+        await Board.update({
+          id,
+          projectId: values.project.id,
+        }).set({
+          position: nextPosition,
         });
-      });
-    });
+
+        // TODO: move out of loop
+        const boardMemberUserIds = await sails.helpers.boards.getMemberUserIds(id);
+        const boardRelatedUserIds = _.union(projectManagerUserIds, boardMemberUserIds);
+
+        boardRelatedUserIds.forEach((userId) => {
+          sails.sockets.broadcast(`user:${userId}`, 'boardUpdate', {
+            item: {
+              id,
+              position: nextPosition,
+            },
+          });
+        });
+      }),
+    );
 
     const board = await Board.create({
       ...values,

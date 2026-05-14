@@ -111,21 +111,23 @@ module.exports = {
 
       values.position = position;
 
-      repositions.forEach(async ({ id, position: nextPosition }) => {
-        await Card.update({
-          id,
-          listId,
-        }).set({
-          position: nextPosition,
-        });
-
-        sails.sockets.broadcast(`board:${boardId}`, 'cardUpdate', {
-          item: {
+      await Promise.all(
+        repositions.map(async ({ id, position: nextPosition }) => {
+          await Card.update({
             id,
+            listId,
+          }).set({
             position: nextPosition,
-          },
-        });
-      });
+          });
+
+          sails.sockets.broadcast(`board:${boardId}`, 'cardUpdate', {
+            item: {
+              id,
+              position: nextPosition,
+            },
+          });
+        }),
+      );
     }
 
     let card;
