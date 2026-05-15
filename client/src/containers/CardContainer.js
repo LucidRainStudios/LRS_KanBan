@@ -48,7 +48,9 @@ const makeMapStateToProps = () => {
     } = selectCardById(state, id);
 
     const priority = priorityId ? selectors.selectPriorityById(state, priorityId) : null;
-    const hasParent = !!parentCardId;
+    const parentCard = parentCardId ? selectCardById(state, parentCardId) : null;
+    const parent = parentCard ? { id: parentCard.id, name: parentCard.name } : null;
+    const childrenCount = selectors.selectChildrenCountByCardId(state, id);
 
     // Show a "blocked" indicator if this card declares any blocker (outgoing blockedBy)
     // OR if it appears as a blocker on someone else's card (incoming blockedBy).
@@ -92,7 +94,8 @@ const makeMapStateToProps = () => {
       attachmentsCount,
       commentCount,
       priority,
-      hasParent,
+      parent,
+      childrenCount,
       isBlocked,
       allProjectsToLists,
       boardMemberships,

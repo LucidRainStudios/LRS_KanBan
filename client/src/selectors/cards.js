@@ -53,6 +53,22 @@ export const makeSelectUsersByCardId = () =>
 
 export const selectUsersByCardId = makeSelectUsersByCardId();
 
+// How many cards declare this card as their parent (i.e. this card is a "Hero" with N children).
+export const makeSelectChildrenCountByCardId = () =>
+  createSelector(
+    orm,
+    (_, id) => id,
+    ({ Card }, id) => {
+      const cardModel = Card.withId(id);
+      if (!cardModel) {
+        return 0;
+      }
+      return cardModel.children.count();
+    },
+  );
+
+export const selectChildrenCountByCardId = makeSelectChildrenCountByCardId();
+
 // Stable swimlane id for a card: its primary assignee's user id, or 'unassigned'.
 export const makeSelectPrimaryUserIdByCardId = () =>
   createSelector(
@@ -686,6 +702,8 @@ export default {
   selectCardById,
   makeSelectUsersByCardId,
   selectUsersByCardId,
+  makeSelectChildrenCountByCardId,
+  selectChildrenCountByCardId,
   makeSelectPrimaryUserIdByCardId,
   selectPrimaryUserIdByCardId,
   makeSelectLabelsByCardId,

@@ -83,19 +83,55 @@
     background: var(--backgroundCardOpened);
   }
 
-  // Child cards of a "Hero" card get an additional left-edge accent so they're recognizable on the board.
-  .cardChildOfHero {
-    border-left: 4px solid var(--notificationRed);
+  // Hero cards (cards that have children) AND child cards (cards with a parent) share the same yellow accent border.
+  .cardHasHeroAccent {
+    border: 2px solid #b8a51c;
+  }
+
+  // Clickable header bar shown at the top of a Child card with the Hero's name. Clicking opens the Hero.
+  .heroBar {
+    background: #b8a51c;
+    border: none;
+    color: var(--textColorWhite);
+    cursor: pointer;
+    display: block;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 16px;
+    margin: -2px -2px 0;
+    overflow: hidden;
+    padding: 4px 8px;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: calc(100% + 4px);
+
+    &:hover {
+      background: #c8b321;
+    }
+  }
+
+  // "N Children" subtitle shown on a Hero card under the title.
+  .childrenCountText {
+    color: var(--textColor3);
+    font-size: 12px;
+    line-height: 14px;
+    padding: 0 8px 4px 4px;
   }
 
   // Shown on cards that are blocked by another card OR are blocking another card.
+  // Positioned at the bottom-right so it sits next to the members row; offset accounts
+  // for the 6px margin-bottom that `.attachment` adds under each member avatar.
   .blockedIndicator {
-    fill: var(--notificationRed);
+    bottom: 10px;
     line-height: 0;
     pointer-events: none;
     position: absolute;
     right: 6px;
-    top: 6px;
+  }
+
+  .blockedIndicatorIcon {
+    fill: var(--notificationRed);
   }
 
   &:global([data-theme-shape='rounded']) .cardOpen {
@@ -202,6 +238,11 @@
 
   .users {
     margin-right: 10px;
+  }
+
+  // When the card shows the blocked-indicator at bottom-right, push the members area further left so it doesn't overlap the indicator.
+  .usersBlockedGap {
+    margin-right: 32px;
   }
 
   .detailsIcon {

@@ -46,7 +46,8 @@ const Card = React.memo(
     attachmentsCount,
     commentCount,
     priority,
-    hasParent,
+    parent,
+    childrenCount,
     isBlocked,
     allProjectsToLists,
     boardMemberships,
@@ -221,6 +222,7 @@ const Card = React.memo(
               <LinkifiedTextRenderer text={name} />
             </div>
           </div>
+          {childrenCount > 0 && <div className={s.childrenCountText}>{t('common.childrenCount', { count: childrenCount })}</div>}
           {notificationsTotal > 0 && notificationsTotal <= 9 && <span className={s.notification}>{notificationsTotal}</span>}
           {notificationsTotal > 9 && <span className={clsx(s.notification, s.notificationFull)}>9+</span>}
         </div>
@@ -311,7 +313,7 @@ const Card = React.memo(
               </span>
             )}
             {users.length > 0 && (
-              <span className={clsx(s.attachments, s.attachmentsRight, s.users)}>
+              <span className={clsx(s.attachments, s.attachmentsRight, s.users, isBlocked && s.usersBlockedGap)}>
                 <div className={s.popupWrapper2}>
                   <MembershipsPopup
                     items={boardAndCardMemberships}
@@ -350,11 +352,24 @@ const Card = React.memo(
       // eslint-disable-next-line react/jsx-props-no-spreading
       <div {...dragProvided.draggableProps} {...dragProvided.dragHandleProps} ref={dragProvided.innerRef} className={s.wrapper} style={getStyle(dragProvided.draggableProps.style, dragSnapshot)}>
         <NameEdit ref={nameEdit} defaultValue={name} onUpdate={handleNameUpdate}>
-          <div ref={cardRef} className={clsx(s.card, isOpen && s.cardOpen, hasParent && s.cardChildOfHero)}>
+          <div ref={cardRef} className={clsx(s.card, isOpen && s.cardOpen, (parent || childrenCount > 0) && s.cardHasHeroAccent)}>
             {isBlocked && (
               <span className={s.blockedIndicator} title={t('common.cardIsBlocked')}>
-                <Icon type={IconType.Exclamation} size={IconSize.Size20} />
+                <Icon type={IconType.Exclamation} size={IconSize.Size20} className={s.blockedIndicatorIcon} />
               </span>
+            )}
+            {parent && (
+              <Button
+                style={ButtonStyle.Default}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(Paths.CARDS.replace(':id', parent.id));
+                }}
+                title={t('common.openHero')}
+                className={s.heroBar}
+              >
+                {t('common.heroLabel', { name: parent.name })}
+              </Button>
             )}
             {isPersisted ? (
               <>
@@ -463,7 +478,8 @@ Card.propTypes = {
   attachmentsCount: PropTypes.number.isRequired,
   commentCount: PropTypes.number.isRequired,
   priority: PropTypes.object, // eslint-disable-line react/forbid-prop-types
-  hasParent: PropTypes.bool,
+  parent: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+  childrenCount: PropTypes.number.isRequired,
   isBlocked: PropTypes.bool,
   allProjectsToLists: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   boardMemberships: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
@@ -514,7 +530,7 @@ Card.defaultProps = {
   coverUrl: undefined,
   description: undefined,
   priority: undefined,
-  hasParent: false,
+  parent: undefined,
   isBlocked: false,
   closestDueDate: undefined,
   createdAt: undefined,
