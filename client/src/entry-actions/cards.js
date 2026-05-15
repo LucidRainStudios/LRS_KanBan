@@ -63,6 +63,16 @@ const moveCurrentCard = (listId, index = 0) => ({
   },
 });
 
+const moveCardToSwimlane = (id, listId, laneId, index = 0) => ({
+  type: EntryActionTypes.CARD_MOVE_TO_SWIMLANE,
+  payload: {
+    id,
+    listId,
+    laneId,
+    index,
+  },
+});
+
 const transferCard = (id, boardId, listId, index = 0) => ({
   type: EntryActionTypes.CARD_TRANSFER,
   payload: {
@@ -129,6 +139,7 @@ export default {
   handleCardUpdate,
   moveCard,
   moveCurrentCard,
+  moveCardToSwimlane,
   transferCard,
   transferCurrentCard,
   duplicateCard,

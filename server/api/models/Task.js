@@ -42,6 +42,10 @@ module.exports = {
       required: true,
       columnName: 'card_id',
     },
+    priorityId: {
+      model: 'Priority',
+      columnName: 'priority_id',
+    },
     memberUsers: {
       collection: 'User',
       via: 'taskId',

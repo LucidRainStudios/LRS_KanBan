@@ -5,6 +5,7 @@ import orm from '../orm';
 import getMeta from '../utils/get-meta';
 import { isLocalId } from '../utils/local-id';
 import { sortByCurrentUserAndName, addBoardMemberships, addCardMemberships, addTaskMemberships } from '../utils/membership-helpers';
+import { getPrimaryUserId } from '../utils/swimlane-helpers';
 import { selectPath } from './router';
 import { selectCurrentUserId } from './users';
 
@@ -51,6 +52,24 @@ export const makeSelectUsersByCardId = () =>
   );
 
 export const selectUsersByCardId = makeSelectUsersByCardId();
+
+// Stable swimlane id for a card: its primary assignee's user id, or 'unassigned'.
+export const makeSelectPrimaryUserIdByCardId = () =>
+  createSelector(
+    orm,
+    (_, id) => id,
+    ({ Card }, id) => {
+      const cardModel = Card.withId(id);
+
+      if (!cardModel) {
+        return cardModel;
+      }
+
+      return getPrimaryUserId(cardModel);
+    },
+  );
+
+export const selectPrimaryUserIdByCardId = makeSelectPrimaryUserIdByCardId();
 
 export const makeSelectLabelsByCardId = () =>
   createSelector(
@@ -667,6 +686,8 @@ export default {
   selectCardById,
   makeSelectUsersByCardId,
   selectUsersByCardId,
+  makeSelectPrimaryUserIdByCardId,
+  selectPrimaryUserIdByCardId,
   makeSelectLabelsByCardId,
   selectLabelsByCardId,
   makeSelectTasksByCardId,

@@ -59,6 +59,11 @@ module.exports = {
       regex: /^[0-9]+$/,
       allowNull: true,
     },
+    priorityId: {
+      type: 'string',
+      regex: /^[0-9]+$/,
+      allowNull: true,
+    },
     position: {
       type: 'number',
     },
@@ -161,7 +166,7 @@ module.exports = {
       }
     }
 
-    const values = _.pick(inputs, ['coverAttachmentId', 'position', 'name', 'description', 'dueDate', 'timer', 'isSubscribed']);
+    const values = _.pick(inputs, ['coverAttachmentId', 'priorityId', 'position', 'name', 'description', 'dueDate', 'timer', 'isSubscribed']);
 
     const formatAssignedUsers = async () => {
       const memberships = await sails.helpers.cardMemberships.getMany({ cardId: card.id });

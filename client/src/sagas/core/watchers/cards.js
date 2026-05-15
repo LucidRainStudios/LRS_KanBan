@@ -13,6 +13,7 @@ export default function* cardsWatchers() {
     takeEvery(EntryActionTypes.CARD_UPDATE_HANDLE, ({ payload: { card } }) => services.handleCardUpdate(card)),
     takeEvery(EntryActionTypes.CARD_MOVE, ({ payload: { id, listId, index } }) => services.moveCard(id, listId, index)),
     takeEvery(EntryActionTypes.CURRENT_CARD_MOVE, ({ payload: { listId, index } }) => services.moveCurrentCard(listId, index)),
+    takeEvery(EntryActionTypes.CARD_MOVE_TO_SWIMLANE, ({ payload: { id, listId, laneId, index } }) => services.moveCardToSwimlane(id, listId, laneId, index)),
     takeEvery(EntryActionTypes.CARD_TRANSFER, ({ payload: { id, boardId, listId, index } }) => services.transferCard(id, boardId, listId, index)),
     takeEvery(EntryActionTypes.CURRENT_CARD_TRANSFER, ({ payload: { boardId, listId, index } }) => services.transferCurrentCard(boardId, listId, index)),
     takeEvery(EntryActionTypes.CARD_DUPLICATE, ({ payload: { id } }) => services.duplicateCard(id)),

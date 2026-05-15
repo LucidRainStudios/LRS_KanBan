@@ -3,6 +3,7 @@ import { createSelector } from 'redux-orm';
 import orm from '../orm';
 import getMeta from '../utils/get-meta';
 import { isLocalId } from '../utils/local-id';
+import { getPrimaryUserId } from '../utils/swimlane-helpers';
 
 export const makeSelectListById = () =>
   createSelector(
@@ -76,6 +77,28 @@ export const makeSelectFilteredCardIdsByListId = () =>
 
 export const selectFilteredCardIdsByListId = makeSelectFilteredCardIdsByListId();
 
+// Swimlane cell: filtered, ordered card ids for a given list AND lane (primary assignee, or 'unassigned').
+export const makeSelectFilteredCardIdsByListIdAndLane = () =>
+  createSelector(
+    orm,
+    (_, listId) => listId,
+    (_, __, laneId) => laneId,
+    ({ List }, listId, laneId) => {
+      const listModel = List.withId(listId);
+
+      if (!listModel) {
+        return listModel;
+      }
+
+      return listModel
+        .getFilteredOrderedCardsModelArray()
+        .filter((cardModel) => getPrimaryUserId(cardModel) === laneId)
+        .map((cardModel) => cardModel.id);
+    },
+  );
+
+export const selectFilteredCardIdsByListIdAndLane = makeSelectFilteredCardIdsByListIdAndLane();
+
 export default {
   makeSelectListById,
   selectListById,
@@ -85,4 +108,6 @@ export default {
   selectIsFilteredByListId,
   makeSelectFilteredCardIdsByListId,
   selectFilteredCardIdsByListId,
+  makeSelectFilteredCardIdsByListIdAndLane,
+  selectFilteredCardIdsByListIdAndLane,
 };

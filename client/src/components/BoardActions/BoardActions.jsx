@@ -111,6 +111,9 @@ const BoardActions = React.memo(
           <Button style={ButtonStyle.IconBase} title={t('common.switchToListView')} onClick={() => onViewModeChange('list')} className={clsx(s.switchViewButton, viewMode === 'list' && s.active)}>
             <Icon type={IconType.List} size={IconSize.Size18} />
           </Button>
+          <Button style={ButtonStyle.IconBase} title={t('common.switchToSwimlanesView')} onClick={() => onViewModeChange('swimlanes')} className={clsx(s.switchViewButton, viewMode === 'swimlanes' && s.active)}>
+            <Icon type={IconType.Users} size={IconSize.Size18} />
+          </Button>
         </div>
         {isProjectManager && (
           <div className={clsx(s.action, s.actionRightFirst)}>

@@ -6,7 +6,9 @@
       "Bash(npx eslint *)",
       "Bash(node -e \"const b=require\\('@babel/core'\\); b.transformFileSync\\('src/components/CardModal/CardModal.jsx',{presets:['react-app']}\\); console.log\\('CardModal.jsx: parsed OK'\\);\")",
       "Bash(grep -E 'error|warning|\\\\.jsx$')",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(xargs grep -l \"isCollapsed\")",
+      "Bash(ls -la \"D:\\\\LucidRain\\\\LRS_KanBan\\\\\" | head -20)"
     ]
   }
 }

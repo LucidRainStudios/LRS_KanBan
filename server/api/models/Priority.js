@@ -1,11 +1,42 @@
 /**
- * Card.js
+ * Priority.js
  *
  * @description :: A model definition represents a database table/collection.
+ *                 Global, admin-managed priority levels (e.g. Low/Medium/High) assignable to cards and tasks.
  * @docs        :: https://sailsjs.com/docs/concepts/models-and-orm/models
  */
 
+const COLORS = [
+  'berry-red',
+  'pumpkin-orange',
+  'lagoon-blue',
+  'pink-tulip',
+  'light-mud',
+  'orange-peel',
+  'bright-moss',
+  'antique-blue',
+  'dark-granite',
+  'lagune-blue',
+  'sunny-grass',
+  'morning-sky',
+  'light-orange',
+  'midnight-blue',
+  'tank-green',
+  'gun-metal',
+  'wet-moss',
+  'red-burgundy',
+  'light-concrete',
+  'apricot-red',
+  'desert-sand',
+  'navy-blue',
+  'egg-yellow',
+  'coral-green',
+  'light-cocoa',
+];
+
 module.exports = {
+  COLORS,
+
   attributes: {
     //  ╔═╗╦═╗╦╔╦╗╦╔╦╗╦╦  ╦╔═╗╔═╗
     //  ╠═╝╠╦╝║║║║║ ║ ║╚╗╔╝║╣ ╚═╗
@@ -17,29 +48,13 @@ module.exports = {
     },
     name: {
       type: 'string',
-      required: true,
-    },
-    description: {
-      type: 'string',
       isNotEmptyString: true,
-      allowNull: true,
-    },
-    dueDate: {
-      type: 'ref',
-      columnName: 'due_date',
-    },
-    timer: {
-      type: 'json',
-    },
-    commentCount: {
-      type: 'number',
       required: true,
-      columnName: 'comment_count',
     },
-    attachmentCount: {
-      type: 'number',
-      defaultsTo: 0,
-      columnName: 'attachment_count',
+    color: {
+      type: 'string',
+      isIn: COLORS,
+      required: true,
     },
 
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗
@@ -50,59 +65,21 @@ module.exports = {
     //  ╠═╣╚═╗╚═╗║ ║║  ║╠═╣ ║ ║║ ║║║║╚═╗
     //  ╩ ╩╚═╝╚═╝╚═╝╚═╝╩╩ ╩ ╩ ╩╚═╝╝╚╝╚═╝
 
-    boardId: {
-      model: 'Board',
-      required: true,
-      columnName: 'board_id',
-    },
-    listId: {
-      model: 'List',
-      required: true,
-      columnName: 'list_id',
-    },
     createdById: {
       model: 'User',
-      required: true,
       columnName: 'created_by_id',
     },
     updatedById: {
       model: 'User',
       columnName: 'updated_by_id',
     },
-    coverAttachmentId: {
-      model: 'Attachment',
-      columnName: 'cover_attachment_id',
-    },
-    priorityId: {
-      model: 'Priority',
-      columnName: 'priority_id',
-    },
-    subscriptionUsers: {
-      collection: 'User',
-      via: 'cardId',
-      through: 'CardSubscription',
-    },
-    memberUsers: {
-      collection: 'User',
-      via: 'cardId',
-      through: 'CardMembership',
-    },
-    labels: {
-      collection: 'Label',
-      via: 'cardId',
-      through: 'CardLabel',
+    cards: {
+      collection: 'Card',
+      via: 'priorityId',
     },
     tasks: {
       collection: 'Task',
-      via: 'cardId',
-    },
-    attachments: {
-      collection: 'Attachment',
-      via: 'cardId',
-    },
-    actions: {
-      collection: 'Action',
-      via: 'cardId',
+      via: 'priorityId',
     },
   },
 };

@@ -90,6 +90,7 @@ const Card = React.memo(
     const nameEdit = useRef(null);
     const cardRef = useRef(null);
     const [isDragOverTask, setIsDragOverTask] = useState(false);
+    const [isLinkCopied, setIsLinkCopied] = useState(false);
     const navigate = useNavigate();
 
     const scrollCardIntoView = useCallback(() => {
@@ -166,12 +167,24 @@ const Card = React.memo(
       nameEdit.current?.open();
     }, []);
 
+    const handleCopyLink = useCallback(
+      (e) => {
+        e.stopPropagation();
+        navigator.clipboard.writeText(url);
+        setIsLinkCopied(true);
+        setTimeout(() => setIsLinkCopied(false), 1500);
+      },
+      [url],
+    );
+
     const getStyle = (draggableStyle, dragSnapshot) => {
+      // Merge in the virtualized-list row style (`style` prop); undefined for the drag clone
+      const merged = { ...draggableStyle, ...style };
       if (!dragSnapshot.isDropAnimating) {
-        return draggableStyle;
+        return merged;
       }
       return {
-        ...draggableStyle,
+        ...merged,
         transitionDuration: `0.05s`,
       };
     };
@@ -326,7 +339,7 @@ const Card = React.memo(
 
     const renderCard = (dragProvided, dragSnapshot) => (
       // eslint-disable-next-line react/jsx-props-no-spreading
-      <div {...dragProvided.draggableProps} {...dragProvided.dragHandleProps} ref={dragProvided.innerRef} className={s.wrapper} style={{ ...getStyle(dragProvided.draggableProps.style, dragSnapshot), ...style }}>
+      <div {...dragProvided.draggableProps} {...dragProvided.dragHandleProps} ref={dragProvided.innerRef} className={s.wrapper} style={getStyle(dragProvided.draggableProps.style, dragSnapshot)}>
         <NameEdit ref={nameEdit} defaultValue={name} onUpdate={handleNameUpdate}>
           <div ref={cardRef} className={clsx(s.card, isOpen && s.cardOpen)}>
             {isPersisted ? (
@@ -340,6 +353,9 @@ const Card = React.memo(
                 >
                   {contentNode}
                 </div>
+                <Button style={ButtonStyle.Icon} title={t('common.linkCard', { context: 'title' })} onClick={handleCopyLink} className={clsx(s.copyLinkButton, isLinkCopied && s.copyLinkButtonCopied)}>
+                  <Icon type={isLinkCopied ? IconType.Check : IconType.Link} size={IconSize.Size13} />
+                </Button>
                 {canEdit && (
                   <div className={s.popupWrapper}>
                     <ActionsPopup

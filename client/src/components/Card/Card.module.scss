@@ -18,6 +18,18 @@
     opacity: 0;
   }
 
+  .copyLinkButton {
+    opacity: 0;
+    position: absolute;
+    right: 18px;
+    top: 3px;
+    z-index: 1;
+  }
+
+  .copyLinkButtonCopied {
+    opacity: 1;
+  }
+
   .attachment {
     display: inline-block;
     line-height: 0;
@@ -51,6 +63,10 @@
       background: var(--backgroundCardSelected);
 
       .editCardButton {
+        opacity: 1;
+      }
+
+      .copyLinkButton {
         opacity: 1;
       }
     }

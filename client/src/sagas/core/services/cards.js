@@ -4,10 +4,11 @@ import actions from '../../../actions';
 import api from '../../../api';
 import selectors from '../../../selectors';
 import { createLocalId } from '../../../utils/local-id';
+import { UNASSIGNED_LANE_ID } from '../../../utils/swimlane-helpers';
 import request from '../request';
 import { addLabelToCard } from './labels';
 import { goToBoard, goToCard } from './router';
-import { addUserToCard } from './users';
+import { addUserToCard, removeUserFromCard } from './users';
 
 let descriptionOpenHandler = null;
 
@@ -130,6 +131,37 @@ export function* moveCurrentCard(listId, index) {
   yield call(moveCard, cardId, listId, index);
 }
 
+// Swimlane drag-drop: `index` is the position within the destination (list, lane) cell.
+// Reassigns the primary user when the lane changes, then translates the cell index into a
+// list position using the same convention as a normal card move.
+export function* moveCardToSwimlane(id, listId, laneId, index) {
+  const currentLaneId = yield select(selectors.selectPrimaryUserIdByCardId, id);
+
+  if (currentLaneId !== laneId) {
+    if (currentLaneId !== UNASSIGNED_LANE_ID) {
+      yield call(removeUserFromCard, currentLaneId, id);
+    }
+    if (laneId !== UNASSIGNED_LANE_ID) {
+      yield call(addUserToCard, laneId, id);
+    }
+  }
+
+  const laneCardIds = (yield select(selectors.selectFilteredCardIdsByListIdAndLane, listId, laneId)).filter((cardId) => cardId !== id);
+  const listCardIds = yield select(selectors.selectFilteredCardIdsByListId, listId);
+
+  const anchorCardId = laneCardIds[index];
+  let listIndex;
+  if (anchorCardId) {
+    listIndex = listCardIds.indexOf(anchorCardId);
+  } else if (laneCardIds.length > 0) {
+    listIndex = listCardIds.indexOf(laneCardIds[laneCardIds.length - 1]) + 1;
+  } else {
+    listIndex = listCardIds.length;
+  }
+
+  yield call(moveCard, id, listId, listIndex);
+}
+
 // eslint-disable-next-line no-unused-vars
 export function* transferCard(id, boardId, listId, index) {
   const { cardId: currentCardId, boardId: currentBoardId } = yield select(selectors.selectPath);
@@ -230,6 +262,7 @@ export default {
   updateCurrentCard,
   moveCard,
   moveCurrentCard,
+  moveCardToSwimlane,
   transferCard,
   transferCurrentCard,
   handleCardUpdate,

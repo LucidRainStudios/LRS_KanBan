@@ -51,6 +51,11 @@ export default class extends BaseModel {
       as: 'coverAttachment',
       relatedName: 'coveredCard',
     }),
+    priorityId: fk({
+      to: 'Priority',
+      as: 'priority',
+      relatedName: 'cards',
+    }),
     users: many('User', 'cards'),
     labels: many('Label', 'cards'),
     createdAt: attr(),

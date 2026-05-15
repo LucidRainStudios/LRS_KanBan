@@ -9,6 +9,7 @@ import BoardActionsContainer from '../../containers/BoardActionsContainer';
 import CardModalContainer from '../../containers/CardModalContainer';
 import ListContainer from '../../containers/ListContainer';
 import ListViewContainer from '../../containers/ListViewContainer';
+import SwimlanesViewContainer from '../../containers/SwimlanesViewContainer';
 import { Button, ButtonStyle, Icon, IconType, IconSize } from '../Utils';
 import ListAdd from './ListAdd';
 
@@ -161,11 +162,19 @@ const Board = React.memo(({ id, listIds, isCardModalOpened, canEdit, defaultView
     </div>
   );
 
+  const swimlanesView = (
+    <div className={clsx(s.listWrapper)}>
+      <SwimlanesViewContainer />
+    </div>
+  );
+
   return (
     <div className={s.boardContainer}>
       <BoardActionsContainer boardId={id} viewMode={viewMode} onViewModeChange={setViewMode} />
       <div className={s.mainWrapper}>
-        {viewMode === 'board' ? boardView : listView}
+        {viewMode === 'board' && boardView}
+        {viewMode === 'list' && listView}
+        {viewMode === 'swimlanes' && swimlanesView}
         {isCardModalOpened && <CardModalContainer />}
       </div>
     </div>

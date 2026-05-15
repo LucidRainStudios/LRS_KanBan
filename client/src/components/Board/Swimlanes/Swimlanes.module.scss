@@ -1,0 +1,80 @@
+:global(#app) {
+  --swimlaneHeaderWidth: 220px;
+  --swimlaneColumnWidth: 272px;
+
+  .wrapper {
+    height: 100%;
+    overflow: auto;
+    padding: 8px 8px 24px;
+  }
+
+  .grid {
+    display: grid;
+    align-items: start;
+    gap: 8px;
+    width: max-content;
+  }
+
+  .headerCell {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    padding: 6px 8px;
+  }
+
+  .cornerCell {
+    left: 0;
+    z-index: 3;
+  }
+
+  .listHeaderCell {
+    color: var(--textColor0);
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .laneHeaderCell {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    align-self: stretch;
+    background: var(--backgroundList);
+    border-radius: 8px;
+    padding: 4px;
+  }
+
+  .laneHeaderCellCollapsed {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .laneToggleButton {
+    align-items: center;
+    color: var(--textColor0);
+    display: flex;
+    gap: 6px;
+    padding: 6px;
+    text-align: left;
+    width: 100%;
+  }
+
+  .laneToggleIconCollapsed {
+    transform: rotate(-90deg);
+  }
+
+  .laneName {
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .cell {
+    background: var(--backgroundList);
+    border-radius: 8px;
+    min-height: 48px;
+    padding: 6px;
+  }
+}

@@ -33,6 +33,11 @@ module.exports = {
       custom: dueDateValidator,
       allowNull: true,
     },
+    priorityId: {
+      type: 'string',
+      regex: /^[0-9]+$/,
+      allowNull: true,
+    },
   },
 
   exits: {
@@ -65,7 +70,7 @@ module.exports = {
       throw Errors.NOT_ENOUGH_RIGHTS;
     }
 
-    const values = _.pick(inputs, ['position', 'name', 'isCompleted', 'dueDate']);
+    const values = _.pick(inputs, ['position', 'name', 'isCompleted', 'dueDate', 'priorityId']);
 
     task = await sails.helpers.tasks.updateOne.with({
       values,

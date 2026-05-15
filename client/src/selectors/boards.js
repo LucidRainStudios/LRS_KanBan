@@ -4,6 +4,7 @@ import orm from '../orm';
 import getMeta from '../utils/get-meta';
 import { isLocalId } from '../utils/local-id';
 import { sortByCurrentUserAndName } from '../utils/membership-helpers';
+import { getPrimaryUserId, UNASSIGNED_LANE_ID } from '../utils/swimlane-helpers';
 import { selectPath } from './router';
 import { selectCurrentUserId } from './users';
 
@@ -337,6 +338,59 @@ export const selectFilteredCardsCountForCurrentBoard = createSelector(
   },
 );
 
+// Swimlanes: one lane per user with at least one card on the board (placed by stable primary
+// assignee), plus an "Unassigned" lane when any card has no assignee. Current user sorts first.
+export const selectSwimlanesForCurrentBoard = createSelector(
+  orm,
+  (state) => selectPath(state).boardId,
+  (state) => selectCurrentUserId(state),
+  ({ Board }, id, currentUserId) => {
+    if (!id) {
+      return id;
+    }
+
+    const boardModel = Board.withId(id);
+
+    if (!boardModel) {
+      return boardModel;
+    }
+
+    const usersById = new Map();
+    let hasUnassigned = false;
+
+    boardModel.cards.toModelArray().forEach((cardModel) => {
+      const primaryUserId = getPrimaryUserId(cardModel);
+
+      if (primaryUserId === UNASSIGNED_LANE_ID) {
+        hasUnassigned = true;
+        return;
+      }
+
+      if (!usersById.has(primaryUserId)) {
+        const userModel = cardModel.users.toModelArray().find((user) => user.id === primaryUserId);
+        usersById.set(primaryUserId, {
+          ...userModel.ref,
+          isCurrent: primaryUserId === currentUserId,
+        });
+      }
+    });
+
+    const lanes = Array.from(usersById.values())
+      .sort((a, b) => {
+        if (a.isCurrent) return -1;
+        if (b.isCurrent) return 1;
+        return a.name.localeCompare(b.name);
+      })
+      .map((user) => ({ id: user.id, user, isUnassigned: false }));
+
+    if (hasUnassigned) {
+      lanes.push({ id: UNASSIGNED_LANE_ID, user: null, isUnassigned: true });
+    }
+
+    return lanes;
+  },
+);
+
 export default {
   makeSelectBoardById,
   selectBoardById,
@@ -353,4 +407,5 @@ export default {
   selectIsBoardWithIdExists,
   selectCardsCountForCurrentBoard,
   selectFilteredCardsCountForCurrentBoard,
+  selectSwimlanesForCurrentBoard,
 };
