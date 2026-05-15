@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 
+import CardLinksContainer from '../../containers/CardLinksContainer';
 import { useLocalStorage } from '../../hooks';
 import { useToggle } from '../../lib/hooks';
 import { registerDescriptionOpenHandler } from '../../sagas/core/services/cards';
@@ -69,6 +70,9 @@ const CardModal = React.memo(
     allLabels,
     priority,
     allPriorities,
+    parent,
+    childCards,
+    pickableHeroes,
     canEdit,
     canEditCommentActivities,
     canEditAllCommentActivities,
@@ -517,6 +521,35 @@ const CardModal = React.memo(
     const priorityOptions = [{ id: 'none', name: t('common.noPriority') }, ...allPriorities.map((p) => ({ id: p.id, name: p.name }))];
     const priorityDefaultItem = priority ? { id: priority.id, name: priority.name } : { id: 'none', name: t('common.noPriority') };
 
+    const heroOptions = [{ id: 'none', name: t('common.noHero') }, ...pickableHeroes];
+    const heroDefaultItem = parent ? { id: parent.id, name: parent.name } : { id: 'none', name: t('common.noHero') };
+
+    const heroNode = (
+      <div className={s.headerItems}>
+        <div className={s.text}>{t('common.hero_title', { context: 'title' })}</div>
+        {canEdit ? (
+          <Dropdown
+            key={parent ? parent.id : 'none'}
+            style={DropdownStyle.FullWidth}
+            options={heroOptions}
+            placeholder={heroDefaultItem.name}
+            defaultItem={heroDefaultItem}
+            isSearchable
+            onChange={(option) => onUpdate({ parentCardId: option.id === 'none' ? null : option.id })}
+          />
+        ) : (
+          <span className={s.headerItem}>{parent ? parent.name : t('common.noHero')}</span>
+        )}
+      </div>
+    );
+
+    const childrenNode = childCards.length > 0 && (
+      <div className={s.headerItems}>
+        <div className={s.text}>{t('common.heroChildren_title', { context: 'title' })}</div>
+        <span className={s.headerItem}>{childCards.map((c) => c.name).join(', ')}</span>
+      </div>
+    );
+
     const priorityNode = (
       <div className={s.headerItems}>
         <div className={s.text}>{t('common.priority_title', { context: 'title' })}</div>
@@ -818,6 +851,8 @@ const CardModal = React.memo(
             {membersNode}
             {labelsNode}
             {priorityNode}
+            {heroNode}
+            {childrenNode}
             {dueDateNode}
             {timerNode}
             {!hideClosestDueDate && closestDueDateNode}
@@ -827,6 +862,7 @@ const CardModal = React.memo(
           </div>
           <div className={s.moduleContainer}>
             {descriptionNode}
+            <CardLinksContainer cardId={id} canEdit={canEdit} />
             <hr className={s.hr} />
           </div>
           <div className={s.moduleContainer}>
@@ -887,6 +923,9 @@ CardModal.propTypes = {
   allLabels: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   priority: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   allPriorities: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
+  parent: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+  childCards: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
+  pickableHeroes: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   canEdit: PropTypes.bool.isRequired,
   canEditCommentActivities: PropTypes.bool.isRequired,
   canEditAllCommentActivities: PropTypes.bool.isRequired,
@@ -937,6 +976,7 @@ CardModal.defaultProps = {
   dueDate: undefined,
   timer: undefined,
   priority: undefined,
+  parent: undefined,
   closestTaskDueDate: undefined,
   closestDueDate: undefined,
   createdAt: undefined,

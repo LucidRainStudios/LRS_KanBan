@@ -27,6 +27,7 @@ export function* fetchCore() {
   let tasks;
   let taskMemberships;
   let attachments;
+  let cardLinks;
 
   try {
     ({
@@ -43,6 +44,7 @@ export function* fetchCore() {
       tasks,
       taskMemberships,
       attachments,
+      cardLinks,
     } = yield call(fetchBoardByCurrentPath));
   } catch {} // eslint-disable-line no-empty
 
@@ -91,6 +93,7 @@ export function* fetchCore() {
     userProjects,
     userPrefs,
     priorities,
+    cardLinks,
   };
 }
 

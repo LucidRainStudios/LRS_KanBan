@@ -2,6 +2,7 @@ import activities from './activities';
 import attachments from './attachments';
 import boardMemberships from './board-memberships';
 import boards from './boards';
+import cardLinks from './card-links';
 import cards from './cards';
 import commentActivities from './comment-activities';
 import core from './core';
@@ -24,6 +25,7 @@ export default {
   ...attachments,
   ...boardMemberships,
   ...boards,
+  ...cardLinks,
   ...cards,
   ...commentActivities,
   ...core,

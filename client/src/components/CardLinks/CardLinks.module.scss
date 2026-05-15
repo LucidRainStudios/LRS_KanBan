@@ -1,0 +1,58 @@
+:global(#app) {
+  .wrapper {
+    margin-top: 8px;
+  }
+
+  .section {
+    margin-bottom: 12px;
+  }
+
+  .title {
+    color: var(--textColor3);
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+
+  .pill {
+    align-items: center;
+    background: var(--backgroundList);
+    border-radius: 4px;
+    color: var(--textColor0);
+    display: inline-flex;
+    font-size: 13px;
+    max-width: 100%;
+    padding: 2px 4px 2px 8px;
+  }
+
+  .pillLink {
+    background: transparent;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    max-width: 240px;
+    overflow: hidden;
+    padding: 0;
+    text-align: left;
+    text-decoration: underline;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .pillRemove {
+    margin-left: 4px;
+    opacity: 0.6;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}

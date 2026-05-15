@@ -46,6 +46,8 @@ const Card = React.memo(
     attachmentsCount,
     commentCount,
     priority,
+    hasParent,
+    isBlocked,
     allProjectsToLists,
     boardMemberships,
     boardAndCardMemberships,
@@ -348,7 +350,12 @@ const Card = React.memo(
       // eslint-disable-next-line react/jsx-props-no-spreading
       <div {...dragProvided.draggableProps} {...dragProvided.dragHandleProps} ref={dragProvided.innerRef} className={s.wrapper} style={getStyle(dragProvided.draggableProps.style, dragSnapshot)}>
         <NameEdit ref={nameEdit} defaultValue={name} onUpdate={handleNameUpdate}>
-          <div ref={cardRef} className={clsx(s.card, isOpen && s.cardOpen)}>
+          <div ref={cardRef} className={clsx(s.card, isOpen && s.cardOpen, hasParent && s.cardChildOfHero)}>
+            {isBlocked && (
+              <span className={s.blockedIndicator} title={t('common.cardIsBlocked')}>
+                <Icon type={IconType.Exclamation} size={IconSize.Size20} />
+              </span>
+            )}
             {isPersisted ? (
               <>
                 {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
@@ -456,6 +463,8 @@ Card.propTypes = {
   attachmentsCount: PropTypes.number.isRequired,
   commentCount: PropTypes.number.isRequired,
   priority: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+  hasParent: PropTypes.bool,
+  isBlocked: PropTypes.bool,
   allProjectsToLists: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   boardMemberships: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   boardAndCardMemberships: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
@@ -505,6 +514,8 @@ Card.defaultProps = {
   coverUrl: undefined,
   description: undefined,
   priority: undefined,
+  hasParent: false,
+  isBlocked: false,
   closestDueDate: undefined,
   createdAt: undefined,
   createdBy: undefined,

@@ -63,6 +63,9 @@ module.exports = {
     const coverAttachmentIds = cards.flatMap((card) => (card.coverAttachmentId ? [card.coverAttachmentId] : []));
     const attachments = await sails.helpers.attachments.getMany({ id: coverAttachmentIds });
 
+    // Same-board card-to-card links: fetching by `cardId` covers the inverse direction since both endpoints are on the same board (v1).
+    const cardLinks = cardIds.length > 0 ? await sails.helpers.cardLinks.getMany({ cardId: cardIds }) : [];
+
     const isSubscribedByCardId = cardSubscriptions.reduce(
       (result, cardSubscription) => ({
         ...result,
@@ -92,6 +95,7 @@ module.exports = {
         tasks,
         taskMemberships,
         attachments,
+        cardLinks,
         projects: [project],
       },
     };

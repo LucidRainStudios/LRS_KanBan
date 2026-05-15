@@ -4,6 +4,7 @@ import attachments from './attachments';
 import boardMemberships from './board-memberships';
 import boards from './boards';
 import cardLabels from './card-labels';
+import cardLinks from './card-links';
 import cardMemberships from './card-memberships';
 import cards from './cards';
 import commentActivities from './comment-activities';
@@ -32,6 +33,7 @@ export default {
   ...boardMemberships,
   ...boards,
   ...cardLabels,
+  ...cardLinks,
   ...cardMemberships,
   ...cards,
   ...commentActivities,

@@ -77,6 +77,10 @@ module.exports = {
       model: 'Priority',
       columnName: 'priority_id',
     },
+    parentCardId: {
+      model: 'Card',
+      columnName: 'parent_card_id',
+    },
     subscriptionUsers: {
       collection: 'User',
       via: 'cardId',
@@ -103,6 +107,14 @@ module.exports = {
     actions: {
       collection: 'Action',
       via: 'cardId',
+    },
+    outgoingLinks: {
+      collection: 'CardLink',
+      via: 'cardId',
+    },
+    incomingLinks: {
+      collection: 'CardLink',
+      via: 'linkedCardId',
     },
   },
 };

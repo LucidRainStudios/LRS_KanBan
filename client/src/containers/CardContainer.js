@@ -27,10 +27,34 @@ const makeMapStateToProps = () => {
     const allLabels = selectors.selectLabelsForCurrentBoard(state);
     const currentUserMembership = selectors.selectCurrentUserMembershipForCurrentBoard(state);
 
-    const { name, dueDate, timer, coverUrl, description, boardId, listId, isPersisted, commentCount, isActivitiesFetching, isAllActivitiesFetched, createdAt, createdBy, updatedAt, updatedBy, priorityId } =
-      selectCardById(state, id);
+    const {
+      name,
+      dueDate,
+      timer,
+      coverUrl,
+      description,
+      boardId,
+      listId,
+      isPersisted,
+      commentCount,
+      isActivitiesFetching,
+      isAllActivitiesFetched,
+      createdAt,
+      createdBy,
+      updatedAt,
+      updatedBy,
+      priorityId,
+      parentCardId,
+    } = selectCardById(state, id);
 
     const priority = priorityId ? selectors.selectPriorityById(state, priorityId) : null;
+    const hasParent = !!parentCardId;
+
+    // Show a "blocked" indicator if this card declares any blocker (outgoing blockedBy)
+    // OR if it appears as a blocker on someone else's card (incoming blockedBy).
+    const outgoingLinks = selectors.selectOutgoingLinksByCardId(state, id) || [];
+    const incomingLinks = selectors.selectIncomingLinksByCardId(state, id) || [];
+    const isBlocked = outgoingLinks.some((l) => l.type === 'blockedBy') || incomingLinks.some((l) => l.type === 'blockedBy');
 
     const users = selectUsersByCardId(state, id);
     const labels = selectLabelsByCardId(state, id);
@@ -68,6 +92,8 @@ const makeMapStateToProps = () => {
       attachmentsCount,
       commentCount,
       priority,
+      hasParent,
+      isBlocked,
       allProjectsToLists,
       boardMemberships,
       boardAndCardMemberships,

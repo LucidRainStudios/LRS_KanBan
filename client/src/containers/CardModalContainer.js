@@ -38,10 +38,29 @@ const mapStateToProps = (state) => {
     updatedAt,
     updatedBy,
     priorityId,
+    parentCardId,
   } = selectors.selectCurrentCard(state);
 
   const priority = priorityId ? selectors.selectPriorityById(state, priorityId) : null;
   const allPriorities = selectors.selectAllPriorities(state);
+
+  const parent = parentCardId ? selectors.selectCardById(state, parentCardId) : null;
+  const childCards = [];
+  const pickableHeroes = [];
+  const heroBoardListIds = selectors.selectListIdsForCurrentBoard(state) || [];
+  heroBoardListIds.forEach((heroListId) => {
+    const ids = selectors.selectCardIdsByListId(state, heroListId) || [];
+    ids.forEach((cardId) => {
+      if (cardId === id) return;
+      const c = selectors.selectCardById(state, cardId);
+      if (!c) return;
+      if (c.parentCardId === id) {
+        childCards.push({ id: c.id, name: c.name });
+      } else {
+        pickableHeroes.push({ id: c.id, name: c.name });
+      }
+    });
+  });
 
   const users = selectors.selectUsersForCurrentCard(state);
   const labels = selectors.selectLabelsForCurrentCard(state);
@@ -119,6 +138,9 @@ const mapStateToProps = (state) => {
     commentCount,
     priority,
     allPriorities,
+    parent,
+    childCards,
+    pickableHeroes,
     canEdit: isCurrentUserEditor,
     canEditCommentActivities: isCurrentUserEditorOrCanComment,
     canEditAllCommentActivities: isCurrentUserManager,

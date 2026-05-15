@@ -3,6 +3,7 @@ import Attachment from './Attachment';
 import Board from './Board';
 import BoardMembership from './BoardMembership';
 import Card from './Card';
+import CardLink from './CardLink';
 import Core from './Core';
 import Label from './Label';
 import List from './List';
@@ -14,4 +15,4 @@ import Task from './Task';
 import User from './User';
 import UserPrefs from './UserPrefs';
 
-export { Activity, Attachment, Board, BoardMembership, Card, Core, Label, List, Notification, Priority, Project, ProjectManager, Task, User, UserPrefs };
+export { Activity, Attachment, Board, BoardMembership, Card, CardLink, Core, Label, List, Notification, Priority, Project, ProjectManager, Task, User, UserPrefs };

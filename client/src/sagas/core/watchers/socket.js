@@ -120,6 +120,14 @@ const createSocketEventsChannel = () =>
       emit(entryActions.handlePriorityDelete(item));
     };
 
+    const handleCardLinkCreate = ({ item }) => {
+      emit(entryActions.handleCardLinkCreate(item));
+    };
+
+    const handleCardLinkDelete = ({ item }) => {
+      emit(entryActions.handleCardLinkDelete(item));
+    };
+
     const handleCardCreate = api.makeHandleCardCreate(({ item }) => {
       emit(entryActions.handleCardCreate(item));
     });
@@ -258,6 +266,8 @@ const createSocketEventsChannel = () =>
     socket.on('priorityCreate', handlePriorityCreate);
     socket.on('priorityUpdate', handlePriorityUpdate);
     socket.on('priorityDelete', handlePriorityDelete);
+    socket.on('cardLinkCreate', handleCardLinkCreate);
+    socket.on('cardLinkDelete', handleCardLinkDelete);
 
     socket.on('cardCreate', handleCardCreate);
     socket.on('cardUpdate', handleCardUpdate);
@@ -331,6 +341,8 @@ const createSocketEventsChannel = () =>
       socket.off('priorityCreate', handlePriorityCreate);
       socket.off('priorityUpdate', handlePriorityUpdate);
       socket.off('priorityDelete', handlePriorityDelete);
+      socket.off('cardLinkCreate', handleCardLinkCreate);
+      socket.off('cardLinkDelete', handleCardLinkDelete);
 
       socket.off('cardCreate', handleCardCreate);
       socket.off('cardUpdate', handleCardUpdate);

@@ -1,6 +1,7 @@
 import attachments from './attachments';
 import boardMemberships from './board-memberships';
 import boards from './boards';
+import cardLinks from './card-links';
 import cards from './cards';
 import core from './core';
 import labels from './labels';
@@ -19,6 +20,7 @@ export default {
   ...attachments,
   ...boardMemberships,
   ...boards,
+  ...cardLinks,
   ...cards,
   ...core,
   ...labels,
