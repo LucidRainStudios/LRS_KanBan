@@ -5,6 +5,7 @@
 
   .addCardButton {
     background: var(--backgroundList);
+    border-radius: 0 0 8px 8px;
     color: var(--textColor3);
     cursor: pointer;
     display: block;
@@ -12,11 +13,21 @@
     height: 36px;
     padding: 8px;
     text-align: left;
+    transition: background-color 120ms ease;
     width: 272px;
 
     &:hover {
       background: var(--backgroundListButton);
+      color: var(--textColor1);
+
+      svg {
+        fill: var(--textColor1);
+      }
     }
+  }
+
+  &:global([data-theme-shape='rounded']) .addCardButton {
+    border-radius: 0 0 12px 12px;
   }
 
   .addCardButtonIcon {
@@ -61,7 +72,7 @@
 
   .header {
     outline: none;
-    padding: 4px 4px 4px 8px;
+    padding: 10px 4px 6px 8px;
     position: relative;
     float: left;
   }
@@ -176,7 +187,8 @@
 
   .outerWrapper {
     background: var(--backgroundList);
-    border-radius: 1px;
+    border-radius: 8px;
+    box-shadow: var(--shadowBlack015) 0 1px 2px 0;
     overflow: hidden;
   }
 

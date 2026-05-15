@@ -94,6 +94,11 @@ const PreferencesSettings = React.memo(
           name: t('common.themeGithubDark'),
           badge: t('common.beta'),
         },
+        {
+          id: Themes.TRELLO_LIGHT,
+          name: t('common.themeTrelloLight'),
+          badge: t('common.beta'),
+        },
       ],
       [t],
     );

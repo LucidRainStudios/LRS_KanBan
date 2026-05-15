@@ -54,13 +54,18 @@
 
   .card {
     background: var(--backgroundColorTmpHeader);
-    border-radius: 2px;
-    box-shadow: var(--cardShadow) 0px 1px 4px;
+    border-radius: 6px;
+    box-shadow: var(--cardShadow) 0px 1px 2px 0px;
     position: relative;
     border: 2px solid transparent;
+    transition:
+      background-color 120ms ease,
+      box-shadow 120ms ease,
+      transform 120ms ease;
 
     &:hover {
       background: var(--backgroundCardSelected);
+      box-shadow: var(--cardShadow) 0px 4px 12px 0px;
 
       .editCardButton {
         opacity: 1;
@@ -73,12 +78,12 @@
   }
 
   &:global([data-theme-shape='rounded']) .card {
-    border-radius: 8px;
+    border-radius: 10px;
   }
 
   .cardOpen {
-    box-shadow: 0 0 5px var(--borderOutline2);
-    border-radius: 2px;
+    box-shadow: 0 0 0 2px var(--borderOutline2), var(--cardShadow) 0 6px 16px 0;
+    border-radius: 6px;
     border: 2px solid var(--borderOutline2);
     background: var(--backgroundCardOpened);
   }
@@ -92,6 +97,7 @@
   .heroBar {
     background: #b8a51c;
     border: none;
+    border-radius: 4px 4px 0 0;
     color: var(--textColorWhite);
     cursor: pointer;
     display: block;
@@ -103,12 +109,17 @@
     padding: 4px 8px;
     text-align: left;
     text-overflow: ellipsis;
+    transition: background-color 120ms ease;
     white-space: nowrap;
     width: calc(100% + 4px);
 
     &:hover {
       background: #c8b321;
     }
+  }
+
+  &:global([data-theme-shape='rounded']) .heroBar {
+    border-radius: 8px 8px 0 0;
   }
 
   // "N Children" subtitle shown on a Hero card under the title.
@@ -135,7 +146,7 @@
   }
 
   &:global([data-theme-shape='rounded']) .cardOpen {
-    border-radius: 8px;
+    border-radius: 10px;
   }
 
   .content {
@@ -149,14 +160,13 @@
   }
 
   .cover {
-    border-radius: 2px;
-    padding: 0 2px;
+    border-radius: 6px 6px 0 0;
     vertical-align: middle;
     width: 100%;
   }
 
   &:global([data-theme-shape='rounded']) .cover {
-    border-radius: 8px;
+    border-radius: 10px 10px 0 0;
   }
 
   .detailsTitle {

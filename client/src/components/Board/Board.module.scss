@@ -29,28 +29,32 @@
   .addListButton {
     background: var(--shadowBlack02);
     border: none;
-    border-radius: 3px;
-    color: var(--textColor3);
+    border-radius: 8px;
+    color: var(--textColor1);
     cursor: pointer;
     display: block;
     height: 42px;
     padding: 11px;
     text-align: left;
+    transition:
+      background-color 120ms ease,
+      color 120ms ease;
     width: 272px;
 
     &:hover {
       background: var(--shadowBlack03);
+      color: var(--textColor0);
     }
   }
 
   &:global([data-theme-shape='rounded']) .addListButton {
-    border-radius: 8px;
+    border-radius: 12px;
   }
 
   .addListButtonIcon {
-    margin-right: 2px;
+    margin-right: 4px;
     vertical-align: -20%;
-    fill: var(--textColor3);
+    fill: var(--textColor1);
   }
 
   .addListButtonText {

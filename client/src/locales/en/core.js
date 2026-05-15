@@ -421,6 +421,7 @@ export default {
       theme: 'Theme',
       themeDefault: 'Default',
       themeGithubDark: 'GitHub Dark',
+      themeTrelloLight: 'Trello Light',
       themeShape: 'Theme Shape',
       themeShapeDefault: 'Default',
       themeShapeRounded: 'Rounded',

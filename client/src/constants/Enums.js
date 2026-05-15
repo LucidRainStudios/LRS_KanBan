@@ -87,6 +87,7 @@ export const PreferredFonts = {
 export const Themes = {
   DEFAULT: 'default',
   GITHUB_DARK: 'github-dark',
+  TRELLO_LIGHT: 'trello-light',
 };
 
 export const ThemeShapes = {
