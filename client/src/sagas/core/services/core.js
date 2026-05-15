@@ -29,6 +29,7 @@ export function* initializeCore() {
     notifications,
     userProjects,
     userPrefs,
+    priorities,
   } = yield call(requests.fetchCore); // TODO: handle error
 
   yield call(i18n.changeLanguage, userPrefs.language);
@@ -56,6 +57,7 @@ export function* initializeCore() {
       notifications,
       userProjects,
       userPrefs,
+      priorities,
     ),
   );
 }

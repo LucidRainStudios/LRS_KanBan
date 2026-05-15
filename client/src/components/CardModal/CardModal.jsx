@@ -14,6 +14,7 @@ import DueDateEditPopup from '../DueDateEditPopup';
 import Label from '../Label';
 import LabelsPopup from '../LabelsPopup';
 import MembershipsPopup from '../MembershipsPopup';
+import Priority from '../Priority';
 import Tasks from '../Tasks';
 import Timer from '../Timer';
 import TimerEditPopup from '../TimerEditPopup';
@@ -66,6 +67,8 @@ const CardModal = React.memo(
     boardAndCardMemberships,
     boardAndTaskMemberships,
     allLabels,
+    priority,
+    allPriorities,
     canEdit,
     canEditCommentActivities,
     canEditAllCommentActivities,
@@ -511,6 +514,28 @@ const CardModal = React.memo(
       </div>
     );
 
+    const priorityOptions = [{ id: 'none', name: t('common.noPriority') }, ...allPriorities.map((p) => ({ id: p.id, name: p.name }))];
+    const priorityDefaultItem = priority ? { id: priority.id, name: priority.name } : { id: 'none', name: t('common.noPriority') };
+
+    const priorityNode = (
+      <div className={s.headerItems}>
+        <div className={s.text}>{t('common.priority_title', { context: 'title' })}</div>
+        {canEdit ? (
+          <Dropdown
+            key={priority ? priority.id : 'none'}
+            style={DropdownStyle.FullWidth}
+            options={priorityOptions}
+            placeholder={priorityDefaultItem.name}
+            defaultItem={priorityDefaultItem}
+            isSearchable
+            onChange={(option) => onUpdate({ priorityId: option.id === 'none' ? null : option.id })}
+          />
+        ) : (
+          <span className={s.headerItem}>{priority ? <Priority name={priority.name} color={priority.color} /> : t('common.noPriority')}</span>
+        )}
+      </div>
+    );
+
     const dueDateNode = (
       <div className={s.headerItems}>
         <div className={s.text}>
@@ -792,6 +817,7 @@ const CardModal = React.memo(
           <div className={s.moduleContainer}>
             {membersNode}
             {labelsNode}
+            {priorityNode}
             {dueDateNode}
             {timerNode}
             {!hideClosestDueDate && closestDueDateNode}
@@ -859,6 +885,8 @@ CardModal.propTypes = {
   boardAndCardMemberships: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   boardAndTaskMemberships: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   allLabels: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
+  priority: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+  allPriorities: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   canEdit: PropTypes.bool.isRequired,
   canEditCommentActivities: PropTypes.bool.isRequired,
   canEditAllCommentActivities: PropTypes.bool.isRequired,
@@ -908,6 +936,7 @@ CardModal.defaultProps = {
   description: undefined,
   dueDate: undefined,
   timer: undefined,
+  priority: undefined,
   closestTaskDueDate: undefined,
   closestDueDate: undefined,
   createdAt: undefined,

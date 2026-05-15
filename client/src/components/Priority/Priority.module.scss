@@ -1,0 +1,34 @@
+:global(#app) {
+  .wrapper {
+    border-radius: 4px;
+    color: var(--textColorWhite);
+    display: inline-block;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 16px;
+    max-width: 100%;
+    overflow: hidden;
+    padding: 2px 8px;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    vertical-align: top;
+    white-space: nowrap;
+  }
+
+  .wrapperCard {
+    font-size: 11px;
+    line-height: 14px;
+    padding: 1px 6px;
+  }
+
+  .wrapperHoverable {
+    cursor: pointer;
+  }
+
+  .button {
+    background: transparent;
+    border: none;
+    padding: 0;
+    line-height: 0;
+  }
+}

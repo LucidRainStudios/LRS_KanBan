@@ -12,6 +12,7 @@ import DueDateEditPopup from '../DueDateEditPopup';
 import Label from '../Label';
 import LabelsPopup from '../LabelsPopup';
 import MembershipsPopup from '../MembershipsPopup';
+import Priority from '../Priority';
 import Tasks from '../Tasks';
 import Timer from '../Timer';
 import User from '../User';
@@ -44,6 +45,7 @@ const Card = React.memo(
     description,
     attachmentsCount,
     commentCount,
+    priority,
     allProjectsToLists,
     boardMemberships,
     boardAndCardMemberships,
@@ -221,8 +223,13 @@ const Card = React.memo(
           {notificationsTotal > 9 && <span className={clsx(s.notification, s.notificationFull)}>9+</span>}
         </div>
         {coverUrl && <img src={coverUrl} alt="" className={s.cover} />}
-        {(labels.length > 0 || tasks.length > 0 || description || attachmentsCount > 0 || commentCount > 0 || dueDate || timer || users.length > 0) && (
+        {(priority || labels.length > 0 || tasks.length > 0 || description || attachmentsCount > 0 || commentCount > 0 || dueDate || timer || users.length > 0) && (
           <div className={s.details}>
+            {priority && (
+              <span className={s.attachment}>
+                <Priority name={priority.name} color={priority.color} variant="card" />
+              </span>
+            )}
             {labels.length > 0 && (
               <span className={s.labels}>
                 {labels.map((label) => (
@@ -448,6 +455,7 @@ Card.propTypes = {
   description: PropTypes.string,
   attachmentsCount: PropTypes.number.isRequired,
   commentCount: PropTypes.number.isRequired,
+  priority: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   allProjectsToLists: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   boardMemberships: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   boardAndCardMemberships: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
@@ -496,6 +504,7 @@ Card.defaultProps = {
   timer: undefined,
   coverUrl: undefined,
   description: undefined,
+  priority: undefined,
   closestDueDate: undefined,
   createdAt: undefined,
   createdBy: undefined,

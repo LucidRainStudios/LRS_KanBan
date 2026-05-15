@@ -26,6 +26,7 @@ const handleSocketReconnect = (
   notifications,
   userProjects,
   userPrefs,
+  priorities,
 ) => ({
   type: ActionTypes.SOCKET_RECONNECT_HANDLE,
   payload: {
@@ -49,6 +50,7 @@ const handleSocketReconnect = (
     notifications,
     userProjects,
     userPrefs,
+    priorities,
   },
 });
 

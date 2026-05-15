@@ -10,6 +10,7 @@ import lists from './lists';
 import login from './login';
 import modals from './modals';
 import notifications from './notifications';
+import priorities from './priorities';
 import projectManagers from './project-managers';
 import projects from './projects';
 import socket from './socket';
@@ -31,6 +32,7 @@ export default {
   ...login,
   ...modals,
   ...notifications,
+  ...priorities,
   ...projectManagers,
   ...projects,
   ...socket,

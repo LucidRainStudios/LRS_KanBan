@@ -37,7 +37,11 @@ const mapStateToProps = (state) => {
     createdBy,
     updatedAt,
     updatedBy,
+    priorityId,
   } = selectors.selectCurrentCard(state);
+
+  const priority = priorityId ? selectors.selectPriorityById(state, priorityId) : null;
+  const allPriorities = selectors.selectAllPriorities(state);
 
   const users = selectors.selectUsersForCurrentCard(state);
   const labels = selectors.selectLabelsForCurrentCard(state);
@@ -113,6 +117,8 @@ const mapStateToProps = (state) => {
     boardAndTaskMemberships,
     allLabels,
     commentCount,
+    priority,
+    allPriorities,
     canEdit: isCurrentUserEditor,
     canEditCommentActivities: isCurrentUserEditorOrCanComment,
     canEditAllCommentActivities: isCurrentUserManager,

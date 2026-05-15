@@ -9,6 +9,7 @@ import labels from './labels';
 import lists from './lists';
 import modals from './modals';
 import notifications from './notifications';
+import priorities from './priorities';
 import projectManagers from './project-managers';
 import projects from './projects';
 import router from './router';
@@ -30,6 +31,7 @@ export default {
   ...lists,
   ...modals,
   ...notifications,
+  ...priorities,
   ...projectManagers,
   ...projects,
   ...router,

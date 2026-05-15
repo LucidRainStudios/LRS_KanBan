@@ -18,7 +18,6 @@
     "docker:build_local": "docker build -t rargames0/4gaboards:local -f Dockerfile . && docker push rargames0/4gaboards:local",
     "postinstall": "(cd server && npm i && cd ../client && npm i)",
     "lint": "npm run server:lint && npm run client:lint",
-    "prepare": "husky",
     "server:console": "npm run console --prefix server",
     "server:db:init": "npm run db:init --prefix server",
     "server:db:migrate": "npm run db:migrate --prefix server",
@@ -33,23 +32,13 @@
     "start": "concurrently -n server,client \"npm run server:start\" \"npm run client:start\"",
     "test": "npm run server:test && npm run client:test"
   },
-  "lint-staged": {
-    "client/**/*.{js,jsx}": [
-      "npm run client:lint"
-    ],
-    "server/**/*.js": [
-      "npm run server:lint"
-    ]
-  },
   "prettier": {
     "printWidth": 210,
     "singleQuote": true,
     "trailingComma": "all"
   },
   "dependencies": {
-    "concurrently": "^9.2.1",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.2.7"
+    "concurrently": "^9.2.1"
   },
   "devDependencies": {
     "confusing-browser-globals": "^1.0.11",
