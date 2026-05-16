@@ -10,7 +10,6 @@ RUN pnpm config set fetch-retries 10
 RUN pnpm config set fetch-retry-factor 2
 RUN pnpm config set fetch-retry-mintimeout 20000
 RUN pnpm config set fetch-retry-maxtimeout 300000
-RUN pnpm config set network-timeout 600000
 RUN pnpm config set registry https://registry.npmjs.org/
 RUN pnpm import
 RUN pnpm install --prod --ignore-scripts=false
