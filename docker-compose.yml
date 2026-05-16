@@ -32,7 +32,7 @@ services:
     environment:
       BASE_URL: https://kanban.lucidrainstudios.com
       SECRET_KEY: notsecretkey
-      DATABASE_URL: "postgresql://postgres:Lrs5772025!@db:5432/planka"
+      DATABASE_URL: "postgresql://postgres:notpassword@db:5432/planka"
       NODE_ENV: production
       TRUST_PROXY: "1"
       DISCORD_TASK_WEBHOOK_URL: ${DISCORD_TASK_WEBHOOK_URL}
