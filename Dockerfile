@@ -13,7 +13,7 @@ RUN pnpm config set fetch-retry-mintimeout 20000
 RUN pnpm config set fetch-retry-maxtimeout 300000
 RUN pnpm config set registry https://registry.npmjs.org/
 
-RUN echo "onlyBuiltDependencies:\n  - bcrypt\n  - sharp" > pnpm-workspace.yaml
+RUN printf 'onlyBuiltDependencies:\n  - bcrypt\n  - sharp\n' > pnpm-workspace.yaml
 
 RUN pnpm install --prod --frozen-lockfile
 
