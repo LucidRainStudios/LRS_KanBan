@@ -2,35 +2,19 @@ FROM node:24-alpine AS server-dependencies
 
 WORKDIR /app
 
-COPY server/package.json server/pnpm-lock.yaml ./
+COPY server/package.json server/package-lock.json ./
 
 RUN npm install npm@latest --global
-RUN npm install -g pnpm@9
-
-RUN pnpm config set fetch-retries 10
-RUN pnpm config set fetch-retry-factor 2
-RUN pnpm config set fetch-retry-mintimeout 20000
-RUN pnpm config set fetch-retry-maxtimeout 300000
-RUN pnpm config set registry https://registry.npmjs.org/
-
-RUN printf 'onlyBuiltDependencies:\n  - bcrypt\n  - sharp\n' > pnpm-workspace.yaml
-
-RUN pnpm install --prod --frozen-lockfile
+RUN npm ci --omit=dev
 
 FROM node:24-alpine AS client
 
 WORKDIR /app
 
-COPY client/package.json client/pnpm-lock.yaml ./
+COPY client/package.json client/package-lock.json ./
 
 RUN npm install npm@latest --global
-RUN npm install -g pnpm@9
-RUN pnpm config set fetch-retries 10
-RUN pnpm config set fetch-retry-factor 2
-RUN pnpm config set fetch-retry-mintimeout 20000
-RUN pnpm config set fetch-retry-maxtimeout 300000
-RUN pnpm config set registry https://registry.npmjs.org/
-RUN pnpm install --frozen-lockfile
+RUN npm ci
 
 COPY client .
 ENV NODE_OPTIONS="--max_old_space_size=2048"
@@ -59,6 +43,7 @@ VOLUME /app/public/user-avatars
 VOLUME /app/public/project-background-images
 VOLUME /app/private/attachments
 
-HEALTHCHECK --interval=1s --timeout=5s --start-period=8s --retries=50 CMD wget -q --spider http://localhost:1337 || exit 1
+HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=10 CMD wget -q --spider http://localhost:1337 || exit 1
+
 EXPOSE 1337
 CMD ["./start.sh"]
