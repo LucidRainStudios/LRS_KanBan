@@ -98,92 +98,123 @@ DEFAULT_ADMIN_PASSWORD=********
 
 ---
 
-## 5. Database Backups (Always Do This First)
+## 5. Build & Deploy Model
 
-**Always back up the database before updating or rebuilding containers.**
+> 🚫 **The Oracle server must NOT build the app locally.**
+> Builds happen on your **local development PC** and are pushed to Docker Hub.
+> The Oracle server only **pulls the finished image** and restarts the container.
+>
+> Attempting `docker compose up -d --build` on the server will fail with:
+> `pull access denied for lrs-4gaboards, repository does not exist or may require 'docker login'`
 
-### Step 1. Move to project root
+---
+
+## 6. Updating The Server (Recommended Workflow)
+
+### Step 1 — Build Locally
+
+Run on your **local development PC** (from the repo root):
+
+```bash
+docker build -t ricardorheeder/4gaboards:latest .
+```
+
+---
+
+### Step 2 — Push Image
+
+Run on your **local development PC**:
+
+```bash
+docker push ricardorheeder/4gaboards:latest
+```
+
+(If you haven't logged in: `docker login` first.)
+
+---
+
+### Step 3 — Back Up Database
+
+Run on the **Oracle server**:
 
 ```bash
 cd ~/lrs_kanban
-```
-
-### Step 2. Ensure backup directory exists
-
-```bash
 mkdir -p backups
-```
 
-### Step 3. Create a compressed backup
+docker compose -f app/docker-compose.yml exec -T db \
+  pg_dump -U planka planka | gzip > backups/4gaboards_$(date +%F_%H%M).sql.gz
 
-```bash
-docker exec -t app-db-1 \
-pg_dump -U postgres -d planka | gzip > backups/4gaboards_$(date +%F_%H%M).sql.gz
-```
-
-### Step 4. Verify backup
-
-```bash
 ls -lh backups
 ```
 
-You should see a `.sql.gz` file with non-zero size.
+Verify the file is non-zero. For extra safety:
+
+```bash
+gzip -t backups/4gaboards_*.sql.gz && echo "OK"
+```
 
 ---
 
-## 6. Updating 4ga Boards
+### Step 4 — Pull Latest Image
 
-### Step 1. Enter the app repository
+Run on the **Oracle server**:
 
 ```bash
 cd ~/lrs_kanban/app
-```
-
-### Step 2. Pull latest code
-
-```bash
-git fetch
-git pull
-```
-
-Ensure the update fast-forwards with no conflicts.
-
----
-
-### Step 3. Pull updated Docker images
-
-```bash
-docker compose pull
+docker compose pull 4gaBoards
 ```
 
 ---
 
-### Step 4. Rebuild and restart services
+### Step 5 — Restart Containers
 
 ```bash
-docker compose up -d --build
+docker compose up -d
 ```
+
+> ⚠️ Do **not** add `--build`. The server should never build.
 
 ---
 
-### Step 5. Verify services
+### Step 6 — Verify Everything Works
 
 ```bash
 docker compose ps
 ```
 
 Expected:
-- `app-db-1` → healthy
-- `app-4gaBoards-1` → running
+
+```
+4gaBoards   Up (healthy)
+db          Up (healthy)
+```
 
 ---
 
-## 7. Health Checks & Debugging
+## 7. Useful Commands
 
 ### View logs
 
 ```bash
-docker compose logs --tail=200
+docker compose logs --tail=100 4gaBoards
+```
+
+### Restart app only
+
+```bash
+docker compose restart 4gaBoards
+```
+
+### Restart everything
+
+```bash
+docker compose up -d
+```
+
+### Check running containers
+
+```bash
+docker compose ps
 ```
 
 ### Local HTTP check
@@ -194,43 +225,81 @@ curl -I http://localhost:1337
 
 ---
 
-## 8. Database Restore (Emergency)
+## 8. Troubleshooting
+
+### 502 Bad Gateway
+
+Usually means the app container crashed. Check logs:
+
+```bash
+docker compose logs --tail=100 4gaBoards
+```
+
+### `pull access denied for lrs-4gaboards`
+
+You ran a command that tried to build/pull a local image name on the server.
+Make sure you are pulling `ricardorheeder/4gaboards:latest` (the published image), not building from source on the server.
+
+### Image didn't update after pull
+
+Force a fresh container:
+
+```bash
+docker compose up -d --force-recreate 4gaBoards
+```
+
+---
+
+## 9. Database Restore (Emergency)
 
 ⚠️ This overwrites current data.
 
 ```bash
 gunzip -c backups/4gaboards_YYYY-MM-DD_HHMM.sql.gz | \
-docker exec -i app-db-1 psql -U postgres -d planka
+  docker compose -f app/docker-compose.yml exec -T db psql -U planka -d planka
 ```
 
 ---
 
-## 9. Clean Restart (No Data Loss)
+## 10. Clean Restart (No Data Loss)
 
 ```bash
 docker compose down
-docker compose up -d --build
+docker compose up -d
 ```
 
 🚫 **Do NOT use `-v` unless you intend to delete all data.**
+🚫 **Do NOT use `--build` on the server.**
 
 ---
 
-## 10. One-Command Update Cheat Sheet
+## 11. One-Command Update Cheat Sheet
+
+**On your local PC:**
 
 ```bash
-cd ~/lrs_kanban
-docker exec -t app-db-1 pg_dump -U postgres -d planka | gzip > backups/4gaboards_$(date +%F_%H%M).sql.gz
-cd app
-git pull
-docker compose pull
-docker compose up -d --build
+docker build -t ricardorheeder/4gaboards:latest . && \
+docker push ricardorheeder/4gaboards:latest
+```
+
+**On the Oracle server:**
+
+```bash
+cd ~/lrs_kanban && \
+mkdir -p backups && \
+docker compose -f app/docker-compose.yml exec -T db pg_dump -U planka planka | gzip > backups/4gaboards_$(date +%F_%H%M).sql.gz && \
+cd app && \
+docker compose pull 4gaBoards && \
+docker compose up -d && \
+docker compose ps
 ```
 
 ---
 
-## 11. Known Gotchas
+## 12. Known Gotchas
 
+- Builds happen **locally only**; the server pulls prebuilt images from Docker Hub
+- Never run `docker compose up -d --build` on the server (will fail with `pull access denied`)
 - `.env` does not exist at repo root, config is injected via Docker Compose
 - Only `app/` is a git repository
 - SSH deploy keys avoid passphrase issues
@@ -239,7 +308,7 @@ docker compose up -d --build
 
 ---
 
-## 12. Current Status
+## 13. Current Status
 
 - GitHub SSH authenticated
 - Database backups working
