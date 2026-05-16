@@ -2,7 +2,7 @@ FROM node:24-alpine AS server-dependencies
 
 WORKDIR /app
 
-COPY server/package.json server/package-lock.json ./
+COPY server/package.json server/pnpm-lock.yaml ./
 
 RUN npm install npm@latest --global
 RUN npm install pnpm --global
@@ -11,19 +11,22 @@ RUN pnpm config set fetch-retry-factor 2
 RUN pnpm config set fetch-retry-mintimeout 20000
 RUN pnpm config set fetch-retry-maxtimeout 300000
 RUN pnpm config set registry https://registry.npmjs.org/
-RUN pnpm import
-RUN pnpm install --prod --ignore-scripts=false
+RUN pnpm install --prod --frozen-lockfile
 
 FROM node:24-alpine AS client
 
 WORKDIR /app
 
-COPY client/package.json client/package-lock.json ./
+COPY client/package.json client/pnpm-lock.yaml ./
 
 RUN npm install npm@latest --global
 RUN npm install pnpm --global
-RUN pnpm import
-RUN pnpm install --prod
+RUN pnpm config set fetch-retries 10
+RUN pnpm config set fetch-retry-factor 2
+RUN pnpm config set fetch-retry-mintimeout 20000
+RUN pnpm config set fetch-retry-maxtimeout 300000
+RUN pnpm config set registry https://registry.npmjs.org/
+RUN pnpm install --frozen-lockfile
 
 COPY client .
 ENV NODE_OPTIONS="--max_old_space_size=2048"
