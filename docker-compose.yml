@@ -19,8 +19,7 @@ services:
       retries: 50
 
   4gaBoards:
-    build: .
-    image: lrs-4gaboards:local
+    image: ricardorheeder/4gaboards:latest
     restart: always
     networks:
       - boards-network
@@ -33,11 +32,10 @@ services:
     environment:
       BASE_URL: https://kanban.lucidrainstudios.com
       SECRET_KEY: notsecretkey
-      DATABASE_URL: "postgresql://planka:Lrs5772025!@lrs_kanban-postgres-1:5432/planka"
+      DATABASE_URL: "postgresql://planka:Lrs5772025!@db:5432/planka"
       NODE_ENV: production
       TRUST_PROXY: "1"
       DISCORD_TASK_WEBHOOK_URL: ${DISCORD_TASK_WEBHOOK_URL}
-      ## Add optional 4ga Boards instance variables here
     depends_on:
       db:
         condition: service_healthy
