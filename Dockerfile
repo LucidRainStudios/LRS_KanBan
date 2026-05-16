@@ -11,7 +11,7 @@ RUN pnpm config set fetch-retry-factor 2
 RUN pnpm config set fetch-retry-mintimeout 20000
 RUN pnpm config set fetch-retry-maxtimeout 300000
 RUN pnpm config set registry https://registry.npmjs.org/
-RUN pnpm install --prod --frozen-lockfile
+RUN pnpm install --prod --frozen-lockfile --ignore-scripts=false
 
 FROM node:24-alpine AS client
 
@@ -26,7 +26,7 @@ RUN pnpm config set fetch-retry-factor 2
 RUN pnpm config set fetch-retry-mintimeout 20000
 RUN pnpm config set fetch-retry-maxtimeout 300000
 RUN pnpm config set registry https://registry.npmjs.org/
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --prod --frozen-lockfile --ignore-scripts=false
 
 COPY client .
 ENV NODE_OPTIONS="--max_old_space_size=2048"
