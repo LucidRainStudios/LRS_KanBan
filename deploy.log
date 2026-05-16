@@ -4,86 +4,1115 @@ Compose can now delegate builds to bake for better performance.
 #0 building with "default" instance using docker driver
 
 #1 [4gaBoards internal] load build definition from Dockerfile
-#1 transferring dockerfile: 30B 0.0s
+#1 transferring dockerfile: 30B
 #1 transferring dockerfile: 1.27kB 0.1s done
 #1 DONE 0.3s
 
 #2 [4gaBoards internal] load metadata for docker.io/library/node:24-alpine
-#2 DONE 0.5s
+#2 DONE 1.2s
 
 #3 [4gaBoards internal] load .dockerignore
-#3 transferring context: 539B 0.1s done
+#3 transferring context: 539B done
 #3 DONE 0.1s
 
-#4 [4gaBoards client 2/9] WORKDIR /app
-#4 CACHED
+#4 [4gaBoards client 1/9] FROM docker.io/library/node:24-alpine@sha256:7e0bd0460b26eb3854ea5b99b887a6a14d665d14cae694b78ae2936d14b2befb
+#4 DONE 0.0s
 
-#5 [4gaBoards client 1/9] FROM docker.io/library/node:24-alpine@sha256:7e0bd0460b26eb3854ea5b99b887a6a14d665d14cae694b78ae2936d14b2befb
+#5 [4gaBoards client 2/9] WORKDIR /app
 #5 CACHED
 
 #6 [4gaBoards internal] load build context
-#6 transferring context: 82.93kB 4.1s
-#6 transferring context: 97.18kB 5.2s done
-#6 DONE 6.5s
+#6 ...
+
+#4 [4gaBoards client 1/9] FROM docker.io/library/node:24-alpine@sha256:7e0bd0460b26eb3854ea5b99b887a6a14d665d14cae694b78ae2936d14b2befb
+#4 CACHED
+
+#6 [4gaBoards internal] load build context
+#6 transferring context: 83.30kB 4.8s
+#6 transferring context: 117.49kB 6.8s done
+#6 DONE 7.9s
 
 #7 [4gaBoards stage-2  2/10] RUN apk -U upgrade
 #7 ...
 
 #8 [4gaBoards client 3/9] COPY client/package.json client/package-lock.json ./
-#8 ...
+#8 DONE 2.0s
 
 #9 [4gaBoards server-dependencies 3/7] COPY server/package.json server/package-lock.json ./
-#9 DONE 2.2s
+#9 DONE 2.0s
 
 #7 [4gaBoards stage-2  2/10] RUN apk -U upgrade
-#7 8.101 Preupgrading:
-#7 8.101 (1/3) Installing zstd-libs (1.5.7-r2)
-#7 8.101 (2/3) Upgrading libapk (3.0.1-r1 -> 3.0.2-r0)
-#7 8.101 (3/3) Upgrading apk-tools (3.0.1-r1 -> 3.0.2-r0)
-#7 8.199 Executing busybox-1.37.0-r29.trigger
-#7 8.799 Continuing with the main upgrade transaction:
 #7 ...
 
-#8 [4gaBoards client 3/9] COPY client/package.json client/package-lock.json ./
-#8 DONE 2.8s
-
 #10 [4gaBoards server-dependencies 4/7] RUN npm install npm@latest --global
 #10 ...
 
 #7 [4gaBoards stage-2  2/10] RUN apk -U upgrade
-#7 12.49 OK: 11.6 MiB in 19 packages
-#7 DONE 13.2s
+#7 12.52 Preupgrading:
+#7 12.52 (1/3) Installing zstd-libs (1.5.7-r2)
+#7 12.52 (2/3) Upgrading libapk (3.0.1-r1 -> 3.0.2-r0)
+#7 12.52 (3/3) Upgrading apk-tools (3.0.1-r1 -> 3.0.2-r0)
+#7 12.52 Executing busybox-1.37.0-r29.trigger
+#7 12.90 Continuing with the main upgrade transaction:
+#7 18.30 OK: 11.6 MiB in 19 packages
+#7 DONE 19.3s
 
-#11 [4gaBoards stage-2  3/10] RUN apk add bash --no-cache
+#11 [4gaBoards client 4/9] RUN npm install npm@latest --global
 #11 ...
 
-#12 [4gaBoards client 4/9] RUN npm install npm@latest --global
-#12 ...
+#12 [4gaBoards stage-2  3/10] RUN apk add bash --no-cache
+#12 17.00 (1/4) Installing ncurses-terminfo-base (6.5_p20251123-r0)
+#12 17.10 (2/4) Installing libncursesw (6.5_p20251123-r0)
+#12 17.21 (3/4) Installing readline (8.3.1-r0)
+#12 17.40 (4/4) Installing bash (5.3.3-r1)
+#12 17.60   Executing bash-5.3.3-r1.post-install
+#12 17.79 Executing busybox-1.37.0-r29.trigger
+#12 17.90 OK: 13.6 MiB in 23 packages
+#12 DONE 19.4s
 
-#11 [4gaBoards stage-2  3/10] RUN apk add bash --no-cache
-#11 15.80 (1/4) Installing ncurses-terminfo-base (6.5_p20251123-r0)
-#11 15.89 (2/4) Installing libncursesw (6.5_p20251123-r0)
-#11 16.19 (3/4) Installing readline (8.3.1-r0)
-#11 16.31 (4/4) Installing bash (5.3.3-r1)
-#11 16.41   Executing bash-5.3.3-r1.post-install
-#11 16.50 Executing busybox-1.37.0-r29.trigger
-#11 16.70 OK: 13.6 MiB in 23 packages
-#11 DONE 17.7s
-
-#10 [4gaBoards server-dependencies 4/7] RUN npm install npm@latest --global
-#10 ...
+#11 [4gaBoards client 4/9] RUN npm install npm@latest --global
+#11 ...
 
 #13 [4gaBoards stage-2  4/10] WORKDIR /app
-#13 DONE 1.6s
+#13 DONE 2.0s
 
-#10 [4gaBoards server-dependencies 4/7] RUN npm install npm@latest --global
-#10 ...
+#11 [4gaBoards client 4/9] RUN npm install npm@latest --global
+#11 ...
 
 #14 [4gaBoards stage-2  5/10] COPY --chown=node:node --chmod=775 start.sh .
-#14 DONE 2.5s
+#14 DONE 5.0s
 
-#10 [4gaBoards server-dependencies 4/7] RUN npm install npm@latest --global
-#10 ...
+#11 [4gaBoards client 4/9] RUN npm install npm@latest --global
+#11 ...
 
 #15 [4gaBoards stage-2  6/10] COPY --chown=node:node server .
+#15 DONE 32.1s
 
+#11 [4gaBoards client 4/9] RUN npm install npm@latest --global
+#11 ...
+
+#16 [4gaBoards stage-2  7/10] RUN mv .env.sample .env
+#16 DONE 22.6s
+
+#11 [4gaBoards client 4/9] RUN npm install npm@latest --global
+#11 ...
+
+#10 [4gaBoards server-dependencies 4/7] RUN npm install npm@latest --global
+#10 171.9 
+#10 171.9 removed 36 packages, and changed 64 packages in 3m
+#10 171.9 
+#10 171.9 16 packages are looking for funding
+#10 171.9   run `npm fund` for details
+#10 DONE 177.2s
+
+#11 [4gaBoards client 4/9] RUN npm install npm@latest --global
+#11 174.4 
+#11 174.4 removed 36 packages, and changed 64 packages in 3m
+#11 174.4 
+#11 174.4 16 packages are looking for funding
+#11 174.4   run `npm fund` for details
+#11 DONE 178.1s
+
+#17 [4gaBoards client 5/9] RUN npm install pnpm --global
+#17 ...
+
+#18 [4gaBoards server-dependencies 5/7] RUN npm install pnpm --global
+#18 44.89 
+#18 44.89 added 1 package in 35s
+#18 44.89 
+#18 44.89 1 package is looking for funding
+#18 44.89   run `npm fund` for details
+#18 ...
+
+#17 [4gaBoards client 5/9] RUN npm install pnpm --global
+#17 44.19 
+#17 44.19 added 1 package in 34s
+#17 44.19 
+#17 44.19 1 package is looking for funding
+#17 44.19   run `npm fund` for details
+#17 ...
+
+#18 [4gaBoards server-dependencies 5/7] RUN npm install pnpm --global
+#18 DONE 48.1s
+
+#17 [4gaBoards client 5/9] RUN npm install pnpm --global
+#17 DONE 47.9s
+
+#19 [4gaBoards server-dependencies 6/7] RUN pnpm import
+#19 ...
+
+#20 [4gaBoards client 6/9] RUN pnpm import
+#20 23.41 Progress: resolved 1, reused 0, downloaded 0, added 0
+#20 ...
+
+#19 [4gaBoards server-dependencies 6/7] RUN pnpm import
+#19 23.71 Progress: resolved 1, reused 0, downloaded 0, added 0
+#19 24.72 Progress: resolved 6, reused 0, downloaded 0, added 0
+#19 27.20 Progress: resolved 14, reused 0, downloaded 0, added 0
+#19 27.20 Progress: resolved 21, reused 0, downloaded 0, added 0
+#19 28.02 Progress: resolved 32, reused 0, downloaded 0, added 0
+#19 29.40 Progress: resolved 34, reused 0, downloaded 0, added 0
+#19 30.31 Progress: resolved 38, reused 0, downloaded 0, added 0
+#19 31.70 Progress: resolved 54, reused 0, downloaded 0, added 0
+#19 33.12 Progress: resolved 59, reused 0, downloaded 0, added 0
+#19 ...
+
+#20 [4gaBoards client 6/9] RUN pnpm import
+#20 24.41 Progress: resolved 4, reused 0, downloaded 0, added 0
+#20 27.22 Progress: resolved 7, reused 0, downloaded 0, added 0
+#20 27.22 Progress: resolved 18, reused 0, downloaded 0, added 0
+#20 27.62 Progress: resolved 28, reused 0, downloaded 0, added 0
+#20 29.01 Progress: resolved 35, reused 0, downloaded 0, added 0
+#20 29.70 Progress: resolved 43, reused 0, downloaded 0, added 0
+#20 30.80 Progress: resolved 57, reused 0, downloaded 0, added 0
+#20 32.00 Progress: resolved 62, reused 0, downloaded 0, added 0
+#20 32.92 Progress: resolved 68, reused 0, downloaded 0, added 0
+#20 33.52  WARN  deprecated react-beautiful-dnd@13.1.1: react-beautiful-dnd is now deprecated. Context and options: https://github.com/atlassian/react-beautiful-dnd/issues/2672
+#20 ...
+
+#19 [4gaBoards server-dependencies 6/7] RUN pnpm import
+#19 33.92 Progress: resolved 86, reused 0, downloaded 0, added 0
+#19 35.10 Progress: resolved 110, reused 0, downloaded 0, added 0
+#19 36.32 Progress: resolved 129, reused 0, downloaded 0, added 0
+#19 37.41 Progress: resolved 147, reused 0, downloaded 0, added 0
+#19 38.60 Progress: resolved 160, reused 0, downloaded 0, added 0
+#19 39.70 Progress: resolved 174, reused 0, downloaded 0, added 0
+#19 40.70 Progress: resolved 191, reused 0, downloaded 0, added 0
+#19 42.12 Progress: resolved 198, reused 0, downloaded 0, added 0
+#19 ...
+
+#20 [4gaBoards client 6/9] RUN pnpm import
+#20 34.00 Progress: resolved 74, reused 0, downloaded 0, added 0
+#20 34.01  WARN  Request took 14504ms: https://registry.npmjs.org/eslint
+#20 35.30 Progress: resolved 82, reused 0, downloaded 0, added 0
+#20 36.30 Progress: resolved 87, reused 0, downloaded 0, added 0
+#20 37.30 Progress: resolved 93, reused 0, downloaded 0, added 0
+#20 38.91 Progress: resolved 96, reused 0, downloaded 0, added 0
+#20 39.70 Progress: resolved 99, reused 0, downloaded 0, added 0
+#20 40.80 Progress: resolved 108, reused 0, downloaded 0, added 0
+#20 41.81  WARN  Request took 10999ms: https://registry.npmjs.org/react
+#20 42.01 Progress: resolved 110, reused 0, downloaded 0, added 0
+#20 ...
+
+#19 [4gaBoards server-dependencies 6/7] RUN pnpm import
+#19 43.00 Progress: resolved 208, reused 0, downloaded 0, added 0
+#19 44.10 Progress: resolved 222, reused 0, downloaded 0, added 0
+#19 45.02 Progress: resolved 233, reused 0, downloaded 0, added 0
+#19 46.21 Progress: resolved 253, reused 0, downloaded 0, added 0
+#19 47.11 Progress: resolved 268, reused 0, downloaded 0, added 0
+#19 48.22 Progress: resolved 281, reused 0, downloaded 0, added 0
+#19 49.60 Progress: resolved 303, reused 0, downloaded 0, added 0
+#19 50.50 Progress: resolved 317, reused 0, downloaded 0, added 0
+#19 51.51 Progress: resolved 345, reused 0, downloaded 0, added 0
+#19 ...
+
+#20 [4gaBoards client 6/9] RUN pnpm import
+#20 43.60  WARN  Request took 11899ms: https://registry.npmjs.org/react-dom
+#20 43.90 Progress: resolved 111, reused 0, downloaded 0, added 0
+#20 45.20  WARN  Request took 12301ms: https://registry.npmjs.org/react-refresh
+#20 45.31 Progress: resolved 113, reused 0, downloaded 0, added 0
+#20 45.50  WARN  Request took 25799ms: https://registry.npmjs.org/eslint-plugin-react-hooks
+#20 48.01 Progress: resolved 117, reused 0, downloaded 0, added 0
+#20 49.70 Progress: resolved 118, reused 0, downloaded 0, added 0
+#20 50.62 Progress: resolved 131, reused 0, downloaded 0, added 0
+#20 51.70 Progress: resolved 160, reused 0, downloaded 0, added 0
+#20 ...
+
+#19 [4gaBoards server-dependencies 6/7] RUN pnpm import
+#19 52.70 Progress: resolved 374, reused 0, downloaded 0, added 0
+#19 53.81 Progress: resolved 392, reused 0, downloaded 0, added 0
+#19 55.00 Progress: resolved 407, reused 0, downloaded 0, added 0
+#19 56.20 Progress: resolved 428, reused 0, downloaded 0, added 0
+#19 57.00 Progress: resolved 458, reused 0, downloaded 0, added 0
+#19 58.10 Progress: resolved 492, reused 0, downloaded 0, added 0
+#19 59.30 Progress: resolved 519, reused 0, downloaded 0, added 0
+#19 60.90 Progress: resolved 536, reused 0, downloaded 0, added 0
+#19 62.01 Progress: resolved 537, reused 0, downloaded 0, added 0
+#19 62.92 Progress: resolved 563, reused 0, downloaded 0, added 0
+#19 ...
+
+#20 [4gaBoards client 6/9] RUN pnpm import
+#20 52.91 Progress: resolved 172, reused 0, downloaded 0, added 0
+#20 54.20 Progress: resolved 182, reused 0, downloaded 0, added 0
+#20 55.22 Progress: resolved 187, reused 0, downloaded 0, added 0
+#20 56.40 Progress: resolved 199, reused 0, downloaded 0, added 0
+#20 57.41 Progress: resolved 215, reused 0, downloaded 0, added 0
+#20 58.42 Progress: resolved 224, reused 0, downloaded 0, added 0
+#20 59.70 Progress: resolved 230, reused 0, downloaded 0, added 0
+#20 62.20 Progress: resolved 231, reused 0, downloaded 0, added 0
+#20 63.12  WARN  Request took 10884ms: https://registry.npmjs.org/zod
+#20 63.30 Progress: resolved 247, reused 0, downloaded 0, added 0
+#20 ...
+
+#19 [4gaBoards server-dependencies 6/7] RUN pnpm import
+#19 64.11 Progress: resolved 565, reused 0, downloaded 0, added 0
+#19 66.90  WARN  4 deprecated subdependencies found: glob@7.1.2, glob@7.2.0, inflight@1.0.6, rimraf@2.7.1
+#19 68.40 Progress: resolved 567, reused 0, downloaded 0, added 0
+#19 68.81 Progress: resolved 567, reused 0, downloaded 0, added 0, done
+#19 68.91 
+#19 ...
+
+#20 [4gaBoards client 6/9] RUN pnpm import
+#20 64.30 Progress: resolved 260, reused 0, downloaded 0, added 0
+#20 65.30 Progress: resolved 276, reused 0, downloaded 0, added 0
+#20 66.42 Progress: resolved 288, reused 0, downloaded 0, added 0
+#20 67.40 Progress: resolved 298, reused 0, downloaded 0, added 0
+#20 69.00 Progress: resolved 301, reused 0, downloaded 0, added 0
+#20 70.11 Progress: resolved 312, reused 0, downloaded 0, added 0
+#20 71.42 Progress: resolved 322, reused 0, downloaded 0, added 0
+#20 72.42  WARN  Request took 19000ms: https://registry.npmjs.org/@types%2Fnode
+#20 72.51 Progress: resolved 325, reused 0, downloaded 0, added 0
+#20 73.80 Progress: resolved 340, reused 0, downloaded 0, added 0
+#20 74.80 Progress: resolved 363, reused 0, downloaded 0, added 0
+#20 75.80 Progress: resolved 381, reused 0, downloaded 0, added 0
+#20 76.80 Progress: resolved 409, reused 0, downloaded 0, added 0
+#20 77.71  WARN  Request took 26613ms: https://registry.npmjs.org/axe-core
+#20 77.91 Progress: resolved 429, reused 0, downloaded 0, added 0
+#20 79.13 Progress: resolved 436, reused 0, downloaded 0, added 0
+#20 ...
+
+#19 [4gaBoards server-dependencies 6/7] RUN pnpm import
+#19 DONE 80.1s
+
+#20 [4gaBoards client 6/9] RUN pnpm import
+#20 80.01  WARN  Request took 16981ms: https://registry.npmjs.org/electron-to-chromium
+#20 80.10 Progress: resolved 455, reused 0, downloaded 0, added 0
+#20 80.70  WARN  Request took 29089ms: https://registry.npmjs.org/@typescript-eslint%2Futils
+#20 81.41 Progress: resolved 471, reused 0, downloaded 0, added 0
+#20 82.30 Progress: resolved 508, reused 0, downloaded 0, added 0
+#20 83.50 Progress: resolved 525, reused 0, downloaded 0, added 0
+#20 85.10 Progress: resolved 537, reused 0, downloaded 0, added 0
+#20 86.00  WARN  Request took 34308ms: https://registry.npmjs.org/@typescript-eslint%2Ftypes
+#20 86.51 Progress: resolved 557, reused 0, downloaded 0, added 0
+#20 87.50 Progress: resolved 563, reused 0, downloaded 0, added 0
+#20 88.60 Progress: resolved 578, reused 0, downloaded 0, added 0
+#20 89.60  WARN  Request took 13001ms: https://registry.npmjs.org/use-sync-external-store
+#20 90.00 Progress: resolved 602, reused 0, downloaded 0, added 0
+#20 91.00 Progress: resolved 615, reused 0, downloaded 0, added 0
+#20 ...
+
+#21 [4gaBoards server-dependencies 7/7] RUN pnpm install --prod
+#21 ...
+
+#20 [4gaBoards client 6/9] RUN pnpm import
+#20 92.40 Progress: resolved 629, reused 0, downloaded 0, added 0
+#20 92.80  WARN  Request took 17003ms: https://registry.npmjs.org/react-is
+#20 93.42 Progress: resolved 644, reused 0, downloaded 0, added 0
+#20 95.40 Progress: resolved 646, reused 0, downloaded 0, added 0
+#20 96.40 Progress: resolved 665, reused 0, downloaded 0, added 0
+#20 97.40 Progress: resolved 682, reused 0, downloaded 0, added 0
+#20 98.53 Progress: resolved 692, reused 0, downloaded 0, added 0
+#20 99.31  WARN  Request took 23287ms: https://registry.npmjs.org/scheduler
+#20 99.61 Progress: resolved 695, reused 0, downloaded 0, added 0
+#20 100.7 Progress: resolved 713, reused 0, downloaded 0, added 0
+#20 101.8 Progress: resolved 736, reused 0, downloaded 0, added 0
+#20 103.0 Progress: resolved 748, reused 0, downloaded 0, added 0
+#20 103.8 Progress: resolved 772, reused 0, downloaded 0, added 0
+#20 105.2 Progress: resolved 781, reused 0, downloaded 0, added 0
+#20 106.2 Progress: resolved 788, reused 0, downloaded 0, added 0
+#20 107.4 Progress: resolved 793, reused 0, downloaded 0, added 0
+#20 108.6 Progress: resolved 806, reused 0, downloaded 0, added 0
+#20 109.8 Progress: resolved 813, reused 0, downloaded 0, added 0
+#20 110.9 Progress: resolved 824, reused 0, downloaded 0, added 0
+#20 111.9 Progress: resolved 836, reused 0, downloaded 0, added 0
+#20 113.0 Progress: resolved 847, reused 0, downloaded 0, added 0
+#20 114.0 Progress: resolved 850, reused 0, downloaded 0, added 0
+#20 115.2 Progress: resolved 860, reused 0, downloaded 0, added 0
+#20 ...
+
+#21 [4gaBoards server-dependencies 7/7] RUN pnpm install --prod
+#21 34.29 Lockfile is up to date, resolution step is skipped
+#21 35.31 Progress: resolved 1, reused 0, downloaded 0, added 0
+#21 37.80 Packages: +399
+#21 37.80 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#21 37.89 Progress: resolved 399, reused 0, downloaded 0, added 0
+#21 ...
+
+#20 [4gaBoards client 6/9] RUN pnpm import
+#20 116.0  WARN  Request took 12404ms: https://registry.npmjs.org/jest-config
+#20 116.2 Progress: resolved 873, reused 0, downloaded 0, added 0
+#20 117.3 Progress: resolved 879, reused 0, downloaded 0, added 0
+#20 118.4 Progress: resolved 886, reused 0, downloaded 0, added 0
+#20 119.6 Progress: resolved 897, reused 0, downloaded 0, added 0
+#20 120.6 Progress: resolved 913, reused 0, downloaded 0, added 0
+#20 121.7 Progress: resolved 924, reused 0, downloaded 0, added 0
+#20 122.9 Progress: resolved 938, reused 0, downloaded 0, added 0
+#20 124.2 Progress: resolved 949, reused 0, downloaded 0, added 0
+#20 125.7 Progress: resolved 950, reused 0, downloaded 0, added 0
+#20 126.9 Progress: resolved 952, reused 0, downloaded 0, added 0
+#20 128.5 Progress: resolved 957, reused 0, downloaded 0, added 0
+#20 130.0 Progress: resolved 963, reused 0, downloaded 0, added 0
+#20 131.3 Progress: resolved 966, reused 0, downloaded 0, added 0
+#20 ...
+
+#21 [4gaBoards server-dependencies 7/7] RUN pnpm install --prod
+#21 50.70 Progress: resolved 399, reused 0, downloaded 1, added 0
+#21 52.50 Progress: resolved 399, reused 0, downloaded 15, added 0
+#21 53.55 Progress: resolved 399, reused 0, downloaded 16, added 0
+#21 54.60 Progress: resolved 399, reused 0, downloaded 18, added 4
+#21 55.71 Progress: resolved 399, reused 0, downloaded 24, added 4
+#21 56.70 Progress: resolved 399, reused 0, downloaded 32, added 4
+#21 57.71 Progress: resolved 399, reused 0, downloaded 38, added 8
+#21 58.80 Progress: resolved 399, reused 0, downloaded 48, added 11
+#21 59.90 Progress: resolved 399, reused 0, downloaded 55, added 12
+#21 60.90 Progress: resolved 399, reused 0, downloaded 59, added 12
+#21 63.00 Progress: resolved 399, reused 0, downloaded 60, added 12
+#21 64.10 Progress: resolved 399, reused 0, downloaded 64, added 15
+#21 ...
+
+#20 [4gaBoards client 6/9] RUN pnpm import
+#20 133.8 Progress: resolved 970, reused 0, downloaded 0, added 0
+#20 135.6 Progress: resolved 975, reused 0, downloaded 0, added 0
+#20 137.3 Progress: resolved 978, reused 0, downloaded 0, added 0
+#20 139.1 Progress: resolved 980, reused 0, downloaded 0, added 0
+#20 141.7 Progress: resolved 986, reused 0, downloaded 0, added 0
+#20 142.9 Progress: resolved 988, reused 0, downloaded 0, added 0
+#20 145.3 Progress: resolved 992, reused 0, downloaded 0, added 0
+#20 ...
+
+#21 [4gaBoards server-dependencies 7/7] RUN pnpm install --prod
+#21 65.02 Progress: resolved 399, reused 0, downloaded 75, added 16
+#21 66.20 Progress: resolved 399, reused 0, downloaded 81, added 20
+#21 67.02 Progress: resolved 399, reused 0, downloaded 88, added 20
+#21 68.22 Progress: resolved 399, reused 0, downloaded 89, added 20
+#21 69.11 Progress: resolved 399, reused 0, downloaded 90, added 20
+#21 70.19 Progress: resolved 399, reused 0, downloaded 92, added 20
+#21 71.11 Progress: resolved 399, reused 0, downloaded 93, added 20
+#21 72.11 Progress: resolved 399, reused 0, downloaded 96, added 24
+#21 73.40 Progress: resolved 399, reused 0, downloaded 102, added 24
+#21 75.19 Progress: resolved 399, reused 0, downloaded 103, added 24
+#21 76.20 Progress: resolved 399, reused 0, downloaded 109, added 26
+#21 ...
+
+#20 [4gaBoards client 6/9] RUN pnpm import
+#20 147.5 Progress: resolved 994, reused 0, downloaded 0, added 0
+#20 149.7 Progress: resolved 999, reused 0, downloaded 0, added 0
+#20 151.4 Progress: resolved 1001, reused 0, downloaded 0, added 0
+#20 153.2 Progress: resolved 1006, reused 0, downloaded 0, added 0
+#20 154.7 Progress: resolved 1008, reused 0, downloaded 0, added 0
+#20 155.0  WARN  Request took 11699ms: https://registry.npmjs.org/punycode
+#20 155.9 Progress: resolved 1010, reused 0, downloaded 0, added 0
+#20 156.3  WARN  Request took 16088ms: https://registry.npmjs.org/color-convert
+#20 157.6 Progress: resolved 1016, reused 0, downloaded 0, added 0
+#20 ...
+
+#21 [4gaBoards server-dependencies 7/7] RUN pnpm install --prod
+#21 77.13 Progress: resolved 399, reused 0, downloaded 119, added 28
+#21 78.13 Progress: resolved 399, reused 0, downloaded 125, added 29
+#21 79.19 Progress: resolved 399, reused 0, downloaded 141, added 35
+#21 80.21 Progress: resolved 399, reused 0, downloaded 157, added 39
+#21 81.21 Progress: resolved 399, reused 0, downloaded 171, added 40
+#21 82.21 Progress: resolved 399, reused 0, downloaded 178, added 44
+#21 83.20 Progress: resolved 399, reused 0, downloaded 186, added 44
+#21 84.20 Progress: resolved 399, reused 0, downloaded 198, added 48
+#21 85.30 Progress: resolved 399, reused 0, downloaded 204, added 52
+#21 86.30 Progress: resolved 399, reused 0, downloaded 225, added 56
+#21 87.31 Progress: resolved 399, reused 0, downloaded 233, added 57
+#21 ...
+
+#20 [4gaBoards client 6/9] RUN pnpm import
+#20 159.0 Progress: resolved 1018, reused 0, downloaded 0, added 0
+#20 160.2 Progress: resolved 1019, reused 0, downloaded 0, added 0
+#20 160.4  WARN  Request took 14986ms: https://registry.npmjs.org/@floating-ui%2Fcore
+#20 161.4 Progress: resolved 1022, reused 0, downloaded 0, added 0
+#20 162.6 Progress: resolved 1024, reused 0, downloaded 0, added 0
+#20 163.8 Progress: resolved 1025, reused 0, downloaded 0, added 0
+#20 163.8  WARN  Request took 17809ms: https://registry.npmjs.org/fast-uri
+#20 164.8 Progress: resolved 1026, reused 0, downloaded 0, added 0
+#20 165.9 Progress: resolved 1028, reused 0, downloaded 0, added 0
+#20 168.3 Progress: resolved 1032, reused 0, downloaded 0, added 0
+#20 ...
+
+#21 [4gaBoards server-dependencies 7/7] RUN pnpm install --prod
+#21 88.39 Progress: resolved 399, reused 0, downloaded 235, added 57
+#21 89.31 Progress: resolved 399, reused 0, downloaded 236, added 59
+#21 90.41 Progress: resolved 399, reused 0, downloaded 245, added 61
+#21 91.50 Progress: resolved 399, reused 0, downloaded 257, added 64
+#21 92.41 Progress: resolved 399, reused 0, downloaded 264, added 65
+#21 93.50 Progress: resolved 399, reused 0, downloaded 266, added 65
+#21 94.41 Progress: resolved 399, reused 0, downloaded 277, added 69
+#21 95.80 Progress: resolved 399, reused 0, downloaded 295, added 73
+#21 97.33 Progress: resolved 399, reused 0, downloaded 299, added 74
+#21 98.60 Progress: resolved 399, reused 0, downloaded 299, added 75
+#21 99.61 Progress: resolved 399, reused 0, downloaded 300, added 76
+#21 ...
+
+#20 [4gaBoards client 6/9] RUN pnpm import
+#20 170.9 Progress: resolved 1033, reused 0, downloaded 0, added 0
+#20 171.2  WARN  Request took 13401ms: https://registry.npmjs.org/semver
+#20 172.8  WARN  Request took 20090ms: https://registry.npmjs.org/@types%2Fprismjs
+#20 173.6 Progress: resolved 1034, reused 0, downloaded 0, added 0
+#20 ...
+
+#21 [4gaBoards server-dependencies 7/7] RUN pnpm install --prod
+#21 101.6 Progress: resolved 399, reused 0, downloaded 301, added 76
+#21 102.3 Progress: resolved 399, reused 0, downloaded 310, added 79
+#21 103.3 Progress: resolved 399, reused 0, downloaded 317, added 81
+#21 104.3 Progress: resolved 399, reused 0, downloaded 327, added 84
+#21 105.6 Progress: resolved 399, reused 0, downloaded 331, added 84
+#21 106.5 Progress: resolved 399, reused 0, downloaded 334, added 86
+#21 107.4 Progress: resolved 399, reused 0, downloaded 340, added 88
+#21 108.6 Progress: resolved 399, reused 0, downloaded 344, added 88
+#21 109.5 Progress: resolved 399, reused 0, downloaded 346, added 89
+#21 110.5 Progress: resolved 399, reused 0, downloaded 348, added 90
+#21 111.5 Progress: resolved 399, reused 0, downloaded 349, added 90
+#21 112.5 Progress: resolved 399, reused 0, downloaded 355, added 92
+#21 113.5 Progress: resolved 399, reused 0, downloaded 367, added 94
+#21 114.5 Progress: resolved 399, reused 0, downloaded 381, added 98
+#21 115.7 Progress: resolved 399, reused 0, downloaded 382, added 98
+#21 116.7 Progress: resolved 399, reused 0, downloaded 394, added 101
+#21 117.7 Progress: resolved 399, reused 0, downloaded 399, added 102
+#21 118.7 Progress: resolved 399, reused 0, downloaded 399, added 113
+#21 119.7 Progress: resolved 399, reused 0, downloaded 399, added 126
+#21 120.7 Progress: resolved 399, reused 0, downloaded 399, added 181
+#21 121.7 Progress: resolved 399, reused 0, downloaded 399, added 209
+#21 122.7 Progress: resolved 399, reused 0, downloaded 399, added 241
+#21 123.7 Progress: resolved 399, reused 0, downloaded 399, added 285
+#21 124.7 Progress: resolved 399, reused 0, downloaded 399, added 315
+#21 125.7 Progress: resolved 399, reused 0, downloaded 399, added 340
+#21 126.7 Progress: resolved 399, reused 0, downloaded 399, added 383
+#21 127.1 Progress: resolved 399, reused 0, downloaded 399, added 399, done
+#21 ...
+
+#20 [4gaBoards client 6/9] RUN pnpm import
+#20 213.9 Progress: resolved 1035, reused 0, downloaded 0, added 0
+#20 217.3  WARN  GET https://registry.npmjs.org/html-url-attributes error (ECONNRESET). Will retry in 10 seconds. 2 retries left.
+#20 217.4  WARN  GET https://registry.npmjs.org/hast-util-to-jsx-runtime error (ECONNRESET). Will retry in 10 seconds. 2 retries left.
+#20 217.6  WARN  GET https://registry.npmjs.org/escodegen error (ECONNRESET). Will retry in 10 seconds. 2 retries left.
+#20 219.1  WARN  Request took 50490ms: https://registry.npmjs.org/remark-rehype
+#20 219.6 Progress: resolved 1036, reused 0, downloaded 0, added 0
+#20 220.0  WARN  Request took 46211ms: https://registry.npmjs.org/@svgr%2Fbabel-plugin-remove-jsx-attribute
+#20 ...
+
+#21 [4gaBoards server-dependencies 7/7] RUN pnpm install --prod
+#21 133.4 .../sharp@0.34.5/node_modules/sharp install$ node install/check.js || npm run build
+#21 134.0 .../bcrypt@6.0.0/node_modules/bcrypt install$ node-gyp-build
+#21 136.8 .../bcrypt@6.0.0/node_modules/bcrypt install: Done
+#21 137.0 .../sharp@0.34.5/node_modules/sharp install: Done
+#21 139.9 
+#21 139.9 dependencies:
+#21 139.9 + @azure/msal-node 3.8.3
+#21 139.9 + @rargames/passport-github 1.1.2
+#21 139.9 + bcrypt 6.0.0
+#21 139.9 + cookie 1.1.1
+#21 139.9 + dotenv 17.2.3
+#21 139.9 + dotenv-cli 11.0.0
+#21 139.9 + fast-csv 5.0.5
+#21 139.9 + filenamify 7.0.1
+#21 139.9 + jsonwebtoken 9.0.2
+#21 139.9 + knex 3.1.0
+#21 139.9 + lodash 4.17.21
+#21 139.9 + moment 2.30.1
+#21 139.9 + move-file 3.1.0
+#21 139.9 + passport 0.7.0
+#21 139.9 + passport-google-oauth20 2.0.0
+#21 139.9 + passport-strategy 1.0.0
+#21 139.9 + prom-client 15.1.3
+#21 139.9 + rimraf 6.1.2
+#21 139.9 + sails 1.5.15
+#21 139.9 + sails-hook-orm 4.0.3
+#21 139.9 + sails-hook-sockets 3.0.2
+#21 139.9 + sails-postgresql 5.0.1
+#21 139.9 + sharp 0.34.5
+#21 139.9 + tar 7.5.2
+#21 139.9 + uuid 11.1.0
+#21 139.9 + validator 13.15.23
+#21 139.9 + winston 3.18.3
+#21 139.9 + zxcvbn 4.4.2
+#21 139.9 
+#21 139.9 devDependencies: skipped
+#21 139.9 
+#21 140.7 Done in 1m 56.2s using pnpm v10.25.0
+#21 DONE 144.9s
+
+#20 [4gaBoards client 6/9] RUN pnpm import
+#20 226.0 Progress: resolved 1037, reused 0, downloaded 0, added 0
+#20 226.3  WARN  Request took 65203ms: https://registry.npmjs.org/remark-stringify
+#20 226.4  WARN  Request took 52821ms: https://registry.npmjs.org/@svgr%2Fbabel-plugin-add-jsx-attribute
+#20 227.2 Progress: resolved 1039, reused 0, downloaded 0, added 0
+#20 228.8 Progress: resolved 1040, reused 0, downloaded 0, added 0
+#20 229.8  WARN  Request took 87984ms: https://registry.npmjs.org/keyv
+#20 232.2 Progress: resolved 1041, reused 0, downloaded 0, added 0
+#20 232.6  WARN  Request took 62399ms: https://registry.npmjs.org/hast-util-to-jsx-runtime
+#20 233.2  WARN  Request took 18816ms: https://registry.npmjs.org/@svgr%2Fbabel-plugin-remove-jsx-empty-expression
+#20 233.4  WARN  Request took 63593ms: https://registry.npmjs.org/html-url-attributes
+#20 233.7 Progress: resolved 1045, reused 0, downloaded 0, added 0
+#20 234.1  WARN  Request took 18394ms: https://registry.npmjs.org/@svgr%2Fbabel-plugin-replace-jsx-attribute-value
+#20 234.5  WARN  Request took 64805ms: https://registry.npmjs.org/mdast-util-to-hast
+#20 234.7 Progress: resolved 1049, reused 0, downloaded 0, added 0
+#20 236.2 Progress: resolved 1050, reused 0, downloaded 0, added 0
+#20 236.7  WARN  Request took 66187ms: https://registry.npmjs.org/entities
+#20 237.3  WARN  Request took 80611ms: https://registry.npmjs.org/@babel%2Fcore
+#20 237.4 Progress: resolved 1051, reused 0, downloaded 0, added 0
+#20 238.4 Progress: resolved 1056, reused 0, downloaded 0, added 0
+#20 238.8  WARN  Request took 68518ms: https://registry.npmjs.org/escodegen
+#20 240.1 Progress: resolved 1060, reused 0, downloaded 0, added 0
+#20 241.1 Progress: resolved 1061, reused 0, downloaded 0, added 0
+#20 245.3 Progress: resolved 1062, reused 0, downloaded 0, added 0
+#20 246.3 Progress: resolved 1063, reused 0, downloaded 0, added 0
+#20 247.1  WARN  Request took 13692ms: https://registry.npmjs.org/commander
+#20 247.4 Progress: resolved 1066, reused 0, downloaded 0, added 0
+#20 249.0 Progress: resolved 1067, reused 0, downloaded 0, added 0
+#20 250.1 Progress: resolved 1068, reused 0, downloaded 0, added 0
+#20 251.2  WARN  Request took 136132ms: https://registry.npmjs.org/rollup
+#20 252.3 Progress: resolved 1071, reused 0, downloaded 0, added 0
+#20 253.3 Progress: resolved 1073, reused 0, downloaded 0, added 0
+#20 254.5 Progress: resolved 1074, reused 0, downloaded 0, added 0
+#20 255.6 Progress: resolved 1081, reused 0, downloaded 0, added 0
+#20 256.6 Progress: resolved 1083, reused 0, downloaded 0, added 0
+#20 257.9 Progress: resolved 1085, reused 0, downloaded 0, added 0
+#20 258.9  WARN  Request took 12623ms: https://registry.npmjs.org/browserslist
+#20 259.6 Progress: resolved 1089, reused 0, downloaded 0, added 0
+#20 260.5 Progress: resolved 1092, reused 0, downloaded 0, added 0
+#20 261.8 Progress: resolved 1096, reused 0, downloaded 0, added 0
+#20 262.9 Progress: resolved 1098, reused 0, downloaded 0, added 0
+#20 263.9 Progress: resolved 1104, reused 0, downloaded 0, added 0
+#20 265.2 Progress: resolved 1107, reused 0, downloaded 0, added 0
+#20 266.2 Progress: resolved 1115, reused 0, downloaded 0, added 0
+#20 267.3 Progress: resolved 1127, reused 0, downloaded 0, added 0
+#20 268.6 Progress: resolved 1128, reused 0, downloaded 0, added 0
+#20 269.7 Progress: resolved 1132, reused 0, downloaded 0, added 0
+#20 273.1 Progress: resolved 1134, reused 0, downloaded 0, added 0
+#20 274.1 Progress: resolved 1136, reused 0, downloaded 0, added 0
+#20 275.2 Progress: resolved 1140, reused 0, downloaded 0, added 0
+#20 276.1 Progress: resolved 1148, reused 0, downloaded 0, added 0
+#20 277.1 Progress: resolved 1153, reused 0, downloaded 0, added 0
+#20 280.1  WARN  Request took 23388ms: https://registry.npmjs.org/@types%2Fnode
+#20 283.2 Progress: resolved 1154, reused 0, downloaded 0, added 0
+#20 289.3 Progress: resolved 1155, reused 0, downloaded 0, added 0
+#20 290.9 Progress: resolved 1156, reused 0, downloaded 0, added 0
+#20 291.5  WARN  Request took 12505ms: https://registry.npmjs.org/jest-docblock
+#20 292.0 Progress: resolved 1157, reused 0, downloaded 0, added 0
+#20 296.1 Progress: resolved 1158, reused 0, downloaded 0, added 0
+#20 312.1  WARN  Request took 15798ms: https://registry.npmjs.org/synckit
+#20 312.7  WARN  Request took 38293ms: https://registry.npmjs.org/@types%2Freact
+#20 312.7 Progress: resolved 1159, reused 0, downloaded 0, added 0
+#20 313.3  WARN  Request took 30505ms: https://registry.npmjs.org/jest-leak-detector
+#20 314.0 Progress: resolved 1160, reused 0, downloaded 0, added 0
+#20 314.3  WARN  Request took 19707ms: https://registry.npmjs.org/semver
+#20 314.9  WARN  Request took 30307ms: https://registry.npmjs.org/@babel%2Fgenerator
+#20 315.1  WARN  Request took 32401ms: https://registry.npmjs.org/jest-environment-node
+#20 315.3 Progress: resolved 1161, reused 0, downloaded 0, added 0
+#20 316.6 Progress: resolved 1162, reused 0, downloaded 0, added 0
+#20 317.0  WARN  Request took 26190ms: https://registry.npmjs.org/jest-diff
+#20 317.7 Progress: resolved 1163, reused 0, downloaded 0, added 0
+#20 319.3  WARN  Request took 27494ms: https://registry.npmjs.org/jest-matcher-utils
+#20 319.3 Progress: resolved 1164, reused 0, downloaded 0, added 0
+#20 320.4  WARN  Request took 30414ms: https://registry.npmjs.org/expect
+#20 320.6 Progress: resolved 1165, reused 0, downloaded 0, added 0
+#20 323.6  WARN  Request took 62915ms: https://registry.npmjs.org/react-is
+#20 325.3 Progress: resolved 1166, reused 0, downloaded 0, added 0
+#20 326.2 Progress: resolved 1167, reused 0, downloaded 0, added 0
+#20 326.8  WARN  Request took 13573ms: https://registry.npmjs.org/cjs-module-lexer
+#20 327.2 Progress: resolved 1170, reused 0, downloaded 0, added 0
+#20 328.9  WARN  Request took 17387ms: https://registry.npmjs.org/@jest%2Fsource-map
+#20 329.1 Progress: resolved 1174, reused 0, downloaded 0, added 0
+#20 330.3 Progress: resolved 1175, reused 0, downloaded 0, added 0
+#20 333.9 Progress: resolved 1176, reused 0, downloaded 0, added 0
+#20 335.0 Progress: resolved 1181, reused 0, downloaded 0, added 0
+#20 335.5  WARN  Request took 18881ms: https://registry.npmjs.org/@jest%2Ftest-sequencer
+#20 335.9  WARN  Request took 25107ms: https://registry.npmjs.org/@jest%2Fglobals
+#20 336.1 Progress: resolved 1189, reused 0, downloaded 0, added 0
+#20 337.2 Progress: resolved 1205, reused 0, downloaded 0, added 0
+#20 338.1  WARN  Request took 20477ms: https://registry.npmjs.org/jest-circus
+#20 338.3 Progress: resolved 1212, reused 0, downloaded 0, added 0
+#20 339.4 Progress: resolved 1215, reused 0, downloaded 0, added 0
+#20 342.9  WARN  Request took 219998ms: https://registry.npmjs.org/@typescript-eslint%2Fscope-manager
+#20 344.1 Progress: resolved 1223, reused 0, downloaded 0, added 0
+#20 345.1 Progress: resolved 1231, reused 0, downloaded 0, added 0
+#20 346.7 Progress: resolved 1233, reused 0, downloaded 0, added 0
+#20 347.8 Progress: resolved 1240, reused 0, downloaded 0, added 0
+#20 349.3 Progress: resolved 1241, reused 0, downloaded 0, added 0
+#20 350.4 Progress: resolved 1248, reused 0, downloaded 0, added 0
+#20 351.6 Progress: resolved 1256, reused 0, downloaded 0, added 0
+#20 352.5 Progress: resolved 1279, reused 0, downloaded 0, added 0
+#20 353.2  WARN  Request took 75409ms: https://registry.npmjs.org/@types%2Fnode
+#20 353.7 Progress: resolved 1294, reused 0, downloaded 0, added 0
+#20 355.4 Progress: resolved 1301, reused 0, downloaded 0, added 0
+#20 356.9 Progress: resolved 1306, reused 0, downloaded 0, added 0
+#20 358.0 Progress: resolved 1308, reused 0, downloaded 0, added 0
+#20 359.2 Progress: resolved 1310, reused 0, downloaded 0, added 0
+#20 361.7 Progress: resolved 1313, reused 0, downloaded 0, added 0
+#20 363.5 Progress: resolved 1315, reused 0, downloaded 0, added 0
+#20 365.2 Progress: resolved 1318, reused 0, downloaded 0, added 0
+#20 366.9 Progress: resolved 1319, reused 0, downloaded 0, added 0
+#20 368.6 Progress: resolved 1320, reused 0, downloaded 0, added 0
+#20 370.2 Progress: resolved 1323, reused 0, downloaded 0, added 0
+#20 371.9 Progress: resolved 1326, reused 0, downloaded 0, added 0
+#20 373.6  WARN  Request took 15900ms: https://registry.npmjs.org/@babel%2Fhelper-wrap-function
+#20 374.0  WARN  Request took 16885ms: https://registry.npmjs.org/@babel%2Ftemplate
+#20 374.4 Progress: resolved 1328, reused 0, downloaded 0, added 0
+#20 376.1  WARN  Request took 19606ms: https://registry.npmjs.org/@babel%2Fruntime
+#20 377.8 Progress: resolved 1329, reused 0, downloaded 0, added 0
+#20 378.1  WARN  Request took 13312ms: https://registry.npmjs.org/@tybys%2Fwasm-util
+#20 378.9 Progress: resolved 1330, reused 0, downloaded 0, added 0
+#20 379.1  WARN  Request took 12018ms: https://registry.npmjs.org/postcss-value-parser
+#20 385.4 Progress: resolved 1331, reused 0, downloaded 0, added 0
+#20 385.5  WARN  Request took 21690ms: https://registry.npmjs.org/@emnapi%2Fcore
+#20 385.6  WARN  Request took 21305ms: https://registry.npmjs.org/@emnapi%2Fruntime
+#20 386.6 Progress: resolved 1333, reused 0, downloaded 0, added 0
+#20 393.8  WARN  Request took 16193ms: https://registry.npmjs.org/cssesc
+#20 393.8  WARN  Request took 14311ms: https://registry.npmjs.org/typescript-logic
+#20 393.9 Progress: resolved 1334, reused 0, downloaded 0, added 0
+#20 394.3  WARN  Request took 14265ms: https://registry.npmjs.org/onetime
+#20 394.3  WARN  Request took 14906ms: https://registry.npmjs.org/@csstools%2Fcss-parser-algorithms
+#20 394.4  WARN  Request took 14997ms: https://registry.npmjs.org/@csstools%2Fcss-tokenizer
+#20 394.9  WARN  Request took 40995ms: https://registry.npmjs.org/@babel%2Ftraverse
+#20 395.2 Progress: resolved 1336, reused 0, downloaded 0, added 0
+#20 395.2  WARN  Request took 14912ms: https://registry.npmjs.org/get-stream
+#20 395.2  WARN  Request took 14989ms: https://registry.npmjs.org/signal-exit
+#20 395.5  WARN  Request took 16190ms: https://registry.npmjs.org/@csstools%2Fcss-color-parser
+#20 396.3  WARN  Request took 16091ms: https://registry.npmjs.org/cross-spawn
+#20 396.6 Progress: resolved 1343, reused 0, downloaded 0, added 0
+#20 396.9  WARN  Request took 21603ms: https://registry.npmjs.org/stylehacks
+#20 397.7 Progress: resolved 1347, reused 0, downloaded 0, added 0
+#20 399.1 Progress: resolved 1349, reused 0, downloaded 0, added 0
+#20 400.7 Progress: resolved 1350, reused 0, downloaded 0, added 0
+#20 401.9 Progress: resolved 1351, reused 0, downloaded 0, added 0
+#20 402.2  WARN  Request took 22992ms: https://registry.npmjs.org/browserslist
+#20 403.0 Progress: resolved 1355, reused 0, downloaded 0, added 0
+#20 404.1 Progress: resolved 1356, reused 0, downloaded 0, added 0
+#20 406.0 Progress: resolved 1361, reused 0, downloaded 0, added 0
+#20 407.8 Progress: resolved 1362, reused 0, downloaded 0, added 0
+#20 413.6  WARN  Request took 11084ms: https://registry.npmjs.org/webidl-conversions
+#20 414.3 Progress: resolved 1364, reused 0, downloaded 0, added 0
+#20 432.1  WARN  Request took 308299ms: https://registry.npmjs.org/@typescript-eslint%2Ftypescript-estree
+#20 435.1 Progress: resolved 1365, reused 0, downloaded 0, added 0
+#20 435.2  WARN  Request took 33685ms: https://registry.npmjs.org/@jest%2Fexpect
+#20 436.6 Progress: resolved 1366, reused 0, downloaded 0, added 0
+#20 437.6  WARN  Request took 58310ms: https://registry.npmjs.org/lru-cache
+#20 439.0  WARN  Request took 34991ms: https://registry.npmjs.org/dedent
+#20 439.5 Progress: resolved 1368, reused 0, downloaded 0, added 0
+#20 439.7  WARN  Request took 34982ms: https://registry.npmjs.org/p-limit
+#20 441.0  WARN  Request took 46574ms: https://registry.npmjs.org/@types%2Fyargs
+#20 441.9  WARN  Request took 34093ms: https://registry.npmjs.org/stack-utils
+#20 442.0  WARN  Request took 32003ms: https://registry.npmjs.org/minimalistic-assert
+#20 442.0 Progress: resolved 1369, reused 0, downloaded 0, added 0
+#20 445.9  WARN  Request took 32510ms: https://registry.npmjs.org/util-deprecate
+#20 445.9  WARN  Request took 33510ms: https://registry.npmjs.org/string_decoder
+#20 446.0 Progress: resolved 1370, reused 0, downloaded 0, added 0
+#20 446.2  WARN  Request took 32702ms: https://registry.npmjs.org/safer-buffer
+#20 448.1  WARN  Request took 11792ms: https://registry.npmjs.org/semver
+#20 448.4 Progress: resolved 1371, reused 0, downloaded 0, added 0
+#20 448.6  WARN  Request took 41524ms: https://registry.npmjs.org/pure-rand
+#20 454.8 Progress: resolved 1373, reused 0, downloaded 0, added 0
+#20 456.0 Progress: resolved 1375, reused 0, downloaded 0, added 0
+#20 457.3 Progress: resolved 1377, reused 0, downloaded 0, added 0
+#20 458.3 Progress: resolved 1379, reused 0, downloaded 0, added 0
+#20 459.6 Progress: resolved 1380, reused 0, downloaded 0, added 0
+#20 470.1  WARN  Request took 13104ms: https://registry.npmjs.org/source-map
+#20 470.4  WARN  Request took 23184ms: https://registry.npmjs.org/picomatch
+#20 471.1  WARN  Request took 32614ms: https://registry.npmjs.org/fast-glob
+#20 471.2 Progress: resolved 1381, reused 0, downloaded 0, added 0
+#20 471.8  WARN  Request took 32700ms: https://registry.npmjs.org/ts-api-utils
+#20 472.2 Progress: resolved 1383, reused 0, downloaded 0, added 0
+#20 472.3  WARN  Request took 26204ms: https://registry.npmjs.org/jake
+#20 473.5 Progress: resolved 1388, reused 0, downloaded 0, added 0
+#20 474.1  WARN  Request took 69584ms: https://registry.npmjs.org/jest-each
+#20 474.6  WARN  Request took 32997ms: https://registry.npmjs.org/@typescript-eslint%2Ftsconfig-utils
+#20 474.8 Progress: resolved 1390, reused 0, downloaded 0, added 0
+#20 475.0  WARN  Request took 32803ms: https://registry.npmjs.org/@typescript-eslint%2Fproject-service
+#20 476.0 Progress: resolved 1394, reused 0, downloaded 0, added 0
+#20 477.2 Progress: resolved 1395, reused 0, downloaded 0, added 0
+#20 478.8 Progress: resolved 1397, reused 0, downloaded 0, added 0
+#20 480.0 Progress: resolved 1401, reused 0, downloaded 0, added 0
+#20 481.2 Progress: resolved 1406, reused 0, downloaded 0, added 0
+#20 483.0 Progress: resolved 1407, reused 0, downloaded 0, added 0
+#20 484.1 Progress: resolved 1417, reused 0, downloaded 0, added 0
+#20 485.1 Progress: resolved 1434, reused 0, downloaded 0, added 0
+#20 485.2  WARN  Request took 91096ms: https://registry.npmjs.org/tldts-core
+#20 486.3 Progress: resolved 1443, reused 0, downloaded 0, added 0
+#20 487.2 Progress: resolved 1454, reused 0, downloaded 0, added 0
+#20 488.3 Progress: resolved 1461, reused 0, downloaded 0, added 0
+#20 491.0 Progress: resolved 1471, reused 0, downloaded 0, added 0
+#20 492.0 Progress: resolved 1474, reused 0, downloaded 0, added 0
+#20 494.4  WARN  Request took 57799ms: https://registry.npmjs.org/@typescript-eslint%2Fvisitor-keys
+#20 495.0 Progress: resolved 1475, reused 0, downloaded 0, added 0
+#20 498.3 Progress: resolved 1478, reused 0, downloaded 0, added 0
+#20 503.7 Progress: resolved 1483, reused 0, downloaded 0, added 0
+#20 506.2 Progress: resolved 1484, reused 0, downloaded 0, added 0
+#20 507.3 Progress: resolved 1485, reused 0, downloaded 0, added 0
+#20 524.8  WARN  Request took 21182ms: https://registry.npmjs.org/typescript
+#20 525.7 Progress: resolved 1486, reused 0, downloaded 0, added 0
+#20 528.8 Progress: resolved 1487, reused 0, downloaded 0, added 0
+#20 529.9 Progress: resolved 1491, reused 0, downloaded 0, added 0
+#20 547.7  WARN  19 deprecated subdependencies found: @babel/plugin-proposal-async-generator-functions@7.20.1, @babel/plugin-proposal-class-properties@7.18.6, @babel/plugin-proposal-class-static-block@7.18.6, @babel/plugin-proposal-dynamic-import@7.18.6, @babel/plugin-proposal-export-namespace-from@7.18.9, @babel/plugin-proposal-json-strings@7.18.6, @babel/plugin-proposal-logical-assignment-operators@7.18.9, @babel/plugin-proposal-nullish-coalescing-operator@7.18.6, @babel/plugin-proposal-numeric-separator@7.18.6, @babel/plugin-proposal-object-rest-spread@7.20.2, @babel/plugin-proposal-optional-catch-binding@7.18.6, @babel/plugin-proposal-optional-chaining@7.18.9, @babel/plugin-proposal-private-methods@7.18.6, @babel/plugin-proposal-private-property-in-object@7.18.6, @babel/plugin-proposal-unicode-property-regex@7.18.6, glob@7.2.3, inflight@1.0.6, source-map@0.8.0-beta.0, sourcemap-codec@1.4.8
+#20 554.0 Progress: resolved 1491, reused 0, downloaded 0, added 0, done
+#20 554.1 
+#20 DONE 562.5s
+
+#22 [4gaBoards client 7/9] RUN pnpm install --prod
+#22 12.15 Lockfile is up to date, resolution step is skipped
+#22 13.57 Progress: resolved 1, reused 0, downloaded 0, added 0
+#22 15.65 Packages: +1354
+#22 15.65 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#22 15.96 Progress: resolved 1354, reused 0, downloaded 0, added 0
+#22 22.45 Progress: resolved 1354, reused 0, downloaded 1, added 0
+#22 23.37 Progress: resolved 1354, reused 0, downloaded 6, added 0
+#22 24.38 Progress: resolved 1354, reused 0, downloaded 13, added 0
+#22 25.56 Progress: resolved 1354, reused 0, downloaded 16, added 0
+#22 27.86 Progress: resolved 1354, reused 0, downloaded 16, added 1
+#22 28.76 Progress: resolved 1354, reused 0, downloaded 19, added 4
+#22 30.75 Progress: resolved 1354, reused 0, downloaded 20, added 4
+#22 32.27 Progress: resolved 1354, reused 0, downloaded 33, added 7
+#22 32.75 Progress: resolved 1354, reused 0, downloaded 36, added 8
+#22 33.67 Progress: resolved 1354, reused 0, downloaded 52, added 12
+#22 34.76 Progress: resolved 1354, reused 0, downloaded 57, added 12
+#22 35.75 Progress: resolved 1354, reused 0, downloaded 58, added 12
+#22 39.55 Progress: resolved 1354, reused 0, downloaded 59, added 12
+#22 40.57 Progress: resolved 1354, reused 0, downloaded 67, added 16
+#22 41.67 Progress: resolved 1354, reused 0, downloaded 72, added 16
+#22 42.76 Progress: resolved 1354, reused 0, downloaded 73, added 16
+#22 43.85 Progress: resolved 1354, reused 0, downloaded 81, added 20
+#22 44.96 Progress: resolved 1354, reused 0, downloaded 96, added 24
+#22 45.85 Progress: resolved 1354, reused 0, downloaded 110, added 28
+#22 46.87 Progress: resolved 1354, reused 0, downloaded 118, added 28
+#22 47.86 Progress: resolved 1354, reused 0, downloaded 133, added 34
+#22 48.88 Progress: resolved 1354, reused 0, downloaded 160, added 41
+#22 49.96 Progress: resolved 1354, reused 0, downloaded 185, added 48
+#22 50.95 Progress: resolved 1354, reused 0, downloaded 200, added 52
+#22 51.95 Progress: resolved 1354, reused 0, downloaded 224, added 58
+#22 67.15 Progress: resolved 1354, reused 0, downloaded 224, added 59
+#22 68.07 Progress: resolved 1354, reused 0, downloaded 244, added 64
+#22 69.07 Progress: resolved 1354, reused 0, downloaded 253, added 66
+#22 70.15 Progress: resolved 1354, reused 0, downloaded 264, added 70
+#22 71.15 Progress: resolved 1354, reused 0, downloaded 275, added 72
+#22 72.16 Progress: resolved 1354, reused 0, downloaded 284, added 74
+#22 73.16 Progress: resolved 1354, reused 0, downloaded 286, added 75
+#22 74.35 Progress: resolved 1354, reused 0, downloaded 294, added 78
+#22 75.17 Progress: resolved 1354, reused 0, downloaded 311, added 82
+#22 76.17 Progress: resolved 1354, reused 0, downloaded 331, added 88
+#22 77.17 Progress: resolved 1354, reused 0, downloaded 341, added 90
+#22 78.26 Progress: resolved 1354, reused 0, downloaded 352, added 94
+#22 79.27 Progress: resolved 1354, reused 0, downloaded 378, added 100
+#22 80.25 Progress: resolved 1354, reused 0, downloaded 395, added 105
+#22 81.27 Progress: resolved 1354, reused 0, downloaded 407, added 108
+#22 82.36 Progress: resolved 1354, reused 0, downloaded 411, added 110
+#22 83.36 Progress: resolved 1354, reused 0, downloaded 416, added 110
+#22 85.06 Progress: resolved 1354, reused 0, downloaded 421, added 112
+#22 86.46 Progress: resolved 1354, reused 0, downloaded 422, added 112
+#22 87.55 Progress: resolved 1354, reused 0, downloaded 436, added 116
+#22 88.46 Progress: resolved 1354, reused 0, downloaded 443, added 118
+#22 89.47 Progress: resolved 1354, reused 0, downloaded 447, added 119
+#22 90.47 Progress: resolved 1354, reused 0, downloaded 452, added 121
+#22 91.55 Progress: resolved 1354, reused 0, downloaded 457, added 122
+#22 92.66 Progress: resolved 1354, reused 0, downloaded 469, added 125
+#22 93.66 Progress: resolved 1354, reused 0, downloaded 481, added 128
+#22 94.76 Progress: resolved 1354, reused 0, downloaded 495, added 132
+#22 95.75 Progress: resolved 1354, reused 0, downloaded 506, added 135
+#22 96.75 Progress: resolved 1354, reused 0, downloaded 517, added 138
+#22 97.75 Progress: resolved 1354, reused 0, downloaded 537, added 144
+#22 98.76 Progress: resolved 1354, reused 0, downloaded 543, added 145
+#22 99.76 Progress: resolved 1354, reused 0, downloaded 563, added 150
+#22 100.8 Progress: resolved 1354, reused 0, downloaded 590, added 158
+#22 101.8 Progress: resolved 1354, reused 0, downloaded 614, added 165
+#22 102.8 Progress: resolved 1354, reused 0, downloaded 635, added 172
+#22 103.9 Progress: resolved 1354, reused 0, downloaded 656, added 177
+#22 104.8 Progress: resolved 1354, reused 0, downloaded 670, added 180
+#22 105.9 Progress: resolved 1354, reused 0, downloaded 678, added 184
+#22 106.8 Progress: resolved 1354, reused 0, downloaded 693, added 188
+#22 107.9 Progress: resolved 1354, reused 0, downloaded 718, added 194
+#22 108.9 Progress: resolved 1354, reused 0, downloaded 737, added 198
+#22 109.9 Progress: resolved 1354, reused 0, downloaded 739, added 200
+#22 110.9 Progress: resolved 1354, reused 0, downloaded 743, added 201
+#22 122.1 Progress: resolved 1354, reused 0, downloaded 744, added 201
+#22 123.1 Progress: resolved 1354, reused 0, downloaded 748, added 202
+#22 124.2 Progress: resolved 1354, reused 0, downloaded 756, added 205
+#22 125.1 Progress: resolved 1354, reused 0, downloaded 766, added 206
+#22 126.2 Progress: resolved 1354, reused 0, downloaded 784, added 213
+#22 127.1 Progress: resolved 1354, reused 0, downloaded 793, added 214
+#22 128.1 Progress: resolved 1354, reused 0, downloaded 802, added 218
+#22 129.1 Progress: resolved 1354, reused 0, downloaded 822, added 222
+#22 130.1 Progress: resolved 1354, reused 0, downloaded 828, added 225
+#22 131.2 Progress: resolved 1354, reused 0, downloaded 830, added 225
+#22 132.2 Progress: resolved 1354, reused 0, downloaded 841, added 228
+#22 133.2 Progress: resolved 1354, reused 0, downloaded 874, added 238
+#22 134.2 Progress: resolved 1354, reused 0, downloaded 880, added 239
+#22 135.3 Progress: resolved 1354, reused 0, downloaded 902, added 245
+#22 136.3 Progress: resolved 1354, reused 0, downloaded 915, added 253
+#22 137.3 Progress: resolved 1354, reused 0, downloaded 929, added 257
+#22 138.4 Progress: resolved 1354, reused 0, downloaded 938, added 259
+#22 139.5 Progress: resolved 1354, reused 0, downloaded 950, added 263
+#22 140.4 Progress: resolved 1354, reused 0, downloaded 967, added 267
+#22 141.4 Progress: resolved 1354, reused 0, downloaded 998, added 277
+#22 142.6 Progress: resolved 1354, reused 0, downloaded 1014, added 282
+#22 143.6 Progress: resolved 1354, reused 0, downloaded 1023, added 286
+#22 144.6 Progress: resolved 1354, reused 0, downloaded 1049, added 294
+#22 145.6 Progress: resolved 1354, reused 0, downloaded 1056, added 296
+#22 146.6 Progress: resolved 1354, reused 0, downloaded 1062, added 298
+#22 147.6 Progress: resolved 1354, reused 0, downloaded 1072, added 300
+#22 148.6 Progress: resolved 1354, reused 0, downloaded 1078, added 302
+#22 149.8 Progress: resolved 1354, reused 0, downloaded 1089, added 304
+#22 150.8 Progress: resolved 1354, reused 0, downloaded 1095, added 306
+#22 151.9 Progress: resolved 1354, reused 0, downloaded 1096, added 308
+#22 152.9 Progress: resolved 1354, reused 0, downloaded 1107, added 308
+#22 153.9 Progress: resolved 1354, reused 0, downloaded 1119, added 312
+#22 155.0 Progress: resolved 1354, reused 0, downloaded 1121, added 312
+#22 155.9 Progress: resolved 1354, reused 0, downloaded 1129, added 316
+#22 157.0 Progress: resolved 1354, reused 0, downloaded 1138, added 316
+#22 158.2 Progress: resolved 1354, reused 0, downloaded 1152, added 320
+#22 159.1 Progress: resolved 1354, reused 0, downloaded 1158, added 324
+#22 160.2 Progress: resolved 1354, reused 0, downloaded 1171, added 328
+#22 161.2 Progress: resolved 1354, reused 0, downloaded 1174, added 328
+#22 162.2 Progress: resolved 1354, reused 0, downloaded 1180, added 328
+#22 163.2 Progress: resolved 1354, reused 0, downloaded 1202, added 336
+#22 164.2 Progress: resolved 1354, reused 0, downloaded 1224, added 340
+#22 165.5 Progress: resolved 1354, reused 0, downloaded 1237, added 345
+#22 166.2 Progress: resolved 1354, reused 0, downloaded 1257, added 350
+#22 167.3 Progress: resolved 1354, reused 0, downloaded 1272, added 355
+#22 168.2 Progress: resolved 1354, reused 0, downloaded 1282, added 357
+#22 169.4 Progress: resolved 1354, reused 0, downloaded 1311, added 365
+#22 170.4 Progress: resolved 1354, reused 0, downloaded 1312, added 365
+#22 171.5 Progress: resolved 1354, reused 0, downloaded 1330, added 370
+#22 172.5 Progress: resolved 1354, reused 0, downloaded 1342, added 373
+#22 173.5 Progress: resolved 1354, reused 0, downloaded 1354, added 397
+#22 174.5 Progress: resolved 1354, reused 0, downloaded 1354, added 439
+#22 175.5 Progress: resolved 1354, reused 0, downloaded 1354, added 464
+#22 176.5 Progress: resolved 1354, reused 0, downloaded 1354, added 537
+#22 177.5 Progress: resolved 1354, reused 0, downloaded 1354, added 558
+#22 178.5 Progress: resolved 1354, reused 0, downloaded 1354, added 621
+#22 179.5 Progress: resolved 1354, reused 0, downloaded 1354, added 689
+#22 180.5 Progress: resolved 1354, reused 0, downloaded 1354, added 724
+#22 181.6 Progress: resolved 1354, reused 0, downloaded 1354, added 743
+#22 184.2 Progress: resolved 1354, reused 0, downloaded 1354, added 744
+#22 185.0 Progress: resolved 1354, reused 0, downloaded 1354, added 755
+#22 186.0 Progress: resolved 1354, reused 0, downloaded 1354, added 807
+#22 187.0 Progress: resolved 1354, reused 0, downloaded 1354, added 828
+#22 188.0 Progress: resolved 1354, reused 0, downloaded 1354, added 904
+#22 189.0 Progress: resolved 1354, reused 0, downloaded 1354, added 964
+#22 190.0 Progress: resolved 1354, reused 0, downloaded 1354, added 1003
+#22 191.0 Progress: resolved 1354, reused 0, downloaded 1354, added 1047
+#22 192.0 Progress: resolved 1354, reused 0, downloaded 1354, added 1056
+#22 203.7 Progress: resolved 1354, reused 0, downloaded 1354, added 1057
+#22 204.7 Progress: resolved 1354, reused 0, downloaded 1354, added 1093
+#22 205.8 Progress: resolved 1354, reused 0, downloaded 1354, added 1113
+#22 207.0 Progress: resolved 1354, reused 0, downloaded 1354, added 1163
+#22 207.7 Progress: resolved 1354, reused 0, downloaded 1354, added 1182
+#22 208.8 Progress: resolved 1354, reused 0, downloaded 1354, added 1219
+#22 209.7 Progress: resolved 1354, reused 0, downloaded 1354, added 1263
+#22 210.9 Progress: resolved 1354, reused 0, downloaded 1354, added 1287
+#22 212.1 Progress: resolved 1354, reused 0, downloaded 1354, added 1306
+#22 212.7 Progress: resolved 1354, reused 0, downloaded 1354, added 1321
+#22 213.7 Progress: resolved 1354, reused 0, downloaded 1354, added 1352
+#22 214.0 Progress: resolved 1354, reused 0, downloaded 1354, added 1354, done
+#22 234.2 .../node_modules/@parcel/watcher install$ node scripts/build-from-source.js
+#22 234.2 .../core-js@3.26.1/node_modules/core-js postinstall$ node -e "try{require('./postinstall')}catch(e){}"
+#22 235.0 .../node_modules/core-js-pure postinstall$ node -e "try{require('./postinstall')}catch(e){}"
+#22 236.7 .../core-js@3.26.1/node_modules/core-js postinstall: Thank you for using core-js ( https://github.com/zloirock/core-js ) for polyfilling JavaScript standard library!
+#22 236.7 .../core-js@3.26.1/node_modules/core-js postinstall: The project needs your help! Please consider supporting of core-js:
+#22 236.7 .../core-js@3.26.1/node_modules/core-js postinstall: > https://opencollective.com/core-js 
+#22 236.7 .../core-js@3.26.1/node_modules/core-js postinstall: > https://patreon.com/zloirock 
+#22 236.7 .../core-js@3.26.1/node_modules/core-js postinstall: > bitcoin: bc1qlea7544qtsmj2rayg0lthvza9fau63ux0fstcz 
+#22 236.7 .../core-js@3.26.1/node_modules/core-js postinstall: Also, the author of core-js ( https://github.com/zloirock ) is looking for a good job -)
+#22 236.9 .../node_modules/@parcel/watcher install: Done
+#22 236.9 .../node_modules/core-js-pure postinstall: Thank you for using core-js ( https://github.com/zloirock/core-js ) for polyfilling JavaScript standard library!
+#22 236.9 .../node_modules/core-js-pure postinstall: The project needs your help! Please consider supporting of core-js:
+#22 236.9 .../node_modules/core-js-pure postinstall: > https://opencollective.com/core-js 
+#22 236.9 .../node_modules/core-js-pure postinstall: > https://patreon.com/zloirock 
+#22 236.9 .../node_modules/core-js-pure postinstall: > bitcoin: bc1qlea7544qtsmj2rayg0lthvza9fau63ux0fstcz 
+#22 236.9 .../node_modules/core-js-pure postinstall: Also, the author of core-js ( https://github.com/zloirock ) is looking for a good job -)
+#22 237.0 .../node_modules/core-js-pure postinstall: Done
+#22 237.0 .../core-js@3.26.1/node_modules/core-js postinstall: Done
+#22 ...
+
+#23 [4gaBoards stage-2  8/10] COPY --from=server-dependencies --chown=node:node /app/node_modules node_modules
+#23 ...
+
+#22 [4gaBoards client 7/9] RUN pnpm install --prod
+#22 276.7 
+#22 276.7 dependencies:
+#22 276.7 + @babel/core 7.28.5
+#22 276.7 + @babel/preset-react 7.28.5
+#22 276.7 + @babel/runtime 7.28.4
+#22 276.7 + @floating-ui/react 0.27.16
+#22 276.7 + @pmmmwh/react-refresh-webpack-plugin 0.6.2
+#22 276.7 + @react-hook/resize-observer 2.0.2
+#22 276.7 + @svgr/webpack 8.1.0
+#22 276.7 + @tanstack/react-table 8.21.3
+#22 276.7 + @uiw/react-md-editor 4.0.9
+#22 276.7 + address 2.0.3
+#22 276.7 + babel-jest 30.2.0
+#22 276.7 + babel-loader 10.0.0
+#22 276.7 + babel-preset-react-app 10.1.0
+#22 276.7 + bfj 9.1.2
+#22 276.7 + browserslist 4.28.0
+#22 276.7 + camelcase 9.0.0
+#22 276.7 + case-sensitive-paths-webpack-plugin 2.4.0
+#22 276.7 + chalk 5.6.2
+#22 276.7 + clsx 2.1.1
+#22 276.7 + cross-spawn 7.0.6
+#22 276.7 + css-loader 7.1.2
+#22 276.7 + css-minimizer-webpack-plugin 7.0.2
+#22 276.7 + date-fns 4.1.0
+#22 276.7 + dequal 2.0.3
+#22 276.7 + detect-port-alt 1.1.6
+#22 276.7 + dotenv 17.2.3
+#22 276.7 + dotenv-expand 12.0.3
+#22 276.7 + escape-string-regexp 5.0.0
+#22 276.7 + eslint-webpack-plugin 5.0.2
+#22 276.7 + file-loader 6.2.0
+#22 276.7 + filesize 11.0.13
+#22 276.7 + find-up 8.0.0
+#22 276.7 + fork-ts-checker-webpack-plugin 9.1.0
+#22 276.7 + fs-extra 11.3.2
+#22 276.7 + global-modules 2.0.0
+#22 276.7 + gzip-size 7.0.0
+#22 276.7 + history 5.3.0
+#22 276.7 + html-webpack-plugin 5.6.5
+#22 276.7 + i18next 25.7.1
+#22 276.7 + i18next-browser-languagedetector 8.2.0
+#22 276.7 + identity-obj-proxy 3.0.0
+#22 276.7 + is-root 3.0.0
+#22 276.7 + jest 30.2.0
+#22 276.7 + jest-resolve 30.2.0
+#22 276.7 + jest-watch-typeahead 3.0.1
+#22 276.7 + js-cookie 3.0.5
+#22 276.7 + jwt-decode 4.0.0
+#22 276.7 + loader-utils 3.3.1
+#22 276.7 + lodash 4.17.21
+#22 276.7 + mini-css-extract-plugin 2.9.4
+#22 276.7 + open 11.0.0
+#22 276.7 + package-up 5.0.0
+#22 276.7 + photoswipe 5.4.4
+#22 276.7 + postcss 8.5.6
+#22 276.7 + postcss-flexbugs-fixes 5.0.2
+#22 276.7 + postcss-loader 8.2.0
+#22 276.7 + postcss-normalize 13.0.1
+#22 276.7 + postcss-preset-env 10.4.0
+#22 276.7 + prompts 2.4.2
+#22 276.7 + prop-types 15.8.1
+#22 276.7 + react 18.3.1
+#22 276.7 + react-app-polyfill 3.0.0
+#22 276.7 + react-beautiful-dnd 13.1.1
+#22 276.7 + react-datepicker 8.10.0
+#22 276.7 + react-dom 18.2.0
+#22 276.7 + react-dropzone 14.3.8
+#22 276.7 + react-i18next 16.3.5
+#22 276.7 + react-input-mask 2.0.4
+#22 276.7 + react-photoswipe-gallery 4.0.0
+#22 276.7 + react-redux 9.2.0
+#22 276.7 + react-refresh 0.18.0
+#22 276.7 + react-router 7.9.6
+#22 276.7 + react-textarea-autosize 8.5.9
+#22 276.7 + recursive-readdir 2.2.3
+#22 276.7 + redux 5.0.1
+#22 276.7 + redux-logger 3.0.6
+#22 276.7 + redux-orm 0.16.2
+#22 276.7 + redux-saga 1.4.2
+#22 276.7 + rehype-external-links 3.0.0
+#22 276.7 + rehype-sanitize 6.0.0
+#22 276.7 + remark-github 12.0.0
+#22 276.7 + reselect 5.1.1
+#22 276.7 + resolve 1.22.11
+#22 276.7 + resolve-url-loader 5.0.0
+#22 276.7 + sass 1.94.2
+#22 276.7 + sass-loader 16.0.6
+#22 276.7 + semver 7.7.3
+#22 276.7 + socket.io-client 4.8.1
+#22 276.7 + source-map-loader 5.0.0
+#22 276.7 + strip-ansi 7.1.2
+#22 276.7 + style-loader 4.0.0
+#22 276.7 + terser-webpack-plugin 5.3.14
+#22 276.7 + text-table 0.2.0
+#22 276.7 + unist-util-visit 5.0.0
+#22 276.7 + validator 13.15.23
+#22 276.7 + webpack 5.103.0
+#22 276.7 + webpack-dev-server 5.2.2
+#22 276.7 + webpack-manifest-plugin 6.0.1
+#22 276.7 + whatwg-fetch 3.6.20
+#22 276.7 + workbox-webpack-plugin 7.4.0
+#22 276.7 + zxcvbn 4.4.2
+#22 276.7 
+#22 276.7 devDependencies: skipped
+#22 276.7 
+#22 277.2 ╭ Warning ─────────────────────────────────────────────────────────────────────╮
+#22 277.2 │                                                                              │
+#22 277.2 │   Ignored build scripts: unrs-resolver@1.11.1.                               │
+#22 277.2 │   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+#22 277.2 │   to run scripts.                                                            │
+#22 277.2 │                                                                              │
+#22 277.2 ╰──────────────────────────────────────────────────────────────────────────────╯
+#22 277.9 Done in 4m 31.1s using pnpm v10.25.0
+#22 DONE 282.7s
+
+#23 [4gaBoards stage-2  8/10] COPY --from=server-dependencies --chown=node:node /app/node_modules node_modules
+#23 ...
+
+#24 [4gaBoards client 8/9] COPY client .
+#24 DONE 37.7s
+
+#23 [4gaBoards stage-2  8/10] COPY --from=server-dependencies --chown=node:node /app/node_modules node_modules
+#23 ...
+
+#25 [4gaBoards client 9/9] RUN DISABLE_ESLINT_PLUGIN=true npm run build
+#25 15.00 
+#25 15.00 > build
+#25 15.00 > node scripts/build.js
+#25 15.00 
+#25 47.19 Creating an optimized production build...
+#25 ...
+
+#23 [4gaBoards stage-2  8/10] COPY --from=server-dependencies --chown=node:node /app/node_modules node_modules
+#23 DONE 208.0s
+
+#25 [4gaBoards client 9/9] RUN DISABLE_ESLINT_PLUGIN=true npm run build
+#25 4430.8 Compiled successfully.
+#25 4430.8 
+#25 4430.8 File sizes after gzip:
+#25 4430.8 
+#25 4433.1   1.28 MB   build/static/js/main.08c292ad.js
+#25 4433.1   33.74 kB  build/static/css/main.b1e5c556.css
+#25 4433.1   8.14 kB   build/static/js/922.6e1b7a08.chunk.js
+#25 4433.1   8 kB      build/static/js/722.da52924c.chunk.js
+#25 4433.1   7.95 kB   build/static/js/245.3548e482.chunk.js
+#25 4433.1   5.12 kB   build/workbox-97b30d90.js
+#25 4433.1   3.03 kB   build/static/js/301.7edbb3a3.chunk.js
+#25 4433.1   2.57 kB   build/static/js/96.63880cb8.chunk.js
+#25 4433.1   2.42 kB   build/static/js/833.1163f50c.chunk.js
+#25 4433.1   2.4 kB    build/static/js/845.443a4cec.chunk.js
+#25 4433.1   2.33 kB   build/static/js/480.d3e08cbd.chunk.js
+#25 4433.1   2.26 kB   build/static/js/196.c6636b10.chunk.js
+#25 4433.1   2.26 kB   build/static/js/156.5a5c4746.chunk.js
+#25 4433.1   2.23 kB   build/static/js/903.c297bdb4.chunk.js
+#25 4433.1   2.17 kB   build/static/js/465.739317fc.chunk.js
+#25 4433.1   2.12 kB   build/static/js/787.98b25145.chunk.js
+#25 4433.1   2.09 kB   build/static/js/163.bd6c703c.chunk.js
+#25 4433.1   2.06 kB   build/static/js/266.62f8f39d.chunk.js
+#25 4433.1 
+#25 4433.1 The bundle size is significantly larger than recommended.
+#25 4433.1 Consider reducing it with code splitting: https://goo.gl/9VhYWB
+#25 4433.1 You can also analyze the project dependencies: https://goo.gl/LeUzfb
+#25 4433.1 
+#25 4433.2 The project was built assuming it is hosted at BASE_URL_PLACEHOLDER.
+#25 4433.2 You can control this with the homepage field in your package.json.
+#25 4433.2 
+#25 4433.2 The build folder is ready to be deployed.
+#25 4433.2 
+#25 4433.2 Find out more about deployment here:
+#25 4433.2 
+#25 4433.2   https://cra.link/deployment
+#25 4433.2 
+#25 DONE 4453.0s
+
+#26 [4gaBoards stage-2  9/10] COPY --from=client --chown=node:node /app/build public
+#26 DONE 2.9s
+
+#27 [4gaBoards stage-2 10/10] COPY --from=client --chown=node:node /app/build/index.html views/index.ejs
+#27 DONE 0.6s
+
+#28 [4gaBoards] exporting to image
+#28 exporting layers
+#28 exporting layers 63.0s done
+#28 writing image sha256:fcd037516ad8d831508194952bc68e53be4d9cf9693d62fc3e7a752b5c4de9c1
+#28 writing image sha256:fcd037516ad8d831508194952bc68e53be4d9cf9693d62fc3e7a752b5c4de9c1 0.2s done
+#28 naming to docker.io/library/lrs-4gaboards:local
+#28 naming to docker.io/library/lrs-4gaboards:local 0.0s done
+#28 DONE 63.7s
+
+#29 [4gaBoards] resolving provenance for metadata file
+#29 DONE 0.3s
+ 4gaBoards  Built
+ Container app-4gaBoards-1  Recreate
+ Container app-4gaBoards-1  Recreated
+ Container app-4gaBoards-1  Starting
+ Container app-4gaBoards-1  Started

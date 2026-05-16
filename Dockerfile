@@ -7,7 +7,7 @@ COPY server/package.json server/package-lock.json ./
 RUN npm install npm@latest --global
 RUN npm install pnpm --global
 RUN pnpm import
-RUN pnpm install --prod
+RUN pnpm install --prod --ignore-scripts=false
 
 FROM node:24-alpine AS client
 
