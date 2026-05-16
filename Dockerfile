@@ -4,8 +4,7 @@ WORKDIR /app
 
 COPY server/package.json server/package-lock.json ./
 
-RUN npm install npm@latest --global
-RUN npm ci --omit=dev
+RUN npm ci --omit=dev --no-audit --no-fund
 
 FROM node:24-alpine AS client
 
@@ -13,17 +12,17 @@ WORKDIR /app
 
 COPY client/package.json client/package-lock.json ./
 
-RUN npm install npm@latest --global
-RUN npm ci
+RUN npm ci --no-audit --no-fund
 
 COPY client .
+
 ENV NODE_OPTIONS="--max_old_space_size=2048"
 ENV GENERATE_SOURCEMAP=false
+
 RUN DISABLE_ESLINT_PLUGIN=true npm run build
 
 FROM node:24-alpine
 
-RUN apk -U upgrade
 RUN apk add bash --no-cache
 
 USER node
