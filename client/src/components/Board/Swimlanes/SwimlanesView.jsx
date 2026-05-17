@@ -16,7 +16,9 @@ import * as s from './Swimlanes.module.scss';
 const SwimlanesView = React.memo(({ boardId, lists, swimlanes, onCardMove }) => {
   const [t] = useTranslation();
   const [setCollapsed, getCollapsed] = useLocalStorage(`swimlanes-collapsed-${boardId}`);
+  const [setCollapsedCols, getCollapsedCols] = useLocalStorage(`swimlanes-collapsed-cols-${boardId}`);
   const [collapsedLanes, setCollapsedLanes] = useState(() => getCollapsed() || {});
+  const [collapsedColumns, setCollapsedColumns] = useState(() => getCollapsedCols() || {});
 
   const handleToggleLane = useCallback(
     (laneId) => {
@@ -27,6 +29,17 @@ const SwimlanesView = React.memo(({ boardId, lists, swimlanes, onCardMove }) => 
       });
     },
     [setCollapsed],
+  );
+
+  const handleToggleColumn = useCallback(
+    (listId) => {
+      setCollapsedColumns((prev) => {
+        const next = { ...prev, [listId]: !prev[listId] };
+        setCollapsedCols(next);
+        return next;
+      });
+    },
+    [setCollapsedCols],
   );
 
   const handleDragEnd = useCallback(
@@ -45,18 +58,26 @@ const SwimlanesView = React.memo(({ boardId, lists, swimlanes, onCardMove }) => 
     [onCardMove],
   );
 
-  const gridStyle = { gridTemplateColumns: `var(--swimlaneHeaderWidth) repeat(${lists.length}, var(--swimlaneColumnWidth))` };
+  const columnsTemplate = lists.map((list) => (collapsedColumns[list.id] ? 'var(--swimlaneColumnCollapsedWidth)' : 'var(--swimlaneColumnWidth)')).join(' ');
+  const gridStyle = { gridTemplateColumns: `var(--swimlaneHeaderWidth) ${columnsTemplate}` };
 
   return (
     <div className={clsx(s.wrapper, gs.scrollableX, gs.scrollableY)}>
       <DragDropContext onDragEnd={handleDragEnd}>
         <div className={s.grid} style={gridStyle}>
           <div className={clsx(s.headerCell, s.cornerCell)} />
-          {lists.map((list) => (
-            <div key={list.id} className={clsx(s.headerCell, s.listHeaderCell)} title={list.name}>
-              {list.name}
-            </div>
-          ))}
+          {lists.map((list) => {
+            const isColCollapsed = !!collapsedColumns[list.id];
+
+            return (
+              <div key={list.id} className={clsx(s.headerCell, s.listHeaderCell, isColCollapsed && s.listHeaderCellCollapsed)} title={list.name}>
+                <Button style={ButtonStyle.Icon} title={list.name} onClick={() => handleToggleColumn(list.id)} className={s.columnToggleButton}>
+                  <Icon type={IconType.TriangleDown} size={IconSize.Size8} className={clsx(s.columnToggleIcon, isColCollapsed && s.columnToggleIconCollapsed)} />
+                  <span className={clsx(s.listName, isColCollapsed && s.listNameCollapsed)}>{list.name}</span>
+                </Button>
+              </div>
+            );
+          })}
           {swimlanes.map((lane) => {
             const isCollapsed = !!collapsedLanes[lane.id];
 
@@ -69,7 +90,10 @@ const SwimlanesView = React.memo(({ boardId, lists, swimlanes, onCardMove }) => 
                     <span className={s.laneName}>{lane.isUnassigned ? t('common.unassigned') : lane.user.name}</span>
                   </Button>
                 </div>
-                {!isCollapsed && lists.map((list) => <SwimlaneCellContainer key={list.id} listId={list.id} laneId={lane.id} />)}
+                {!isCollapsed &&
+                  lists.map((list) =>
+                    collapsedColumns[list.id] ? <div key={list.id} className={s.collapsedCell} /> : <SwimlaneCellContainer key={list.id} listId={list.id} laneId={lane.id} />,
+                  )}
               </React.Fragment>
             );
           })}

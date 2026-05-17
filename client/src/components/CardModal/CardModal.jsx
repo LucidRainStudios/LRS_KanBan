@@ -851,7 +851,6 @@ const CardModal = React.memo(
             {membersNode}
             {labelsNode}
             {priorityNode}
-            {heroNode}
             {childrenNode}
             {dueDateNode}
             {timerNode}
@@ -862,6 +861,7 @@ const CardModal = React.memo(
           </div>
           <div className={s.moduleContainer}>
             {descriptionNode}
+            {heroNode}
             <CardLinksContainer cardId={id} canEdit={canEdit} />
             <hr className={s.hr} />
           </div>
