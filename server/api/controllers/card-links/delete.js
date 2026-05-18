@@ -39,9 +39,21 @@ module.exports = {
       throw Errors.NOT_ENOUGH_RIGHTS;
     }
 
+    // For cross-board links, fetch the linked card so the helper can broadcast the
+    // delete to that board's socket room too (so the linked-card view updates live).
+    let linkedCard;
+    try {
+      const linkedPath = await sails.helpers.cards.getProjectPath(link.linkedCardId);
+      linkedCard = linkedPath.card;
+    } catch (e) {
+      // Linked card was deleted concurrently; just clean up the dangling link without a second broadcast.
+      linkedCard = null;
+    }
+
     const deletedLink = await sails.helpers.cardLinks.deleteOne.with({
       record: link,
       card,
+      linkedCard,
       request: this.req,
     });
 

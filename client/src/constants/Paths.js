@@ -18,6 +18,7 @@ const SETTINGS_AUTHENTICATION = `${Config.BASE_PATH}/settings/authentication`;
 const SETTINGS_ABOUT = `${Config.BASE_PATH}/settings/about`;
 const SETTINGS_INSTANCE = `${Config.BASE_PATH}/settings/instance`;
 const SETTINGS_USERS = `${Config.BASE_PATH}/settings/users`;
+const SETTINGS_PRIORITIES = `${Config.BASE_PATH}/settings/priorities`;
 const SETTINGS_PROJECT = `${Config.BASE_PATH}/projects/:id/settings`;
 const NOTIFICATIONS = `${Config.BASE_PATH}/notifications`;
 
@@ -40,6 +41,7 @@ export default {
   SETTINGS_ABOUT,
   SETTINGS_INSTANCE,
   SETTINGS_USERS,
+  SETTINGS_PRIORITIES,
   SETTINGS_PROJECT,
   NOTIFICATIONS,
 };

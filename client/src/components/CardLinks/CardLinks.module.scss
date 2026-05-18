@@ -55,4 +55,21 @@
       opacity: 1;
     }
   }
+
+  // Two-step picker row: board on the left, card on the right. On narrow screens it wraps.
+  .adderRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .adderBoard {
+    flex: 1 1 180px;
+    min-width: 0;
+  }
+
+  .adderCard {
+    flex: 1 1 220px;
+    min-width: 0;
+  }
 }

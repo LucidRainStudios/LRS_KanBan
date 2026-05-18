@@ -33,6 +33,7 @@ const Tasks = React.forwardRef(
       canEdit,
       allBoardMemberships,
       boardMemberships,
+      allPriorities,
       onCreate,
       onUpdate,
       onDuplicate,
@@ -121,6 +122,8 @@ const Tasks = React.forwardRef(
                 index={index}
                 name={item.name}
                 dueDate={item.dueDate}
+                priority={item.priority}
+                allPriorities={allPriorities}
                 allBoardMemberships={allBoardMemberships}
                 boardMemberships={boardMemberships}
                 users={item.users}
@@ -191,6 +194,7 @@ Tasks.propTypes = {
   canEdit: PropTypes.bool.isRequired,
   allBoardMemberships: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   boardMemberships: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
+  allPriorities: PropTypes.array, // eslint-disable-line react/forbid-prop-types
   isActivitiesFetching: PropTypes.bool.isRequired,
   isAllActivitiesFetched: PropTypes.bool.isRequired,
   onCreate: PropTypes.func.isRequired,
@@ -208,6 +212,7 @@ Tasks.propTypes = {
 Tasks.defaultProps = {
   isCardActive: false,
   closestDueDate: undefined,
+  allPriorities: undefined,
   onMouseEnterTasks: () => {},
   onMouseLeaveTasks: () => {},
 };

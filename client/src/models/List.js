@@ -102,8 +102,9 @@ export default class extends BaseModel {
   getIsFiltered() {
     const filterUserIds = this.board.filterUsers.toRefArray().map((user) => user.id);
     const filterLabelIds = this.board.filterLabels.toRefArray().map((label) => label.id);
+    const filterPriorityIds = this.board.filterPriorities.toRefArray().map((priority) => priority.id);
     const { searchParams } = this.board;
-    return filterUserIds.length > 0 || filterLabelIds.length > 0 || searchParams.query !== '' || searchParams.dueDate !== null;
+    return filterUserIds.length > 0 || filterLabelIds.length > 0 || filterPriorityIds.length > 0 || searchParams.query !== '' || searchParams.dueDate !== null;
     // TODO merge with IsFilteredForBoard
   }
 
@@ -116,6 +117,7 @@ export default class extends BaseModel {
 
     const filterUserIds = this.board.filterUsers.toRefArray().map((user) => user.id);
     const filterLabelIds = this.board.filterLabels.toRefArray().map((label) => label.id);
+    const filterPriorityIds = this.board.filterPriorities.toRefArray().map((priority) => priority.id);
     const { searchParams } = this.board;
 
     if (searchParams.anyMatch) {
@@ -132,6 +134,10 @@ export default class extends BaseModel {
           return labels.some((label) => filterLabelIds.includes(label.id));
         });
       }
+      if (filterPriorityIds.length > 0) {
+        // Priorities are single-valued per card, so "any-match" means card's priority is in the picked set.
+        cardModels = cardModels.filter((cardModel) => cardModel.priorityId != null && filterPriorityIds.includes(cardModel.priorityId));
+      }
       if (searchParams.query !== '') {
         if (searchParams.matchCase) {
           cardModels = cardModels.filter((cardModel) => cardModel.name.includes(searchParams.query));
@@ -147,6 +153,8 @@ export default class extends BaseModel {
 
         const matchesLabels = filterLabelIds.length === 0 || filterLabelIds.every((labelId) => cardLabelIds.includes(labelId));
         const matchesUsers = filterUserIds.length === 0 || filterUserIds.every((userId) => cardUserIds.includes(userId) || taskUserIds.includes(userId));
+        // A card has at most one priority, so "all-match" semantics collapse to membership in the picked set.
+        const matchesPriorities = filterPriorityIds.length === 0 || (cardModel.priorityId != null && filterPriorityIds.includes(cardModel.priorityId));
         let matchesSearch = true;
         if (searchParams.query !== '') {
           if (searchParams.matchCase) {
@@ -155,7 +163,7 @@ export default class extends BaseModel {
             matchesSearch = cardModel.name.toLowerCase().includes(searchParams.query.toLowerCase());
           }
         }
-        return matchesLabels && matchesUsers && matchesSearch;
+        return matchesLabels && matchesUsers && matchesPriorities && matchesSearch;
       });
     }
     if (searchParams.dueDate) {

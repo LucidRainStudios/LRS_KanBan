@@ -250,6 +250,24 @@ export const selectFilterLabelsForCurrentBoard = createSelector(
   },
 );
 
+export const selectFilterPrioritiesForCurrentBoard = createSelector(
+  orm,
+  (state) => selectPath(state).boardId,
+  ({ Board }, id) => {
+    if (!id) {
+      return id;
+    }
+
+    const boardModel = Board.withId(id);
+
+    if (!boardModel) {
+      return boardModel;
+    }
+
+    return boardModel.filterPriorities.toRefArray().sort((a, b) => a.position - b.position);
+  },
+);
+
 export const selectIsFilteredForCurrentBoard = createSelector(
   orm,
   (state) => selectPath(state).boardId,
@@ -265,9 +283,16 @@ export const selectIsFilteredForCurrentBoard = createSelector(
     }
     const filterUsersArray = boardModel.filterUsers.toRefArray();
     const filterLabelsArray = boardModel.filterLabels.toRefArray();
+    const filterPrioritiesArray = boardModel.filterPriorities.toRefArray();
     const { searchParams } = boardModel;
 
-    return filterUsersArray.length !== 0 || filterLabelsArray.length !== 0 || searchParams.query !== '' || searchParams.dueDate !== null;
+    return (
+      filterUsersArray.length !== 0 ||
+      filterLabelsArray.length !== 0 ||
+      filterPrioritiesArray.length !== 0 ||
+      searchParams.query !== '' ||
+      searchParams.dueDate !== null
+    );
   },
 );
 
@@ -402,6 +427,7 @@ export default {
   selectListIdsForCurrentBoard,
   selectFilterUsersForCurrentBoard,
   selectFilterLabelsForCurrentBoard,
+  selectFilterPrioritiesForCurrentBoard,
   selectIsFilteredForCurrentBoard,
   selectBoardSearchParamsForCurrentBoard,
   selectIsBoardWithIdExists,

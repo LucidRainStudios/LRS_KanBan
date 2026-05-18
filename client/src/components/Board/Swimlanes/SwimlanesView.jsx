@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useTransition } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
@@ -13,30 +13,53 @@ import { Button, ButtonStyle, Icon, IconType, IconSize } from '../../Utils';
 import * as gs from '../../../global.module.scss';
 import * as s from './Swimlanes.module.scss';
 
+// "Small List (3 cards)" -> "SM (3)". If the name has no trailing "(N ...)" parenthetical,
+// returns just the uppercased first two characters (e.g. "Backlog" -> "BA").
+const abbreviateListName = (name) => {
+  const trimmed = (name || '').trim();
+  const parenMatch = trimmed.match(/^(.*?)\s*\((\d+)[^)]*\)\s*$/);
+  if (parenMatch) {
+    const prefix = parenMatch[1].trim().slice(0, 2).toUpperCase();
+    return prefix ? `${prefix} (${parenMatch[2]})` : `(${parenMatch[2]})`;
+  }
+  return trimmed.slice(0, 2).toUpperCase();
+};
+
 const SwimlanesView = React.memo(({ boardId, lists, swimlanes, onCardMove }) => {
   const [t] = useTranslation();
   const [setCollapsed, getCollapsed] = useLocalStorage(`swimlanes-collapsed-${boardId}`);
   const [setCollapsedCols, getCollapsedCols] = useLocalStorage(`swimlanes-collapsed-cols-${boardId}`);
   const [collapsedLanes, setCollapsedLanes] = useState(() => getCollapsed() || {});
   const [collapsedColumns, setCollapsedColumns] = useState(() => getCollapsedCols() || {});
+  // Expanding a large column re-mounts a SwimlaneCell that may have to render hundreds of
+  // Card + Draggable instances. Wrapping the toggle in a transition lets React keep the page
+  // responsive (header swaps instantly, cards render at a lower priority).
+  const [isExpansionPending, startExpansionTransition] = useTransition();
 
   const handleToggleLane = useCallback(
     (laneId) => {
-      setCollapsedLanes((prev) => {
-        const next = { ...prev, [laneId]: !prev[laneId] };
-        setCollapsed(next);
-        return next;
+      startExpansionTransition(() => {
+        setCollapsedLanes((prev) => {
+          const next = { ...prev, [laneId]: !prev[laneId] };
+          setCollapsed(next);
+          return next;
+        });
       });
     },
     [setCollapsed],
   );
 
   const handleToggleColumn = useCallback(
-    (listId) => {
-      setCollapsedColumns((prev) => {
-        const next = { ...prev, [listId]: !prev[listId] };
-        setCollapsedCols(next);
-        return next;
+    (listId, event) => {
+      if (event) {
+        event.stopPropagation();
+      }
+      startExpansionTransition(() => {
+        setCollapsedColumns((prev) => {
+          const next = { ...prev, [listId]: !prev[listId] };
+          setCollapsedCols(next);
+          return next;
+        });
       });
     },
     [setCollapsedCols],
@@ -62,7 +85,7 @@ const SwimlanesView = React.memo(({ boardId, lists, swimlanes, onCardMove }) => 
   const gridStyle = { gridTemplateColumns: `var(--swimlaneHeaderWidth) ${columnsTemplate}` };
 
   return (
-    <div className={clsx(s.wrapper, gs.scrollableX, gs.scrollableY)}>
+    <div className={clsx(s.wrapper, gs.scrollableX, gs.scrollableY, isExpansionPending && s.wrapperPending)}>
       <DragDropContext onDragEnd={handleDragEnd}>
         <div className={s.grid} style={gridStyle}>
           <div className={clsx(s.headerCell, s.cornerCell)} />
@@ -71,9 +94,9 @@ const SwimlanesView = React.memo(({ boardId, lists, swimlanes, onCardMove }) => 
 
             return (
               <div key={list.id} className={clsx(s.headerCell, s.listHeaderCell, isColCollapsed && s.listHeaderCellCollapsed)} title={list.name}>
-                <Button style={ButtonStyle.Icon} title={list.name} onClick={() => handleToggleColumn(list.id)} className={s.columnToggleButton}>
+                <Button style={ButtonStyle.Icon} title={list.name} onClick={(event) => handleToggleColumn(list.id, event)} className={s.columnToggleButton}>
                   <Icon type={IconType.TriangleDown} size={IconSize.Size8} className={clsx(s.columnToggleIcon, isColCollapsed && s.columnToggleIconCollapsed)} />
-                  <span className={clsx(s.listName, isColCollapsed && s.listNameCollapsed)}>{list.name}</span>
+                  <span className={s.listName}>{isColCollapsed ? abbreviateListName(list.name) : list.name}</span>
                 </Button>
               </div>
             );

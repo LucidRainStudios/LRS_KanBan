@@ -1,8 +1,10 @@
 import React, { useMemo, useCallback, useRef, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 
+import Paths from '../../constants/Paths';
 import CardLinksContainer from '../../containers/CardLinksContainer';
 import { useLocalStorage } from '../../hooks';
 import { useToggle } from '../../lib/hooks';
@@ -118,6 +120,14 @@ const CardModal = React.memo(
     onClose,
   }) => {
     const [t] = useTranslation();
+    const navigate = useNavigate();
+
+    const handleSelectChild = useCallback(
+      (childId) => {
+        navigate(Paths.CARDS.replace(':id', childId));
+      },
+      [navigate],
+    );
 
     const isGalleryOpened = useRef(false);
     const nameEdit = useRef(null);
@@ -330,6 +340,7 @@ const CardModal = React.memo(
 
     const headerNode = (
       <div className={s.header}>
+        {childCards.length > 0 && <div className={s.heroCardBanner}>{t('common.heroCardBanner')}</div>}
         <div className={s.headerFirstLine}>
           <Button style={ButtonStyle.Icon} title={isSubscribed ? t('action.unsubscribe') : t('action.subscribe')} onClick={handleToggleSubscriptionClick} className={s.headerNotificationsButton}>
             <Icon type={isSubscribed ? IconType.Bell : IconType.BellEmpty} size={IconSize.Size14} className={s.headerNotificationsIcon} />
@@ -524,29 +535,47 @@ const CardModal = React.memo(
     const heroOptions = [{ id: 'none', name: t('common.noHero') }, ...pickableHeroes];
     const heroDefaultItem = parent ? { id: parent.id, name: parent.name } : { id: 'none', name: t('common.noHero') };
 
-    const heroNode = (
-      <div className={s.headerItems}>
-        <div className={s.text}>{t('common.hero_title', { context: 'title' })}</div>
-        {canEdit ? (
-          <Dropdown
-            key={parent ? parent.id : 'none'}
-            style={DropdownStyle.FullWidth}
-            options={heroOptions}
-            placeholder={heroDefaultItem.name}
-            defaultItem={heroDefaultItem}
-            isSearchable
-            onChange={(option) => onUpdate({ parentCardId: option.id === 'none' ? null : option.id })}
-          />
-        ) : (
-          <span className={s.headerItem}>{parent ? parent.name : t('common.noHero')}</span>
+    // Unified hierarchy block: the card's parent (Hero) and its children rendered as two
+    // clearly-separated rows within one section. Keeps both related concepts together
+    // instead of scattered among other subsections.
+    const hierarchyNode = (
+      <div className={s.hierarchyBlock}>
+        <div className={s.hierarchyRow}>
+          <div className={s.text}>{t('common.hero_title', { context: 'title' })}</div>
+          {canEdit ? (
+            <Dropdown
+              key={parent ? parent.id : 'none'}
+              style={DropdownStyle.FullWidth}
+              options={heroOptions}
+              placeholder={heroDefaultItem.name}
+              defaultItem={heroDefaultItem}
+              isSearchable
+              onChange={(option) => onUpdate({ parentCardId: option.id === 'none' ? null : option.id })}
+            />
+          ) : (
+            <span className={s.headerItem}>{parent ? parent.name : t('common.noHero')}</span>
+          )}
+        </div>
+        {childCards.length > 0 && (
+          <div className={s.hierarchyRow}>
+            <div className={s.text}>
+              {t('common.heroChildren_title', { context: 'title' })} ({childCards.length})
+            </div>
+            <div className={s.heroChildrenList}>
+              {childCards.map((child) => (
+                <Button
+                  key={child.id}
+                  style={ButtonStyle.Default}
+                  title={child.name}
+                  onClick={() => handleSelectChild(child.id)}
+                  className={s.heroChildrenItem}
+                >
+                  {child.name}
+                </Button>
+              ))}
+            </div>
+          </div>
         )}
-      </div>
-    );
-
-    const childrenNode = childCards.length > 0 && (
-      <div className={s.headerItems}>
-        <div className={s.text}>{t('common.heroChildren_title', { context: 'title' })}</div>
-        <span className={s.headerItem}>{childCards.map((c) => c.name).join(', ')}</span>
       </div>
     );
 
@@ -751,6 +780,7 @@ const CardModal = React.memo(
               canEdit={canEdit}
               allBoardMemberships={boardAndTaskMemberships}
               boardMemberships={boardMemberships}
+              allPriorities={allPriorities}
               isActivitiesFetching={isActivitiesFetching}
               isAllActivitiesFetched={isAllActivitiesFetched}
               onCreate={onTaskCreate}
@@ -851,7 +881,6 @@ const CardModal = React.memo(
             {membersNode}
             {labelsNode}
             {priorityNode}
-            {childrenNode}
             {dueDateNode}
             {timerNode}
             {!hideClosestDueDate && closestDueDateNode}
@@ -861,7 +890,7 @@ const CardModal = React.memo(
           </div>
           <div className={s.moduleContainer}>
             {descriptionNode}
-            {heroNode}
+            {hierarchyNode}
             <CardLinksContainer cardId={id} canEdit={canEdit} />
             <hr className={s.hr} />
           </div>

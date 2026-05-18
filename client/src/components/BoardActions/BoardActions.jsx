@@ -25,8 +25,10 @@ const BoardActions = React.memo(
     memberships,
     allBoardCardAndTaskMemberships,
     labels,
+    allPriorities,
     filterUsers,
     filterLabels,
+    filterPriorities,
     allUsers,
     canEdit,
     isProjectManager,
@@ -41,6 +43,8 @@ const BoardActions = React.memo(
     onUserFromFilterRemove,
     onLabelToFilterAdd,
     onLabelFromFilterRemove,
+    onPriorityToFilterAdd,
+    onPriorityFromFilterRemove,
     onLabelCreate,
     onLabelUpdate,
     onLabelDelete,
@@ -88,9 +92,11 @@ const BoardActions = React.memo(
           <Filters
             users={filterUsers}
             labels={filterLabels}
+            priorities={filterPriorities}
             allBoardMemberships={allBoardCardAndTaskMemberships}
             boardMemberships={memberships}
             allLabels={labels}
+            allPriorities={allPriorities}
             canEdit={canEdit}
             dueDate={boardSearchParams.dueDate}
             justSelectedDay={boardSearchParams.justSelectedDay}
@@ -98,6 +104,8 @@ const BoardActions = React.memo(
             onUserRemove={onUserFromFilterRemove}
             onLabelAdd={onLabelToFilterAdd}
             onLabelRemove={onLabelFromFilterRemove}
+            onPriorityAdd={onPriorityToFilterAdd}
+            onPriorityRemove={onPriorityFromFilterRemove}
             onLabelCreate={onLabelCreate}
             onLabelUpdate={onLabelUpdate}
             onLabelDelete={onLabelDelete}
@@ -144,8 +152,10 @@ BoardActions.propTypes = {
   memberships: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   allBoardCardAndTaskMemberships: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   labels: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
+  allPriorities: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   filterUsers: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   filterLabels: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
+  filterPriorities: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   allUsers: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   canEdit: PropTypes.bool.isRequired,
   isProjectManager: PropTypes.bool.isRequired,
@@ -160,6 +170,8 @@ BoardActions.propTypes = {
   onUserFromFilterRemove: PropTypes.func.isRequired,
   onLabelToFilterAdd: PropTypes.func.isRequired,
   onLabelFromFilterRemove: PropTypes.func.isRequired,
+  onPriorityToFilterAdd: PropTypes.func.isRequired,
+  onPriorityFromFilterRemove: PropTypes.func.isRequired,
   onLabelCreate: PropTypes.func.isRequired,
   onLabelUpdate: PropTypes.func.isRequired,
   onLabelDelete: PropTypes.func.isRequired,

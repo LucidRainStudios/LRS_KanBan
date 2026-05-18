@@ -8,6 +8,8 @@ import FiltersDueDatePopup from '../FiltersDueDatePopup';
 import Label from '../Label';
 import LabelsPopup from '../LabelsPopup';
 import MembershipsPopup from '../MembershipsPopup';
+import PrioritiesFilterPopup from '../PrioritiesFilterPopup';
+import Priority from '../Priority';
 import User from '../User';
 import { Button, ButtonStyle, Icon, IconType, IconSize } from '../Utils';
 
@@ -17,9 +19,11 @@ const Filters = React.memo(
   ({
     users,
     labels,
+    priorities,
     allBoardMemberships,
     boardMemberships,
     allLabels,
+    allPriorities,
     canEdit,
     dueDate,
     justSelectedDay,
@@ -27,6 +31,8 @@ const Filters = React.memo(
     onUserRemove,
     onLabelAdd,
     onLabelRemove,
+    onPriorityAdd,
+    onPriorityRemove,
     onLabelCreate,
     onLabelUpdate,
     onLabelDelete,
@@ -57,6 +63,17 @@ const Filters = React.memo(
     const handleRemoveAllLabelsClick = useCallback(() => {
       labels.forEach((label) => onLabelRemove(label.id));
     }, [labels, onLabelRemove]);
+
+    const handleRemovePriorityClick = useCallback(
+      (id) => {
+        onPriorityRemove(id);
+      },
+      [onPriorityRemove],
+    );
+
+    const handleRemoveAllPrioritiesClick = useCallback(() => {
+      priorities.forEach((priority) => onPriorityRemove(priority.id));
+    }, [priorities, onPriorityRemove]);
 
     const handleFilterDueDateChange = useCallback(
       (value, value2) => {
@@ -143,6 +160,33 @@ const Filters = React.memo(
           )}
         </span>
         <span className={s.filter}>
+          <PrioritiesFilterPopup
+            items={allPriorities}
+            currentIds={priorities.map((priority) => priority.id)}
+            title={t('common.filterByPriorities', { context: 'title' })}
+            onSelect={onPriorityAdd}
+            onDeselect={onPriorityRemove}
+            offset={16}
+            wrapperClassName={s.popupWrapper}
+          >
+            <Button title={t('common.filterByPriorities', { context: 'title' })} className={s.filterButton}>
+              <span className={s.filterTitle}>
+                <Icon type={IconType.Star} size={IconSize.Size13} />
+              </span>
+            </Button>
+          </PrioritiesFilterPopup>
+          {priorities.map((priority, index) => (
+            <span key={priority.id} className={clsx(s.filterItem, index + 1 === priorities.length && s.lastFilterItem)}>
+              <Priority name={priority.name} color={priority.color} variant="card" onClick={() => handleRemovePriorityClick(priority.id)} />
+            </span>
+          ))}
+          {priorities.length > 0 && (
+            <Button style={ButtonStyle.Icon} title={t('common.clearFilter')} onClick={handleRemoveAllPrioritiesClick} className={s.clearButton}>
+              <Icon type={IconType.Close} size={IconSize.Size10} />
+            </Button>
+          )}
+        </span>
+        <span className={s.filter}>
           <FiltersDueDatePopup
             title={t('common.filterByDueDate', { context: 'title' })}
             defaultValue={dueDateValue}
@@ -176,9 +220,11 @@ const Filters = React.memo(
 Filters.propTypes = {
   users: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   labels: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
+  priorities: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   allBoardMemberships: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   boardMemberships: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   allLabels: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
+  allPriorities: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   canEdit: PropTypes.bool.isRequired,
   dueDate: PropTypes.instanceOf(Date),
   justSelectedDay: PropTypes.bool,
@@ -186,6 +232,8 @@ Filters.propTypes = {
   onUserRemove: PropTypes.func.isRequired,
   onLabelAdd: PropTypes.func.isRequired,
   onLabelRemove: PropTypes.func.isRequired,
+  onPriorityAdd: PropTypes.func.isRequired,
+  onPriorityRemove: PropTypes.func.isRequired,
   onLabelCreate: PropTypes.func.isRequired,
   onLabelUpdate: PropTypes.func.isRequired,
   onLabelDelete: PropTypes.func.isRequired,

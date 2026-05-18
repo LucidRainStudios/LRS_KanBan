@@ -1,13 +1,19 @@
 :global(#app) {
   --swimlaneHeaderWidth: 220px;
   --swimlaneColumnWidth: 272px;
-  --swimlaneColumnCollapsedWidth: 36px;
+  --swimlaneColumnCollapsedWidth: 90px;
   --swimlaneLaneMaxHeight: 420px;
 
   .wrapper {
     height: 100%;
     overflow: auto;
     padding: 8px 8px 24px;
+  }
+
+  // Wait-cursor cue while a large column expansion is rendering in a transition; the click
+  // already feels instant, but the cards may stream in over the next ~second on big lists.
+  .wrapperPending {
+    cursor: progress;
   }
 
   .grid {
@@ -41,12 +47,22 @@
 
   .columnToggleButton {
     align-items: center;
+    border-radius: 4px;
     color: var(--textColor0);
+    cursor: pointer;
     display: flex;
     gap: 6px;
+    // Override the ButtonStyle.Icon's fixed 20px height so the toggle has a normal label height.
+    height: auto;
     padding: 4px 6px;
+    position: relative;
     text-align: left;
     width: 100%;
+    z-index: 1;
+
+    &:hover {
+      background: var(--shadowBlack02);
+    }
   }
 
   .columnToggleIcon {
@@ -63,12 +79,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-  }
-
-  .listNameCollapsed {
-    writing-mode: vertical-rl;
-    transform: rotate(180deg);
-    max-height: 180px;
   }
 
   .laneHeaderCell {
@@ -108,6 +118,7 @@
   }
 
   .cell {
+    align-self: stretch;
     background: var(--backgroundList);
     border-radius: 8px;
     min-height: 48px;
@@ -116,7 +127,10 @@
     padding: 6px;
   }
 
+  // Stretch collapsed cells to the row's natural height so a collapsed column doesn't
+  // leave a stub of empty space next to a tall expanded column in the same lane.
   .collapsedCell {
+    align-self: stretch;
     background: var(--backgroundList);
     border-radius: 8px;
     min-height: 48px;

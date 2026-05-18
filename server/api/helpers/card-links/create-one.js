@@ -38,18 +38,41 @@ module.exports = {
       .fetch();
 
     if (link) {
-      // Broadcast to both cards' boards (often the same; safe either way for v1 same-board).
+      // Denormalize the foreign card's name + board name onto the broadcast payload so
+      // recipients on either board can render "Card name (Board name)" pills without needing
+      // the foreign Card record in their redux store. Always populate both sides — the source
+      // board's clients use `linkedCard*` fields; the linked board's clients use `card*` fields.
+      const boardIds = [values.card.boardId];
+      if (values.linkedCard.boardId && values.linkedCard.boardId !== values.card.boardId) {
+        boardIds.push(values.linkedCard.boardId);
+      }
+      const boards = await sails.helpers.boards.getMany(boardIds);
+      const boardById = _.keyBy(boards, 'id');
+      const enrichedLink = {
+        ...link,
+        cardName: values.card.name,
+        cardBoardId: values.card.boardId,
+        cardBoardName: boardById[values.card.boardId] ? boardById[values.card.boardId].name : null,
+        linkedCardName: values.linkedCard.name,
+        linkedCardBoardId: values.linkedCard.boardId,
+        linkedCardBoardName: boardById[values.linkedCard.boardId] ? boardById[values.linkedCard.boardId].name : null,
+      };
+
       sails.sockets.broadcast(
         `board:${values.card.boardId}`,
         'cardLinkCreate',
         {
-          item: link,
+          item: enrichedLink,
         },
         inputs.request,
       );
       if (values.linkedCard.boardId && values.linkedCard.boardId !== values.card.boardId) {
-        sails.sockets.broadcast(`board:${values.linkedCard.boardId}`, 'cardLinkCreate', { item: link }, inputs.request);
+        sails.sockets.broadcast(`board:${values.linkedCard.boardId}`, 'cardLinkCreate', { item: enrichedLink }, inputs.request);
       }
+
+      // Return the enriched link so the creator (HTTP response path) also gets denormalized
+      // fields — important for cross-board links where the linked card isn't in their store.
+      return enrichedLink;
     }
 
     return link;

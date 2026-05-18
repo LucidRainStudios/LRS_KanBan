@@ -68,6 +68,26 @@ export function* handlePriorityDelete(priority) {
   yield put(actions.handlePriorityDelete(priority));
 }
 
+export function* addPriorityToBoardFilter(id, boardId) {
+  yield put(actions.addPriorityToBoardFilter(id, boardId));
+}
+
+export function* addPriorityToFilterInCurrentBoard(id) {
+  const { boardId } = yield select(selectors.selectPath);
+
+  yield call(addPriorityToBoardFilter, id, boardId);
+}
+
+export function* removePriorityFromBoardFilter(id, boardId) {
+  yield put(actions.removePriorityFromBoardFilter(id, boardId));
+}
+
+export function* removePriorityFromFilterInCurrentBoard(id) {
+  const { boardId } = yield select(selectors.selectPath);
+
+  yield call(removePriorityFromBoardFilter, id, boardId);
+}
+
 export default {
   createPriority,
   handlePriorityCreate,
@@ -75,4 +95,8 @@ export default {
   handlePriorityUpdate,
   deletePriority,
   handlePriorityDelete,
+  addPriorityToBoardFilter,
+  addPriorityToFilterInCurrentBoard,
+  removePriorityFromBoardFilter,
+  removePriorityFromFilterInCurrentBoard,
 };

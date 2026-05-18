@@ -11,5 +11,7 @@ export default function* prioritiesWatchers() {
     takeEvery(EntryActionTypes.PRIORITY_UPDATE_HANDLE, ({ payload: { priority } }) => services.handlePriorityUpdate(priority)),
     takeEvery(EntryActionTypes.PRIORITY_DELETE, ({ payload: { id } }) => services.deletePriority(id)),
     takeEvery(EntryActionTypes.PRIORITY_DELETE_HANDLE, ({ payload: { priority } }) => services.handlePriorityDelete(priority)),
+    takeEvery(EntryActionTypes.PRIORITY_TO_FILTER_IN_CURRENT_BOARD_ADD, ({ payload: { id } }) => services.addPriorityToFilterInCurrentBoard(id)),
+    takeEvery(EntryActionTypes.PRIORITY_FROM_FILTER_IN_CURRENT_BOARD_REMOVE, ({ payload: { id } }) => services.removePriorityFromFilterInCurrentBoard(id)),
   ]);
 }

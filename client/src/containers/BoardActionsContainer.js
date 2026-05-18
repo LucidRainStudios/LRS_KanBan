@@ -16,8 +16,10 @@ const mapStateToProps = (state) => {
   const memberships = selectors.selectMembershipsForCurrentBoard(state);
   const allBoardCardAndTaskMemberships = selectors.selectBoardCardAndTaskMembershipsForCurrentBoard(state);
   const labels = selectors.selectLabelsForCurrentBoard(state);
+  const allPriorities = selectors.selectAllPriorities(state);
   const filterUsers = selectors.selectFilterUsersForCurrentBoard(state);
   const filterLabels = selectors.selectFilterLabelsForCurrentBoard(state);
+  const filterPriorities = selectors.selectFilterPrioritiesForCurrentBoard(state);
   const currentUserMembership = selectors.selectCurrentUserMembershipForCurrentBoard(state);
   const isCurrentUserEditor = !!currentUserMembership && currentUserMembership.role === BoardMembershipRoles.EDITOR;
   const boardData = selectors.selectCurrentBoard(state);
@@ -31,8 +33,10 @@ const mapStateToProps = (state) => {
     memberships,
     allBoardCardAndTaskMemberships,
     labels,
+    allPriorities,
     filterUsers,
     filterLabels,
+    filterPriorities,
     allUsers,
     canEdit: isCurrentUserEditor,
     isProjectManager,
@@ -51,6 +55,8 @@ const mapDispatchToProps = (dispatch, ownProps) =>
       onUserFromFilterRemove: entryActions.removeUserFromFilterInCurrentBoard,
       onLabelToFilterAdd: entryActions.addLabelToFilterInCurrentBoard,
       onLabelFromFilterRemove: entryActions.removeLabelFromFilterInCurrentBoard,
+      onPriorityToFilterAdd: entryActions.addPriorityToFilterInCurrentBoard,
+      onPriorityFromFilterRemove: entryActions.removePriorityFromFilterInCurrentBoard,
       onLabelCreate: entryActions.createLabelInCurrentBoard,
       onLabelUpdate: entryActions.updateLabel,
       onLabelDelete: entryActions.deleteLabel,

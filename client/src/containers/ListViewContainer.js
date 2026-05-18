@@ -32,6 +32,7 @@ const makeMapStateToProps = () => {
       }));
       const notificationsCount = selectors.selectNotificationsTotalByCardId(state, cardId);
       const closestDueDate = selectClosestDueDateByCardId(state, cardId);
+      const priority = card.priorityId ? selectors.selectPriorityById(state, card.priorityId) : undefined;
 
       return {
         id: card.id,
@@ -51,6 +52,7 @@ const makeMapStateToProps = () => {
         updatedAt: card.updatedAt || undefined, // undefined needed for TanStack Table sorting
         updatedBy: card.updatedBy || undefined, // undefined needed for TanStack Table sorting
         tasks,
+        priority: priority || undefined, // undefined needed for TanStack Table sorting
         notificationsCount,
         description: card.description,
         isPersisted: card.isPersisted,

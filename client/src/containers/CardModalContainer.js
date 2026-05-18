@@ -46,7 +46,7 @@ const mapStateToProps = (state) => {
 
   const parent = parentCardId ? selectors.selectCardById(state, parentCardId) : null;
   const childCards = [];
-  const pickableHeroes = [];
+  const candidateHeroes = [];
   const heroBoardListIds = selectors.selectListIdsForCurrentBoard(state) || [];
   heroBoardListIds.forEach((heroListId) => {
     const ids = selectors.selectCardIdsByListId(state, heroListId) || [];
@@ -56,11 +56,15 @@ const mapStateToProps = (state) => {
       if (!c) return;
       if (c.parentCardId === id) {
         childCards.push({ id: c.id, name: c.name });
-      } else {
-        pickableHeroes.push({ id: c.id, name: c.name });
+      } else if (c.parentCardId == null) {
+        // Exclude cards that already have a parent — picking one would create grandparent nesting.
+        candidateHeroes.push({ id: c.id, name: c.name });
       }
     });
   });
+  // If this card already has children, it cannot also become a child (would create deep nesting).
+  // Empty pickableHeroes still leaves the "None" option in the dropdown so an existing parent can be unset.
+  const pickableHeroes = childCards.length > 0 ? [] : candidateHeroes;
 
   const users = selectors.selectUsersForCurrentCard(state);
   const labels = selectors.selectLabelsForCurrentCard(state);
@@ -69,6 +73,7 @@ const mapStateToProps = (state) => {
     ...task,
     users: selectors.selectUsersForTaskById(state, task.id),
     activities: taskActivities[task.id] || [],
+    priority: task.priorityId ? selectors.selectPriorityById(state, task.priorityId) : undefined,
   }));
   const attachmentActivities = selectors.selectAttachmentActivitiesByCardId(state, id);
   const attachments = selectors.selectAttachmentsForCurrentCard(state).map((attachment) => ({

@@ -56,10 +56,24 @@ module.exports = {
       throw Errors.NOT_ENOUGH_RIGHTS;
     }
 
-    // v1: same-board only
-    const linkedCard = await Card.findOne({ id: inputs.linkedCardId, boardId: board.id });
+    // Cross-board allowed within the SAME PROJECT only. Look up the linked card on any board,
+    // then verify (a) it's in the same project as the source card, and (b) the user is a
+    // member of that board. Hide existence with LINKED_CARD_NOT_FOUND rather than a forbidden
+    // error to avoid leaking cards across project boundaries.
+    const linkedCard = await Card.findOne({ id: inputs.linkedCardId });
     if (!linkedCard) {
       throw Errors.LINKED_CARD_NOT_FOUND;
+    }
+
+    if (linkedCard.boardId !== board.id) {
+      const { board: linkedBoard } = await sails.helpers.cards.getProjectPath(linkedCard.id).intercept('pathNotFound', () => Errors.LINKED_CARD_NOT_FOUND);
+      if (linkedBoard.projectId !== board.projectId) {
+        throw Errors.LINKED_CARD_NOT_FOUND;
+      }
+      const targetMembership = await BoardMembership.findOne({ boardId: linkedCard.boardId, userId: currentUser.id });
+      if (!targetMembership) {
+        throw Errors.LINKED_CARD_NOT_FOUND;
+      }
     }
 
     const link = await sails.helpers.cardLinks.createOne

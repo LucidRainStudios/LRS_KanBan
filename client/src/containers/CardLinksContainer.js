@@ -8,31 +8,33 @@ import selectors from '../selectors';
 const makeMapStateToProps = () => {
   const selectOutgoingLinksByCardId = selectors.makeSelectOutgoingLinksByCardId();
   const selectIncomingLinksByCardId = selectors.makeSelectIncomingLinksByCardId();
-  const selectCardById = selectors.makeSelectCardById();
 
   return (state, { cardId }) => {
     const outgoing = selectOutgoingLinksByCardId(state, cardId) || [];
     const incoming = selectIncomingLinksByCardId(state, cardId) || [];
 
-    // All other cards on the current board, used by the picker.
-    const listIds = selectors.selectListIdsForCurrentBoard(state) || [];
-    const pickableCards = [];
-    listIds.forEach((listId) => {
-      const ids = selectors.selectCardIdsByListId(state, listId) || [];
-      ids.forEach((id) => {
-        if (id === cardId) return;
-        const card = selectCardById(state, id);
-        if (card) pickableCards.push({ id: card.id, name: card.name });
-      });
-    });
+    const { boardId: currentBoardId, projectId: currentProjectId } = selectors.selectPath(state);
+
+    // Cross-board references stay within the current project: list only boards the user has
+    // access to that share the same project as the current card. Keeps the picker focused
+    // and avoids implying that any-project linking is supported.
+    const projects = selectors.selectProjectsToListsForCurrentUser(state) || [];
+    const currentProject = projects.find((p) => p.id === currentProjectId);
+    const accessibleBoards = currentProject
+      ? (currentProject.boards || []).map((board) => ({
+          id: board.id,
+          name: board.name,
+        }))
+      : [];
 
     return {
       cardId,
+      currentBoardId,
       references: outgoing.filter((l) => l.type === 'references'),
       blockedBy: outgoing.filter((l) => l.type === 'blockedBy'),
       referencedBy: incoming.filter((l) => l.type === 'references'),
       blocking: incoming.filter((l) => l.type === 'blockedBy'),
-      pickableCards,
+      accessibleBoards,
     };
   };
 };

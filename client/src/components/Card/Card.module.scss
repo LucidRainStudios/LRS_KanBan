@@ -10,6 +10,12 @@
     width: 20px;
   }
 
+  // When the card has a hero bar at the top, push the action buttons below the bar
+  // so they sit inline with this card's title rather than the parent's.
+  .popupWrapperWithHero {
+    top: 24px;
+  }
+
   .popupWrapper2 {
     display: inline-block;
   }
@@ -24,6 +30,10 @@
     right: 18px;
     top: 3px;
     z-index: 1;
+  }
+
+  .copyLinkButtonWithHero {
+    top: 27px;
   }
 
   .copyLinkButtonCopied {

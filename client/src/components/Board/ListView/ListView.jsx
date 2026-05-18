@@ -9,7 +9,17 @@ import Paths from '../../../constants/Paths';
 import CardAddPopup from '../../CardAddPopup';
 import ListAddPopup from '../../ListAddPopup';
 import { Button, ButtonStyle, Icon, IconType, IconSize, Table } from '../../Utils';
-import { NameCellRenderer, LabelsCellRenderer, MembersCellRenderer, ListNameCellRenderer, DueDateCellRenderer, TimerCellRenderer, TasksCellRenderer, ActionsCellRenderer } from './Renderers';
+import {
+  NameCellRenderer,
+  LabelsCellRenderer,
+  MembersCellRenderer,
+  ListNameCellRenderer,
+  DueDateCellRenderer,
+  TimerCellRenderer,
+  TasksCellRenderer,
+  PriorityCellRenderer,
+  ActionsCellRenderer,
+} from './Renderers';
 
 import * as gs from '../../../global.module.scss';
 import * as s from './ListView.module.scss';
@@ -28,6 +38,7 @@ const DEFAULT_COLUMN_VISIBILITY = {
   closestDueDate: true,
   timer: true,
   tasks: true,
+  priority: true,
   createdAt: false,
   createdBy: false,
   updatedAt: false,
@@ -328,6 +339,23 @@ const ListView = React.memo(
           sortDescFirst: true,
           sortingFn: sortingFunctions.lengthSortingFn,
           meta: { headerTitle: t('common.tasks') },
+        },
+        {
+          accessorKey: 'priority',
+          header: t('common.priority_title', { context: 'title' }),
+          cell: PriorityCellRenderer,
+          enableSorting: true,
+          sortUndefined: 'last',
+          // Lower position = higher priority (High=1, Medium=2, Low=3). Sort ascending = strongest first.
+          sortingFn: (rowA, rowB) => {
+            const a = rowA.original.priority?.position;
+            const b = rowB.original.priority?.position;
+            if (a == null && b == null) return 0;
+            if (a == null) return 1;
+            if (b == null) return -1;
+            return a - b;
+          },
+          meta: { headerTitle: t('common.priority_title', { context: 'title' }), suggestedSize: 110 },
         },
         {
           accessorKey: 'createdAt',

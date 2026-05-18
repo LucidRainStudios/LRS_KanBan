@@ -63,8 +63,46 @@ module.exports = {
     const coverAttachmentIds = cards.flatMap((card) => (card.coverAttachmentId ? [card.coverAttachmentId] : []));
     const attachments = await sails.helpers.attachments.getMany({ id: coverAttachmentIds });
 
-    // Same-board card-to-card links: fetching by `cardId` covers the inverse direction since both endpoints are on the same board (v1).
-    const cardLinks = cardIds.length > 0 ? await sails.helpers.cardLinks.getMany({ cardId: cardIds }) : [];
+    // Cross-board card-to-card links: include any link with EITHER endpoint on this board.
+    // This catches incoming links from other boards too (where `cardId` is on another board
+    // but `linkedCardId` is on this one).
+    const cardLinks = cardIds.length > 0 ? await sails.helpers.cardLinks.getMany({ or: [{ cardId: cardIds }, { linkedCardId: cardIds }] }) : [];
+
+    // For any link endpoint that lives on a board OTHER than this one, denormalize the foreign
+    // card's name + board id + board name onto the link payload. The client uses these fields
+    // to render "Card name (Board name)" pills without needing the foreign Card record in its
+    // redux-orm store.
+    if (cardLinks.length > 0) {
+      const localCardIdSet = new Set(cardIds);
+      const externalCardIdSet = new Set();
+      cardLinks.forEach((link) => {
+        if (!localCardIdSet.has(link.cardId)) externalCardIdSet.add(link.cardId);
+        if (!localCardIdSet.has(link.linkedCardId)) externalCardIdSet.add(link.linkedCardId);
+      });
+
+      if (externalCardIdSet.size > 0) {
+        const externalCards = await sails.helpers.cards.getMany([...externalCardIdSet]);
+        const externalCardById = _.keyBy(externalCards, 'id');
+        const externalBoardIds = [...new Set(externalCards.map((c) => c.boardId))];
+        const externalBoards = externalBoardIds.length > 0 ? await sails.helpers.boards.getMany(externalBoardIds) : [];
+        const externalBoardById = _.keyBy(externalBoards, 'id');
+
+        cardLinks.forEach((link) => {
+          const linkedExt = externalCardById[link.linkedCardId];
+          if (linkedExt) {
+            link.linkedCardName = linkedExt.name;
+            link.linkedCardBoardId = linkedExt.boardId;
+            link.linkedCardBoardName = externalBoardById[linkedExt.boardId] ? externalBoardById[linkedExt.boardId].name : null;
+          }
+          const cardExt = externalCardById[link.cardId];
+          if (cardExt) {
+            link.cardName = cardExt.name;
+            link.cardBoardId = cardExt.boardId;
+            link.cardBoardName = externalBoardById[cardExt.boardId] ? externalBoardById[cardExt.boardId].name : null;
+          }
+        });
+      }
+    }
 
     const isSubscribedByCardId = cardSubscriptions.reduce(
       (result, cardSubscription) => ({

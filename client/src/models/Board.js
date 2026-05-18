@@ -27,6 +27,7 @@ export default class extends BaseModel {
     }),
     filterUsers: many('User', 'filterBoards'),
     filterLabels: many('Label', 'filterBoards'),
+    filterPriorities: many('Priority', 'filterBoards'),
     searchParams: attr({
       getDefault: () => ({
         query: '',
@@ -207,6 +208,14 @@ export default class extends BaseModel {
         break;
       case ActionTypes.LABEL_FROM_BOARD_FILTER_REMOVE:
         Board.withId(payload.boardId).filterLabels.remove(payload.id);
+
+        break;
+      case ActionTypes.PRIORITY_TO_BOARD_FILTER_ADD:
+        Board.withId(payload.boardId).filterPriorities.add(payload.id);
+
+        break;
+      case ActionTypes.PRIORITY_FROM_BOARD_FILTER_REMOVE:
+        Board.withId(payload.boardId).filterPriorities.remove(payload.id);
 
         break;
 

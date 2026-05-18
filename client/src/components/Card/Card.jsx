@@ -382,11 +382,16 @@ const Card = React.memo(
                 >
                   {contentNode}
                 </div>
-                <Button style={ButtonStyle.Icon} title={t('common.linkCard', { context: 'title' })} onClick={handleCopyLink} className={clsx(s.copyLinkButton, isLinkCopied && s.copyLinkButtonCopied)}>
+                <Button
+                  style={ButtonStyle.Icon}
+                  title={t('common.linkCard', { context: 'title' })}
+                  onClick={handleCopyLink}
+                  className={clsx(s.copyLinkButton, isLinkCopied && s.copyLinkButtonCopied, parent && s.copyLinkButtonWithHero)}
+                >
                   <Icon type={isLinkCopied ? IconType.Check : IconType.Link} size={IconSize.Size13} />
                 </Button>
                 {canEdit && (
-                  <div className={s.popupWrapper}>
+                  <div className={clsx(s.popupWrapper, parent && s.popupWrapperWithHero)}>
                     <ActionsPopup
                       card={{
                         id,

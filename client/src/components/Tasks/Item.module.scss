@@ -1,35 +1,33 @@
 :global(#app) {
-  .button {
-    opacity: 0;
+  .wrapper {
+    align-items: center;
+    border-radius: 3px;
+    display: flex;
+    gap: 6px;
+    justify-content: flex-start;
+    padding: 4px 2px;
+    width: 100%;
   }
 
-  .buttonCard {
-    width: 14px;
-  }
+  .checkbox {
+    background: var(--backgroundColorTmpBackground);
+    flex-shrink: 0;
 
-  .icon {
-    vertical-align: middle;
-  }
-
-  .contentHoverable:hover {
-    background: var(--backgroundColorTmpBackgroundTasks);
-
-    .target {
-      opacity: 1;
+    &:hover {
+      background: var(--backgroundColorTmpBackgroundHover);
     }
   }
 
   .task {
     color: var(--textColor1);
-    width: 100%;
-    min-width: 60px;
-    margin-left: 4px;
-    word-break: break-word;
-    overflow: hidden;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+    flex: 1 1 auto;
     line-clamp: 2;
+    min-width: 60px;
+    overflow: hidden;
+    word-break: break-word;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
   }
 
   .taskCompleted {
@@ -37,36 +35,14 @@
     text-decoration: line-through;
   }
 
-  .itemCompleted {
-    filter: brightness(60%);
-  }
-
   .taskEditable {
     cursor: pointer;
   }
 
-  .wrapper {
-    border-radius: 3px;
-    padding: 4px 2px;
-    width: 100%;
-    display: flex;
-    justify-content: left;
-    align-items: center;
-  }
-
-  .checkbox {
-    background: var(--backgroundColorTmpBackground);
-
-    &:hover {
-      background: var(--backgroundColorTmpBackgroundHover);
-    }
-  }
-
   .members {
-    display: flex;
-    margin-right: 4px;
-    margin-left: 4px;
     align-items: center;
+    display: flex;
+    flex-shrink: 0;
   }
 
   .member {
@@ -75,30 +51,60 @@
   }
 
   .moreMembers {
-    color: var(--textColorWhite);
     background: var(--shadowBlack02);
     border-radius: 50%;
-    text-align: center;
-    padding-right: 2px;
+    color: var(--textColorWhite);
     font-size: 12px;
-    line-height: 25px;
-    width: 26px;
     height: 26px;
+    line-height: 25px;
     margin: 0 -4px 0 0;
+    padding-right: 2px;
+    text-align: center;
+    width: 26px;
   }
 
   .moreMembersCard {
     font-size: 10px;
+    height: 20px;
     line-height: 21px;
     width: 20px;
-    height: 20px;
   }
 
-  .dueDate {
-    margin-left: 6px;
+  .itemCompleted {
+    filter: brightness(60%);
   }
 
-  .dueDateCard {
-    margin-left: 4px;
+  // The Options (⋯) button: hidden until the row is hovered.
+  .button {
+    opacity: 0;
+  }
+
+  .buttonCard {
+    width: 14px;
+  }
+
+  // Inline "Add member" / "Add priority" affordances: subtle by default, full on row hover.
+  .inlineAction {
+    opacity: 0.45;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  .contentHoverable:hover {
+    background: var(--backgroundColorTmpBackgroundTasks);
+
+    .target {
+      opacity: 1;
+    }
+
+    .inlineAction {
+      opacity: 1;
+    }
+  }
+
+  .icon {
+    vertical-align: middle;
   }
 }

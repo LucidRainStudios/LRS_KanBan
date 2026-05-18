@@ -8,6 +8,8 @@ import PropTypes from 'prop-types';
 import DueDate from '../DueDate';
 import DueDateEditPopup from '../DueDateEditPopup';
 import MembershipsPopup from '../MembershipsPopup';
+import Priority from '../Priority';
+import PriorityEditPopup from '../PriorityEditPopup';
 import User from '../User';
 import { Button, ButtonStyle, Icon, IconType, IconSize, Checkbox, CheckboxSize } from '../Utils';
 import ActionsPopup from './ActionsPopup';
@@ -31,6 +33,8 @@ const Item = React.memo(
     index,
     name,
     dueDate,
+    priority,
+    allPriorities,
     allBoardMemberships,
     boardMemberships,
     users,
@@ -91,6 +95,13 @@ const Item = React.memo(
       [onUpdate],
     );
 
+    const handlePriorityUpdate = useCallback(
+      (priorityId) => {
+        onUpdate({ priorityId });
+      },
+      [onUpdate],
+    );
+
     let visibleMembersCount;
     let dueDateVariant;
     let userSize;
@@ -119,7 +130,8 @@ const Item = React.memo(
         break;
     }
 
-    const membersNode = (
+    const hasMembers = users.length > 0;
+    const membersNode = hasMembers ? (
       <div className={clsx(s.members, canEdit && gs.cursorPointer, isCompleted && s.itemCompleted)}>
         {users.slice(0, visibleMembersCount).map((user) => (
           <span key={user.id} className={s.member}>
@@ -138,6 +150,26 @@ const Item = React.memo(
           </span>
         )}
       </div>
+    ) : (
+      canEdit && (
+        <Button style={ButtonStyle.Icon} title={t('common.addMembers', { context: 'title' })} className={clsx(s.inlineAction, variant !== VARIANTS.CARDMODAL && s.buttonCard)}>
+          <Icon type={IconType.UserAdd} size={IconSize.Size13} className={s.icon} />
+        </Button>
+      )
+    );
+
+    const hasPriorities = allPriorities && allPriorities.length > 0;
+    const priorityNode = priority ? (
+      <span className={clsx(isCompleted && s.itemCompleted, canEdit && gs.cursorPointer)} title={priority.name}>
+        <Priority name={priority.name} color={priority.color} variant="card" />
+      </span>
+    ) : (
+      canEdit &&
+      hasPriorities && (
+        <Button style={ButtonStyle.Icon} title={t('common.addPriority', { context: 'title' })} className={clsx(s.inlineAction, variant !== VARIANTS.CARDMODAL && s.buttonCard)}>
+          <Icon type={IconType.Star} size={IconSize.Size13} className={s.icon} />
+        </Button>
+      )
     );
 
     return (
@@ -159,7 +191,7 @@ const Item = React.memo(
                 <span className={clsx(s.task, isCompleted && s.taskCompleted, canEdit && s.taskEditable)} onClick={handleClick} title={name}>
                   {name}
                 </span>
-                {users && (
+                {membersNode && (
                   <MembershipsPopup
                     items={allBoardMemberships}
                     currentUserIds={users.map((user) => user.id)}
@@ -174,21 +206,34 @@ const Item = React.memo(
                   </MembershipsPopup>
                 )}
                 {dueDate && (
-                  <div className={clsx(s.dueDate, canEdit && gs.cursorGrab, isCompleted && s.itemCompleted, variant !== VARIANTS.CARDMODAL && s.dueDateCard)}>
+                  <div className={clsx(canEdit && gs.cursorGrab, isCompleted && s.itemCompleted)}>
                     <DueDateEditPopup defaultValue={dueDate} onUpdate={handleDueDateUpdate} disabled={!(canEdit && isPersisted)}>
                       <DueDate variant={dueDateVariant} value={dueDate} isClickable={canEdit && isPersisted} />
                     </DueDateEditPopup>
                   </div>
                 )}
+                {priorityNode &&
+                  (canEdit && hasPriorities ? (
+                    <PriorityEditPopup
+                      items={allPriorities}
+                      currentId={priority?.id}
+                      onSelect={handlePriorityUpdate}
+                      position="left-start"
+                      offset={0}
+                      disabled={!(canEdit && isPersisted)}
+                    >
+                      {priorityNode}
+                    </PriorityEditPopup>
+                  ) : (
+                    priorityNode
+                  ))}
                 {isPersisted && canEdit && (
                   <ActionsPopup
                     cardId={cardId}
                     cardName={cardName}
                     name={name}
                     dueDate={dueDate}
-                    allBoardMemberships={allBoardMemberships}
                     boardMemberships={boardMemberships}
-                    users={users}
                     activities={activities}
                     isActivitiesFetching={isActivitiesFetching}
                     isAllActivitiesFetched={isAllActivitiesFetched}
@@ -200,8 +245,6 @@ const Item = React.memo(
                     onDuplicate={onDuplicate}
                     onNameEdit={handleNameEdit}
                     onDelete={onDelete}
-                    onUserAdd={onUserAdd}
-                    onUserRemove={onUserRemove}
                     onActivitiesFetch={onActivitiesFetch}
                     hideCloseButton
                     position="left-start"
@@ -231,6 +274,8 @@ Item.propTypes = {
   index: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   dueDate: PropTypes.instanceOf(Date),
+  priority: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+  allPriorities: PropTypes.array, // eslint-disable-line react/forbid-prop-types
   allBoardMemberships: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   boardMemberships: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   users: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
@@ -254,6 +299,8 @@ Item.propTypes = {
 
 Item.defaultProps = {
   dueDate: undefined,
+  priority: undefined,
+  allPriorities: undefined,
   createdAt: undefined,
   createdBy: undefined,
   updatedAt: undefined,

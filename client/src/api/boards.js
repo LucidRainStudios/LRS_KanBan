@@ -45,6 +45,10 @@ const deleteBoard = (id, headers) =>
 
 const exportBoard = (id, data, headers) => socket.get(`/boards/${id}/export`, data, headers);
 
+// Lightweight `[{ id, name }]` for cards on a board — used by the cross-board card-link
+// picker so we don't have to fetch the entire target board's payload just to enumerate cards.
+const getBoardCardsSummary = (id, headers) => socket.get(`/boards/${id}/cards-summary`, undefined, headers);
+
 /* Event handlers */
 
 const makeHandleBoardCreate = (next) => (body) => {
@@ -65,6 +69,7 @@ export default {
   updateBoard,
   deleteBoard,
   exportBoard,
+  getBoardCardsSummary,
   makeHandleBoardCreate,
   makeHandleBoardUpdate,
   makeHandleBoardDelete,

@@ -6,7 +6,6 @@ import { useSteps } from '../../hooks';
 import { ActivityStep } from '../ActivityPopup';
 import DeleteStep from '../DeleteStep';
 import DueDateEditStep from '../DueDateEditStep';
-import MembershipsStep from '../MembershipsStep';
 import { Button, ButtonStyle, Icon, IconType, IconSize, Popup, withPopup } from '../Utils';
 
 import * as s from './ActionsPopup.module.scss';
@@ -14,7 +13,6 @@ import * as s from './ActionsPopup.module.scss';
 const StepTypes = {
   DELETE: 'DELETE',
   EDIT_DUE_DATE: 'EDIT_DUE_DATE',
-  EDIT_MEMBERS: 'EDIT_MEMBERS',
   ACTIVITY: 'ACTIVITY',
 };
 
@@ -24,9 +22,7 @@ const ActionsStep = React.memo(
     cardName,
     name,
     dueDate,
-    allBoardMemberships,
     boardMemberships,
-    users,
     activities,
     isActivitiesFetching,
     isAllActivitiesFetched,
@@ -38,14 +34,11 @@ const ActionsStep = React.memo(
     onDuplicate,
     onNameEdit,
     onDelete,
-    onUserAdd,
-    onUserRemove,
     onActivitiesFetch,
     onClose,
   }) => {
     const [t] = useTranslation();
     const [step, openStep, handleBack] = useSteps();
-    const userIds = users.map((user) => user.id);
 
     const handleEditNameClick = useCallback(() => {
       onNameEdit();
@@ -71,10 +64,6 @@ const ActionsStep = React.memo(
       openStep(StepTypes.EDIT_DUE_DATE);
     }, [openStep]);
 
-    const handleMembersEditClick = useCallback(() => {
-      openStep(StepTypes.EDIT_MEMBERS);
-    }, [openStep]);
-
     const handleActivityClick = useCallback(() => {
       openStep(StepTypes.ACTIVITY);
     }, [openStep]);
@@ -83,8 +72,6 @@ const ActionsStep = React.memo(
       switch (step.type) {
         case StepTypes.EDIT_DUE_DATE:
           return <DueDateEditStep defaultValue={dueDate} onUpdate={handleDueDateUpdate} onBack={handleBack} onClose={onClose} />;
-        case StepTypes.EDIT_MEMBERS:
-          return <MembershipsStep items={allBoardMemberships} currentUserIds={userIds} memberships={boardMemberships} onUserSelect={onUserAdd} onUserDeselect={onUserRemove} onBack={handleBack} />;
         case StepTypes.DELETE:
           return (
             <DeleteStep
@@ -128,10 +115,6 @@ const ActionsStep = React.memo(
           <Icon type={IconType.Calendar} size={IconSize.Size13} className={s.icon} />
           {t(dueDate ? 'action.editDueDate' : 'common.addDueDate', { context: 'title' })}
         </Button>
-        <Button style={ButtonStyle.PopupContext} title={t(users.length > 0 ? 'common.editMembers' : 'common.addMembers', { context: 'title' })} onClick={handleMembersEditClick}>
-          <Icon type={IconType.Users} size={IconSize.Size13} className={s.icon} />
-          {t(users.length > 0 ? 'common.editMembers' : 'common.addMembers', { context: 'title' })}
-        </Button>
         <Button style={ButtonStyle.PopupContext} title={t('common.duplicateTask', { context: 'title' })} onClick={handleDuplicateClick}>
           <Icon type={IconType.Duplicate} size={IconSize.Size13} className={s.icon} />
           {t('common.duplicateTask', { context: 'title' })}
@@ -155,9 +138,7 @@ ActionsStep.propTypes = {
   cardName: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   dueDate: PropTypes.instanceOf(Date),
-  allBoardMemberships: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   boardMemberships: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
-  users: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   activities: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   isActivitiesFetching: PropTypes.bool.isRequired,
   isAllActivitiesFetched: PropTypes.bool.isRequired,
@@ -169,8 +150,6 @@ ActionsStep.propTypes = {
   onDuplicate: PropTypes.func.isRequired,
   onNameEdit: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
-  onUserAdd: PropTypes.func.isRequired,
-  onUserRemove: PropTypes.func.isRequired,
   onActivitiesFetch: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
 };

@@ -8,6 +8,7 @@ import LabelsCellContainer from '../../../containers/ListView/LabelsCellContaine
 import ListNameCellContainer from '../../../containers/ListView/ListNameCellContainer';
 import MembersCellContainer from '../../../containers/ListView/MembersCellContainer';
 import NameCellContainer from '../../../containers/ListView/NameCellContainer';
+import PriorityCellContainer from '../../../containers/ListView/PriorityCellContainer';
 import TasksCellContainer from '../../../containers/ListView/TasksCellContainer';
 import TimerCellContainer from '../../../containers/ListView/TimerCellContainer';
 import { Table } from '../../Utils';
@@ -80,9 +81,14 @@ function TasksCellRenderer({ table, column, row, getValue }) {
 }
 TasksCellRenderer.propTypes = listViewPropTypes;
 
+function PriorityCellRenderer({ table, column, row, getValue }) {
+  return <PriorityCellContainer id={row.original.id} priority={getValue()} cellClassName={ts[table.options.style]} {...column.columnDef.cellProps} />;
+}
+PriorityCellRenderer.propTypes = listViewPropTypes;
+
 function ActionsCellRenderer({ table, row, column }) {
   return <ActionsCellContainer id={row.original.id} cellClassName={ts[table.options.style]} {...column.columnDef.cellProps} />;
 }
 ActionsCellRenderer.propTypes = listViewPropTypes;
 
-export { NameCellRenderer, LabelsCellRenderer, MembersCellRenderer, ListNameCellRenderer, DueDateCellRenderer, TimerCellRenderer, TasksCellRenderer, ActionsCellRenderer };
+export { NameCellRenderer, LabelsCellRenderer, MembersCellRenderer, ListNameCellRenderer, DueDateCellRenderer, TimerCellRenderer, TasksCellRenderer, PriorityCellRenderer, ActionsCellRenderer };
