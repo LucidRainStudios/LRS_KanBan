@@ -511,13 +511,6 @@ const ProjectTicketPicker = React.memo(({ projectId, boardId, listId, cardId, pr
 
   return (
     <div className={s.wrapper} ref={wrapperRef}>
-      {!selectedProject && !selectedCard && (
-        // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events
-        <div className={s.affordance} onClick={handleOpen}>
-          <Icon type={IconType.Plus} size={IconSize.Size10} />
-          {t('common.linkProjectOrTicket')}
-        </div>
-      )}
       {(selectedProject || selectedCard) && (
         <div className={s.chipRow}>
           {selectedProject && (
@@ -597,9 +590,15 @@ const ProjectTicketPicker = React.memo(({ projectId, boardId, listId, cardId, pr
             <Icon type={IconType.Link} size={IconSize.Size13} />
             {t('common.linkACard')}
           </button>
-          <button type="button" className={s.createAction} onClick={handlePrimaryAction} disabled={!createCardName || isCreatingCard} title={createCardName ? undefined : t('common.titlePlaceholder')}>
+          <button
+            type="button"
+            className={s.createAction}
+            onClick={handlePrimaryAction}
+            disabled={!createCardName || isCreatingCard}
+            title={createCardName ? t('common.createTicketOnBoard') : t('common.titlePlaceholder')}
+          >
             <Icon type={IconType.Plus} size={IconSize.Size13} />
-            {isCreatingCard ? t('common.creatingTicket') : t('common.createTicketOnBoard')}
+            {isCreatingCard ? t('common.creatingTicket') : t('common.newCard')}
           </button>
         </div>
       )}
